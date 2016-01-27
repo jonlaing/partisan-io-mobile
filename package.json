@@ -6,17 +6,20 @@
     "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
+    "moment": "^2.11.1",
     "react-native": "^0.18.1"
   },
   "eslintConfig": {
-    "plugins": [ "react" ],
+    "plugins": [
+      "react"
+    ],
     "env": {
       "node": true,
       "es6": true
     },
-    "ecmaFeatures": { 
+    "ecmaFeatures": {
       "jsx": true,
-      "modules": true 
+      "modules": true
     },
     "rules": {
       "no-use-before-define": 0,
