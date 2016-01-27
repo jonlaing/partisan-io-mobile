@@ -1,0 +1,30 @@
+{
+  "name": "Partisan",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node_modules/react-native/packager/packager.sh"
+  },
+  "dependencies": {
+    "react-native": "^0.18.1"
+  },
+  "eslintConfig": {
+    "plugins": [ "react" ],
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "ecmaFeatures": { 
+      "jsx": true,
+      "modules": true 
+    },
+    "rules": {
+      "no-use-before-define": 0,
+      "no-underscore-dangle": 0,
+      "quotes": [
+        0,
+        "single"
+      ]
+    }
+  }
+}
