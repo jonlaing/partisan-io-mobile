@@ -7,17 +7,24 @@ import React, {
   Image
 } from 'react-native';
 
+import moment from 'moment';
+
 class FeedRow extends Component {
   constructor(props) {
     super(props);
   }
 
   _avatar(user) {
-    if(user.avatar_thumbnail_url.length > 0) {
+    let url = user.avatar_thumbnail_url;
+    if(url.length > 0) {
+      if(!url.includes('amazonaws.com')) {
+        url = "http://localhost:4000" + url;
+      }
+
       return (
         <Image
           style={styles.avatar}
-          source={{uri: this.props.item.record.user.avatar_thumbnail_url}}
+          source={{uri: url}}
         />
       );
     } else {
@@ -26,11 +33,17 @@ class FeedRow extends Component {
   }
 
   _postImage(item) {
-    if(item.record.image_attachment.image_url.length > 0) {
+    let url = item.record.image_attachment.image_url;
+
+    if(url.length > 0) {
+      if(!url.includes('amazonaws.com')) {
+        url = "http://localhost:4000" + url;
+      }
+
       return (
         <View style={styles.postImageContainer}>
           <Image
-            source={{uri: item.record.image_attachment.image_url}}
+            source={{uri: url}}
             style={styles.postImage} />
         </View>
       );
@@ -46,7 +59,7 @@ class FeedRow extends Component {
           {this._avatar(this.props.item.record.user)}
           <View style={styles.postUser}>
             <Text style={styles.postUserText}>@{this.props.item.record.user.username}</Text>
-            <Text style={styles.postDate}>{this.props.item.record.post.created_at}</Text>
+            <Text style={styles.postDate}>{moment(this.props.item.record.post.created_at).fromNow()}</Text>
           </View>
         </View>
         {this._postImage(this.props.item)}
