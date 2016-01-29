@@ -1,84 +1,82 @@
+/*global fetch */
 'use strict';
 import React, {
   Component,
-  StyleSheet,
-  ListView,
-  View,
-  TextInput
+  NavigatorIOS,
+  StyleSheet
 } from 'react-native';
 
-import feedItems from '../FeedMock';
-import FeedRow from './FeedRow';
+import FeedList from './FeedList';
+import PostComposer from './PostComposer';
 
 class Feed extends Component {
   constructor(props) {
     super(props);
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id});
-    this.state = { dataSource: ds.cloneWithRows(feedItems) };
+    this.state = { post: '', optimisticPost: {} };
   }
 
-  _renderHeader() {
-    return (
-      <TextInput
-        style={styles.postComposer}
-        onChangeText={(text) => this.setState({text: text})}
-        value={this.state.text}
-        autoCapitalize="sentences"
-        multiline={true}
-        placeholder="Write a new post"
-        placeholderTextColor={'rgb(191,191,191)'}
-        returnKeyType='done'
-        blurOnSubmit={true}
-      />
-    );
+  _submitPost() {
+    fetch('http://localhost:4000/api/v1/posts', {
+      method: 'POST',
+      header: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: _serializeJSON({
+        body: this.state.post
+      })
+    })
+    .then(() => this.refs.nav.resetTo(this._feedRoute()));
   }
 
-  _renderRow(item) {
-    return (
-      <FeedRow
-        key={item.id}
-        item={item}
-      />
-    );
+  _feedRoute(margin = false) {
+    return {
+      title: 'Feed',
+      component: FeedList,
+      passProps: { token: this.props.token, margin: margin },
+      rightButtonTitle: "Post",
+      onRightButtonPress: () => {
+        this.refs.nav.push({
+          title: 'Post',
+          component: PostComposer,
+          passProps: {
+            token: this.props.token,
+            onChange: (text) => this.setState({post: text})
+          },
+          leftButtonTitle: "Cancel",
+          onLeftButtonPress: () => this.refs.nav.pop(),
+          rightButtonTitle: "Submit",
+          onRightButtonPress: this._submitPost.bind(this)
+        });
+      }
+    };
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderHeader={this._renderHeader.bind(this)}
-          renderRow={this._renderRow}
-        />
-      </View>
+      <NavigatorIOS
+        ref="nav"
+        style={styles.navigator}
+        initialRoute={this._feedRoute()}
+        tintColor="rgb(255,255,255)"
+        titleTextColor="rgb(255,255,255)"
+        barTintColor="rgb(0,210,195)"
+      />
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    backgroundColor: 'rgb(242,242,242)',
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 10
-  },
-  postComposer: {
-    flex: 1,
-    height: 50,
-    marginBottom: 10,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    borderColor: 'rgb(210,21,179)',
-    borderBottomWidth: 2,
-    fontSize: 18,
-    backgroundColor: 'white'
+  navigator: {
+    flex: 1
   }
 });
+
+var _serializeJSON = (data) => {
+  return Object.keys(data)
+    .map( (keyName) => encodeURIComponent(keyName) + '=' + encodeURIComponent(data[keyName]) )
+    .join('&');
+};
+
 
 module.exports = Feed;
