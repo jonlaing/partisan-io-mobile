@@ -7,76 +7,91 @@
 import React, {
   AppRegistry,
   Component,
-  TabBarIOS,
   View,
-  Text
+  Text,
+  AsyncStorage
 } from 'react-native';
 
-import Feed from './ios/Feed';
-import Notifications from './ios/Notifications';
+import EventEmitter from 'EventEmitter';
+import ExNavigator from '@exponent/react-native-navigator';
+import SideMenuNav from 'react-native-side-menu';
 
-// HOLY SHIT GET RID OF THIS BEFORE GOING TO PRODUCTION AHHHH!!!!!!
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiIiwidXNlcl9pZCI6MTF9.AZtPF03IzU6PJeNZK38XPGJTfXNe_J1WgQnfwavv17g";
+import Router from './app/Router';
+import SideMenu from './app/SideMenu';
+import LoginScreen from './app/LoginScreen';
 
 class Partisan extends Component {
   constructor(props) {
     super(props);
-    this.state = { currTab: 'feed', token: '' };
+
+    this.eventEmitter = new EventEmitter();
+    this.state = { token: null, tokenFetched: false, username: '' };
   }
 
   componentWillMount() {
-    // var token;
+  }
 
-    fetch('http://localhost:4000/api/v1/login', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: 'hereiam@email.com',
-        password: 'password'
-      })
-    })
-    .then((resp) => JSON.parse(resp._bodyInit))
-    .then((data) => this.setState({token: data.token}))
-    .then(() => console.log('set state'));
+  componentDidMount() {
+    AsyncStorage.getItem('AUTH_TOKEN')
+      .then((tok) => this.setState({token: tok, tokenFetched: true}))
+      .catch((err) => console.log('Error getting or initializing AUTH_TOKEN: ' + err));
+  }
+
+  _onHamburger() {
+    this.refs.sidemenu.openMenu(true);
+  }
+
+  _onLoginSuccess(token, user) {
+    console.log("succes: " + token);
+    AsyncStorage.setItem('AUTH_TOKEN', token)
+      .then(() => this.setState({token: token, tokenFetched: true}))
+      .catch((err) => console.log('Error setting AUTH_TOKEN: ' + err));
+
+    AsyncStorage.setItem('username', user.username)
+      .then(() => this.setState({username: user.username}))
+      .catch((err) => console.log('Error setting user: ' + err));
+  }
+
+  _onLoginFail(resp) {
+    console.log(resp);
+  }
+
+  _onLogout() {
+    fetch("http://localhost:4000/api/v1/logout").then(() => console.log("logged out"));
+    AsyncStorage.removeItem('AUTH_TOKEN').
+      then(() => this.setState({token: null, tokenFetched: true}));
   }
 
   render() {
+    // We haven't gotten the token yet
+    if(this.state.tokenFetched === false) {
+      return (
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      );
+    }
+
+    // We got the token, but it came back null, we need to login
+    if(this.state.token === null) {
+      return (
+        <LoginScreen onSuccess={this._onLoginSuccess.bind(this)} onFail={this._onLoginFail.bind(this)} />
+      );
+    }
+
+    // Got valid token, render the feed
+    let sideMenu = <SideMenu username={this.state.username} onLogout={this._onLogout.bind(this)} />;
     return (
-      <TabBarIOS
-        barTintColor="rgb(15,15,15)"
-        tintColor={'rgb(210,21,179)'}
-        >
-        <TabBarIOS.Item
-          selected={this.state.currTab === 'feed'}
-          systemIcon="favorites"
-          title="Feed"
-          onPress={() => this.setState({currTab: 'feed'})}
-          >
-          <Feed token={token} />
-        </TabBarIOS.Item>
-        <TabBarIOS.Item
-          selected={this.state.currTab === 'notifs'}
-          systemIcon="featured"
-          title="Notifications"
-          badge={3}
-          onPress={() => this.setState({currTab: 'notifs'})}
-          >
-          <Notifications />
-        </TabBarIOS.Item>
-        <TabBarIOS.Item
-          selected={this.state.currTab === 'account'}
-          systemIcon="more"
-          title="Account"
-          onPress={() => this.setState({currTab: 'account'})}
-          >
-          <View>
-            <Text>Account</Text>
-          </View>
-        </TabBarIOS.Item>
-      </TabBarIOS>
+      <SideMenuNav ref="sidemenu" menu={sideMenu} navigator={this.refs.nav}>
+        <ExNavigator
+          initialRoute={Router.feed(this.state.token)}
+          style={{flex: 1}}
+          navigationBarStyle={{backgroundColor: 'rgb(0,210,195)'}}
+          onHamburger={this._onHamburger.bind(this)}
+          eventEmitter={this.eventEmitter}
+          ref="nav"
+        />
+      </SideMenuNav>
     );
   }
 }

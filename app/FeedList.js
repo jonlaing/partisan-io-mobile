@@ -17,16 +17,17 @@ class FeedList extends Component {
     this.state = { items: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: true };
   }
 
-  componentWillMount() {
-    this._getFeed(true);
+  componentDidMount() {
+    this.getFeed(true);
+    this.props.navigator.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
   }
 
-  _getFeed(refresh = false) {
+  getFeed(refresh = false) {
     if(this.props.token.length <= 0) {
       return;
     }
 
-    var page = refresh ? 1 : this.state.page;
+    var page = refresh ? 1 : this.state.page + 1;
 
     fetch('http://localhost:4000/api/v1/feed?page=' + page, {
       headers: {
@@ -41,9 +42,13 @@ class FeedList extends Component {
     .then(items => this.setState({
       items: items,
       dataSource: this.state.dataSource.cloneWithRows(items),
-      page: (refresh ? 1 : this.state.page + 1),
+      page: page,
       isRefreshing: false
     }));
+  }
+
+  _handlePostSuccess() {
+    this.getFeed(true);
   }
 
   _renderRow(item) {
@@ -55,19 +60,21 @@ class FeedList extends Component {
     );
   }
 
+
   render() {
     return (
-      <View style={this.props.margin ? styles.containerWithMargin : styles.container}>
+      <View style={styles.container}>
         <ListView
+          scrollToTop={true}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow}
-          onEndReached={() => this._getFeed()}
+          onEndReached={() => this.getFeed()}
           refreshControl={
             <RefreshControl
               refreshing={this.state.isRefreshing}
               onRefresh={() => {
                 this.setState({isRefreshing: true});
-                this._getFeed(true);
+                this.getFeed(true);
               }}
               tintColor="rgb(191,191,191)"
               title="Loading..."
@@ -85,21 +92,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'stretch',
     backgroundColor: 'rgb(242,242,242)',
-    paddingTop: 10,
+    paddingTop: 64,
     paddingRight: 10,
-    paddingBottom: 10,
     paddingLeft: 10
-  },
-  containerWithMargin: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    backgroundColor: 'rgb(242,242,242)',
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    marginTop: 64
   }
 });
 

@@ -2,12 +2,17 @@
 import React, {
   Component,
   StyleSheet,
+  TouchableHighlight,
   View,
   Text,
   Image
 } from 'react-native';
 
 import moment from 'moment';
+import Markdown from 'react-native-markdown';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+import Colors from './Colors';
 
 class FeedRow extends Component {
   constructor(props) {
@@ -53,21 +58,35 @@ class FeedRow extends Component {
   }
 
   render() {
+    let record = this.props.item.record;
+    let user = record.user;
+
     return (
       <View style={styles.container}>
         <View style={styles.postHead}>
-          {this._avatar(this.props.item.record.user)}
+          {this._avatar(record.user)}
           <View style={styles.postUser}>
-            <Text style={styles.postUserText}>@{this.props.item.record.user.username}</Text>
-            <Text style={styles.postDate}>{moment(this.props.item.record.post.created_at).fromNow()}</Text>
+            <Text style={styles.postUserText}>@{user.username}</Text>
+            <Text style={styles.postDate}>{moment(record.post.created_at).fromNow()}</Text>
           </View>
         </View>
         {this._postImage(this.props.item)}
         <View style={styles.postBody}>
-          <Text style={styles.postBodyText}>{this.props.item.record.post.body}</Text>
+          <Text style={styles.postBodyText}>{record.post.body}</Text>
         </View>
-        <View>
-          <Text>Like buttons will go here</Text>
+        <View style={styles.actions}>
+          <TouchableHighlight style={styles.action} >
+            <View style={styles.actionContainer}>
+              <Icon name="star" color={Colors.grey} size={14} style={styles.actionIcon} />
+              <Text style={styles.actionText} >Favorites ({record.like_count})</Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight style={styles.action} >
+            <View style={styles.actionContainer}>
+              <Icon name="comments-o" color={Colors.grey} size={14} style={styles.actionIcon} />
+              <Text style={styles.actionText} >Comments ({record.comment_count})</Text>
+            </View>
+          </TouchableHighlight>
         </View>
       </View>
       );
@@ -83,7 +102,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     backgroundColor: 'white',
     borderRadius: 2,
-    marginBottom: 10
+    marginTop: 10
   },
   postHead: {
     flex: 1,
@@ -92,10 +111,10 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   avatar: {
-    height: 60,
-    width: 60,
+    height: 45,
+    width: 45,
     marginRight: 10,
-    backgroundColor: 'rgb(242,242,242)'
+    backgroundColor: Colors.lightGrey
   },
   postUser: {
     flex: 1,
@@ -103,18 +122,17 @@ const styles = StyleSheet.create({
   },
   postUserText: {
     fontSize: 18,
-    marginBottom: 10,
-    color: 'rgb(210,21,179)'
+    color: Colors.action
   },
   postDate: {
-    color: 'rgb(191,191,191)',
-    fontSize: 14
+    color: Colors.grey,
+    fontSize: 12
   },
   postBody: {
     flex: 1
   },
   postBodyText: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: 'Georgia',
     lineHeight: 24
   },
@@ -126,6 +144,27 @@ const styles = StyleSheet.create({
   },
   postImage: {
     flex: 1
+  },
+  actions: {
+    flex: 1,
+    marginTop: 10,
+    paddingTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  action: {
+    flex: 1
+  },
+  actionContainer: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  actionIcon: {
+    width: 14,
+    marginRight: 10
+  },
+  actionText: {
+    fontSize: 12
   }
 });
 
