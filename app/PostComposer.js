@@ -1,4 +1,3 @@
-/*global fetch, FormData */
 'use strict';
 
 import React, {
@@ -10,7 +9,9 @@ import React, {
   Text
 } from 'react-native';
 
+import Net from './Network';
 import Colors from './Colors';
+import Layout from './Layout';
 
 class PostComposer extends Component {
   constructor(props) {
@@ -20,30 +21,33 @@ class PostComposer extends Component {
 
   _changeText(text) {
     this.setState({value: text});
-    // this.props.onChange(text);
   }
 
   _handlePost() {
-    var request = new FormData();
-    request.append('body', this.state.value);
-
-    fetch('http://localhost:4000/api/v1/posts', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-Auth-Token': this.props.token
-      },
-      body: request
-    })
+    Net.posts(this.props.token).create(this.state.value)
     .then(res => JSON.parse(res._bodyInit)) // not sure, but i think if there was a problem, it would fail here
     .then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
     .then(() => this.props.navigator.pop());
   }
 
+  _handleCancel() {
+    this.props.navigator.pop();
+  }
+
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.navBar}>
+          <TouchableHighlight style={styles.navBarLeft} onPress={this._handleCancel.bind(this)}>
+            <Text style={styles.navBarLeftText}>Cancel</Text>
+          </TouchableHighlight>
+          <View style={styles.navBarTitle}>
+            <Text style={styles.navBarTitleText}>Write a Post</Text>
+          </View>
+          <TouchableHighlight style={styles.navBarRight} onPress={this._handlePost.bind(this)}>
+            <Text style={styles.navBarRightText}>Post</Text>
+          </TouchableHighlight>
+        </View>
         <TextInput
           style={styles.text}
           multiline={true}
@@ -53,51 +57,61 @@ class PostComposer extends Component {
           keyboardType="twitter"
           returnKeyType="done"
         />
-        <TouchableHighlight style={styles.button} onPress={this._handlePost.bind(this)}>
-          <Text style={styles.buttonText}>Post</Text>
-        </TouchableHighlight>
+        <View style={styles.textBuffer}></View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  navBar: {
+    height: Layout.lines(4),
+    padding: Layout.lines(0.75),
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0, // to offset the padding of the container
+    backgroundColor: Colors.base,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end'
+  },
+  navBarLeftText: {
+    fontSize: 16,
+    color: 'white'
+  },
+  navBarTitle: {
+    flex: 1
+  },
+  navBarTitleText: {
+    fontSize: 22,
+    textAlign: 'center',
+    color: 'white'
+  },
+  navBarRightText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white'
+  },
   container: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    paddingTop: 74,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    backgroundColor: 'rgb(242,242,242)'
+    paddingTop: Layout.lines(4),
+    backgroundColor: Colors.lightGrey
   },
   text: {
     flex: 1,
     fontSize: 18,
-    lineHeight: 24,
+    lineHeight: Layout.lines(1.5),
     height: 200,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
+    padding: Layout.lines(0.75),
     color: 'black',
     backgroundColor: 'white'
   },
-  button: {
-    height: 54,
-    marginTop: 10,
-    marginBottom: 10,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    backgroundColor: Colors.action
-  },
-  buttonText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 24
+  textBuffer: {
+    flex: 1
   }
 });
 

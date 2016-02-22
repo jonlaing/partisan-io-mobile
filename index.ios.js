@@ -86,7 +86,7 @@ class Partisan extends Component {
         <ExNavigator
           initialRoute={Router.feed(this.state.token)}
           style={{flex: 1}}
-          navigationBarStyle={{backgroundColor: 'rgb(0,210,195)'}}
+          showNavigationBar={false}
           onHamburger={this._onHamburger.bind(this)}
           eventEmitter={this.eventEmitter}
           ref="nav"
