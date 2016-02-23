@@ -9,6 +9,8 @@ import React, {
   Text
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import Net from './Network';
 import Colors from './Colors';
 import Layout from './Layout';
@@ -57,6 +59,11 @@ class PostComposer extends Component {
           keyboardType="twitter"
           returnKeyType="done"
         />
+        <View style={styles.postFooter}>
+          <TouchableHighlight style={styles.camera}>
+            <Icon name="camera-retro" color={Colors.darkGrey} size={24} />
+          </TouchableHighlight>
+        </View>
         <View style={styles.textBuffer}></View>
       </View>
     );
@@ -100,6 +107,16 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingTop: Layout.lines(4),
     backgroundColor: Colors.lightGrey
+  },
+  postFooter: {
+    height: Layout.lines(3),
+    paddingVertical: Layout.lines(0.5),
+    paddingHorizontal: Layout.lines(0.75)
+  },
+  camera: {
+    width: 24,
+    height: 24,
+    alignSelf: 'flex-end'
   },
   text: {
     flex: 1,
