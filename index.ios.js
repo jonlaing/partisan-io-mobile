@@ -29,6 +29,7 @@ class Partisan extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
     AsyncStorage.getItem('AUTH_TOKEN')
       .then((tok) => this.setState({token: tok, tokenFetched: true}))
       .catch((err) => console.log('Error getting or initializing AUTH_TOKEN: ' + err));
@@ -59,6 +60,7 @@ class Partisan extends Component {
         style={{flex: 1}}
         showNavigationBar={false}
         eventEmitter={this.eventEmitter}
+        environment={this.props.isSimulator ? 0 : 1}
         ref="nav"
       />
     );

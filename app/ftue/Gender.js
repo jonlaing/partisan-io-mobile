@@ -12,7 +12,7 @@ import React, {
 
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-import Net from '../Network';
+import api from '../API';
 import Router from '../Router';
 import Layout from '../Layout';
 import Colors from '../Colors';
@@ -25,7 +25,7 @@ class ProfileFTUEGender extends Component {
   }
 
   _handleSubmit() {
-    Net.profile(this.props.token).updateGender(this.state.summary)
+    api(this.props.navigator.environment).profile(this.props.token).updateGender(this.state.summary)
     .then((resp) => {
       if(resp.status !== 500) {
         this.props.navigator.push(Router.profileFTUESummary(this.props.token));

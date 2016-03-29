@@ -11,7 +11,7 @@ import React, {
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import Net from './Network';
+import api from './API';
 import Colors from './Colors';
 import Layout from './Layout';
 
@@ -26,7 +26,7 @@ class PostComposer extends Component {
   }
 
   _handlePost() {
-    Net.posts(this.props.token).create(this.state.value)
+    api(this.props.navigator.environment).posts(this.props.token).create(this.state.value)
     .then(res => JSON.parse(res._bodyInit)) // not sure, but i think if there was a problem, it would fail here
     .then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
     .then(() => this.props.navigator.pop());

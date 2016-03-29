@@ -13,7 +13,7 @@ import React, {
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import Net from './Network';
+import api from './API';
 import Router from './Router';
 import Colors from './Colors';
 
@@ -21,7 +21,7 @@ const window = Dimensions.get('window');
 
 class SideMenu extends Component {
   _handleLogout() {
-    Net.auth().logout();
+    api(this.props.navigator.environment).auth().logout();
 
     AsyncStorage.removeItem('AUTH_TOKEN')
       .then(() => this.props.navigator.replace(Router.welcomeScreen()))

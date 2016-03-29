@@ -40,10 +40,15 @@
    */
 
 //   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  
+  BOOL isSimulator = NO;
+#if TARGET_IPHONE_SIMULATOR
+  isSimulator = YES;
+#endif
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"Partisan"
-                                               initialProperties:nil
+                                               initialProperties:@{@"isSimulator": @(isSimulator)}
                                                    launchOptions:launchOptions];
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

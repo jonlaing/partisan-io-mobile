@@ -10,7 +10,7 @@ import React, {
 
 import Icon from 'react-native-vector-icons/Foundation';
 
-import Net from '../Network';
+import api from '../API';
 import Layout from '../Layout';
 import Colors from '../Colors';
 
@@ -38,7 +38,7 @@ class LookingForFTUE extends Component {
       callback = this.props.onSubmit;
     }
 
-    Net.profile(this.props.token).updateLookingFor(this.state.lookingFor)
+    api(this.props.navigator.environment).profile(this.props.token).updateLookingFor(this.state.lookingFor)
     .then(callback)
     .catch((err) => console.log(err));
   }

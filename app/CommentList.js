@@ -7,7 +7,7 @@ import React, {
   Text
 } from 'react-native';
 
-import Net from './Network';
+import api from './API';
 import Colors from './Colors';
 import Layout from './Layout';
 
@@ -21,7 +21,7 @@ class CommentList extends Component {
   }
 
   componentDidMount() {
-    Net.comments(this.props.token).list(this.props.postID)
+    api(this.props.navigator.environment).comments(this.props.token).list(this.props.postID)
     .then((res) => JSON.parse(res._bodyInit))
     .then((data) => this.setState({comments: data.comments}))
     .catch(err => console.log(err));

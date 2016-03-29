@@ -10,7 +10,7 @@ import React, {
   Text
 } from 'react-native';
 
-import Net from '../Network';
+import api from '../API';
 import Router from '../Router';
 import Layout from '../Layout';
 import Colors from '../Colors';
@@ -23,7 +23,7 @@ class ProfileFTUEBirthdate extends Component {
   }
 
   _handleSubmit() {
-    Net.profile(this.props.token).updateBirthdate(this.state.birthdate)
+    api(this.props.navigator.environment).profile(this.props.token).updateBirthdate(this.state.birthdate)
     .then((resp) => {
       if(resp.status !== 500) {
         this.props.navigator.push(Router.profileFTUEGender(this.props.token));

@@ -14,7 +14,7 @@ import React, {
 
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-import Net from './Network';
+import api from './API';
 import Router from './Router';
 import Layout from './Layout';
 import Colors from './Colors';
@@ -30,7 +30,7 @@ class LoginScreen extends Component {
   }
 
   _handleLogin() {
-    Net.auth().login(this.state.email, this.state.pw)
+    api(this.props.navigator.environment).auth().login(this.state.email, this.state.pw)
     .then((resp) => {
       if(resp.status === _SUCCESS) {
         let data = JSON.parse(resp._bodyInit);

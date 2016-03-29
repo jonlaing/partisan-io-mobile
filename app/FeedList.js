@@ -13,7 +13,7 @@ import React, {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SideMenuNav from 'react-native-side-menu';
 
-import Net from './Network';
+import api from './API';
 import Router from './Router';
 import Colors from './Colors';
 import Layout from './Layout';
@@ -61,7 +61,7 @@ class FeedList extends Component {
 
     var page = refresh ? 1 : this.state.page + 1;
 
-    Net.feed(this.props.token).get(page)
+    api(this.props.navigator.environment).feed(this.props.token).get(page)
     .then(res => JSON.parse(res._bodyInit))
     .then(data => data.feed_items)
     .then(items => refresh ? items : this.state.items.concat(items) ) // either refresh the items or append them

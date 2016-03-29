@@ -8,7 +8,7 @@ import React, {
   Text
 } from 'react-native';
 
-import Net from './Network';
+import api from './API';
 import Colors from './Colors';
 import Layout from './Layout';
 
@@ -23,7 +23,7 @@ class PostScreen extends Component {
   }
 
   componentDidMount() {
-    Net.posts(this.props.token).get(this.props.postID)
+    api(this.props.navigator.environment).posts(this.props.token).get(this.props.postID)
     .then((res) => JSON.parse(res._bodyInit))
     .then((data) => this.setState({ post: data.post, user: data.user }));
   }
