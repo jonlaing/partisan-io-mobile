@@ -48,6 +48,24 @@ let Router = {
     };
   },
 
+  profileFTUEWelcome(token) {
+    return {
+      renderScene(navigator) {
+        let ProfileFTUEWelcome = require('./ProfileFTUEWelcome');
+        return <ProfileFTUEWelcome token={token} navigator={navigator} />;
+      }
+    };
+  },
+
+  profileFTUEBirthdate(token) {
+    return {
+      renderScene(navigator) {
+        let ProfileFTUEBirthdate = require('./ProfileFTUEBirthdate');
+        return <ProfileFTUEBirthdate token={token} navigator={navigator} />;
+      }
+    };
+  },
+
   feed(token) {
     return {
       renderScene(navigator) {

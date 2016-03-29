@@ -107,6 +107,21 @@ let Net = {
         });
       }
     });
+  },
+
+  // PROFILE
+  profile(token) {
+    return ({
+      updateBirthdate(date) {
+        return fetch('http://localhost:4000/api/v1/users', {
+          headers: _headers(token),
+          method: 'PATCH',
+          body: JSON.stringify({
+            birthdate: date
+          })
+        });
+      }
+    });
   }
 };
 
