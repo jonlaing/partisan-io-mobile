@@ -1,6 +1,7 @@
 'use strict';
 
 import React, {
+  AsyncStorage,
   Dimensions,
   Component,
   StyleSheet,
@@ -12,15 +13,19 @@ import React, {
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import Net from './Network';
+import Router from './Router';
 import Colors from './Colors';
 
 const window = Dimensions.get('window');
 
 class SideMenu extends Component {
   _handleLogout() {
-    if(this.props.onLogout !== undefined) {
-      this.props.onLogout();
-    }
+    Net.auth().logout();
+
+    AsyncStorage.removeItem('AUTH_TOKEN')
+      .then(() => this.props.navigator.replace(Router.welcomeScreen()))
+      .catch(err => console.log(err));
   }
 
   render() {

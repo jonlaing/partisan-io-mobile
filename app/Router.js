@@ -3,6 +3,42 @@
 import React from 'react-native';
 
 let Router = {
+  welcomeScreen() {
+    return {
+      renderScene(navigator) {
+        let Welcome = require('./Welcome');
+        return <Welcome navigator={navigator} />;
+      }
+    };
+  },
+
+  signUpScreen(props) {
+    return {
+      renderScene(navigator) {
+        let SignUp = require('./SignUp');
+        return <SignUp navigator={navigator} {...props} />;
+      }
+    };
+  },
+
+  loginScreen(props) {
+    return {
+      renderScene(navigator) {
+        let LoginScreen = require('./LoginScreen');
+        return <LoginScreen navigator={navigator} {...props} />;
+      }
+    };
+  },
+
+  questionScreen(token) {
+    return {
+      renderScene(navigator) {
+        let QuestionScreen = require('./QuestionScreen');
+        return <QuestionScreen token={token} navigator={navigator} />;
+      }
+    };
+  },
+
   feed(token) {
     return {
       renderScene(navigator) {

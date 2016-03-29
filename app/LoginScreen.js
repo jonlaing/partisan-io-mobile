@@ -2,6 +2,7 @@
 'use strict';
 
 import React, {
+  AsyncStorage,
   StyleSheet,
   Component,
   TouchableHighlight,
@@ -10,6 +11,8 @@ import React, {
   Text
 } from 'react-native';
 
+import Net from './Network';
+import Router from './Router';
 import Colors from './Colors';
 
 const _SUCCESS = 200;
@@ -23,31 +26,11 @@ class LoginScreen extends Component {
   }
 
   _handleLogin() {
-    let email = this.state.email;
-    let pw = this.state.pw;
-
-    let onSuccess = this.props.onSuccess;
-
-    fetch('http://localhost:4000/api/v1/login', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: email,
-        password: pw
-      })
-    })
+    Net.auth().login(this.state.email, this.state.pw)
     .then((resp) => {
       if(resp.status === _SUCCESS) {
         let data = JSON.parse(resp._bodyInit);
-
-        if(onSuccess !== undefined) {
-          onSuccess(data.token, data.user);
-        } else {
-          console.log("No onSuccess defined for LoginScreen");
-        }
+        this._handleSuccess(data.token);
       } else {
         this._handleFail(resp);
       }
@@ -55,20 +38,20 @@ class LoginScreen extends Component {
     .catch(err => console.log("login error: " + err));
   }
 
-  _handleFail(resp) {
-    let onFail = this.props.onFail;
+  _handleSuccess(token) {
+    AsyncStorage.setItem('AUTH_TOKEN', token)
+      .then(() => this.props.navigator.replace(Router.feed(token)))
+      .catch((err) => console.log('Error setting AUTH_TOKEN: ' + err));
+  }
 
+  _handleFail(resp) {
     if(resp.status === _UNAUTHORIZED) {
       this.setState({error: "Incorrect username or password"});
     } else {
       this.setState({error: "An unknown error has occurred"});
     }
 
-    if(onFail !== undefined) {
-      onFail(resp);
-    } else {
-      console.log("No onFail defined for LoginScreen");
-    }
+    console.log(resp);
   }
 
   render() {
@@ -100,7 +83,9 @@ class LoginScreen extends Component {
           <TouchableHighlight style={styles.submit} onPress={this._handleLogin.bind(this)}>
             <Text style={styles.submitText}>Login</Text>
           </TouchableHighlight>
-          <Text style={styles.signUpButton}>Sign up</Text>
+          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.signUpScreen())}>
+            <Text style={styles.signUpButton}>Sign up</Text>
+          </TouchableHighlight>
         </View>
       </View>
     );

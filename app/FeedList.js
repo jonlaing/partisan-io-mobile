@@ -11,12 +11,14 @@ import React, {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import SideMenuNav from 'react-native-side-menu';
 
 import Net from './Network';
 import Router from './Router';
 import Colors from './Colors';
 import Layout from './Layout';
 
+import SideMenu from './SideMenu';
 import FeedRow from './FeedRow';
 
 class FeedList extends Component {
@@ -76,14 +78,7 @@ class FeedList extends Component {
   }
 
   _handleHamburger() {
-    let navigator = this.props.navigator;
-
-    if(navigator.props.onHamburger !== undefined) {
-      navigator.props.onHamburger();
-      return;
-    }
-
-    console.log("No hamburger behavior defined for navigator");
+    this.refs.sidemenu.openMenu(true);
   }
 
   _handlePost() {
@@ -104,36 +99,38 @@ class FeedList extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.navBar}>
-          <TouchableHighlight style={styles.navBarLeft} onPress={this._handleHamburger.bind(this)}>
-            <Icon name="bars" color="rgb(255,255,255)" size={24} />
-          </TouchableHighlight>
-          <View style={styles.navBarTitle}>
-            <Text style={styles.navBarTitleText}>Feed</Text>
+      <SideMenuNav ref="sidemenu" menu={<SideMenu navigator={this.props.navigator} />}>
+        <View style={styles.container}>
+          <View style={styles.navBar}>
+            <TouchableHighlight style={styles.navBarLeft} onPress={this._handleHamburger.bind(this)}>
+              <Icon name="bars" color="rgb(255,255,255)" size={24} />
+            </TouchableHighlight>
+            <View style={styles.navBarTitle}>
+              <Text style={styles.navBarTitleText}>Feed</Text>
+            </View>
+            <TouchableHighlight style={styles.navBarRight} onPress={this._handlePost.bind(this)}>
+              <Icon name="pencil-square-o" color="rgb(255,255,255)" size={24} />
+            </TouchableHighlight>
           </View>
-          <TouchableHighlight style={styles.navBarRight} onPress={this._handlePost.bind(this)}>
-            <Icon name="pencil-square-o" color="rgb(255,255,255)" size={24} />
-          </TouchableHighlight>
+          <ListView
+            scrollToTop={true}
+            dataSource={this.state.dataSource}
+            renderRow={this._renderRow.bind(this)}
+            onEndReached={() => this.getFeed()}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.isRefreshing}
+                onRefresh={() => {
+                  this.setState({isRefreshing: true});
+                  this.getFeed(true);
+                }}
+                tintColor="rgb(191,191,191)"
+                title="Loading..."
+              />
+            }
+          />
         </View>
-        <ListView
-          scrollToTop={true}
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow.bind(this)}
-          onEndReached={() => this.getFeed()}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.isRefreshing}
-              onRefresh={() => {
-                this.setState({isRefreshing: true});
-                this.getFeed(true);
-              }}
-              tintColor="rgb(191,191,191)"
-              title="Loading..."
-            />
-          }
-        />
-      </View>
+      </SideMenuNav>
     );
   }
 }
