@@ -33,7 +33,7 @@ let Router = {
   questionWelcome(token) {
     return {
       renderScene(navigator) {
-        let QuestionWelcome = require('./QuestionWelcome');
+        let QuestionWelcome = require('./ftue/QuestionWelcome');
         return <QuestionWelcome token={token} navigator={navigator} />;
       }
     };
@@ -42,7 +42,7 @@ let Router = {
   questionScreen(token) {
     return {
       renderScene(navigator) {
-        let QuestionScreen = require('./QuestionScreen');
+        let QuestionScreen = require('./ftue/QuestionScreen');
         return <QuestionScreen token={token} navigator={navigator} />;
       }
     };
@@ -51,7 +51,7 @@ let Router = {
   profileFTUEWelcome(token) {
     return {
       renderScene(navigator) {
-        let ProfileFTUEWelcome = require('./ProfileFTUEWelcome');
+        let ProfileFTUEWelcome = require('./ftue/ProfileWelcome');
         return <ProfileFTUEWelcome token={token} navigator={navigator} />;
       }
     };
@@ -60,8 +60,44 @@ let Router = {
   profileFTUEBirthdate(token) {
     return {
       renderScene(navigator) {
-        let ProfileFTUEBirthdate = require('./ProfileFTUEBirthdate');
+        let ProfileFTUEBirthdate = require('./ftue/Birthdate');
         return <ProfileFTUEBirthdate token={token} navigator={navigator} />;
+      }
+    };
+  },
+
+  profileFTUEGender(token) {
+    return {
+      renderScene(navigator) {
+        let ProfileFTUEGender = require('./ftue/Gender');
+        return <ProfileFTUEGender token={token} navigator={navigator} />;
+      }
+    };
+  },
+
+  profileFTUESummary(token) {
+    return {
+      renderScene(navigator) {
+        let ProfileFTUESummary = require('./ftue/Summary');
+        return <ProfileFTUESummary token={token} navigator={navigator} />;
+      }
+    };
+  },
+
+  profileFTUELookingFor(token) {
+    return {
+      renderScene(navigator) {
+        let ProfileFTUELookingFor = require('./ftue/LookingFor');
+        return <ProfileFTUELookingFor token={token} navigator={navigator} onSubmit={() => navigator.push(Router.profileFTUEAvatar(token))}/>;
+      }
+    };
+  },
+
+  profileFTUEAvatar(token) {
+    return {
+      renderScene(navigator) {
+        let ProfileFTUEAvatar = require('./ftue/Avatar');
+        return <ProfileFTUEAvatar token={token} navigator={navigator} />;
       }
     };
   },

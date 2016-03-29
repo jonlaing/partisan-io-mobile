@@ -12,8 +12,8 @@ import Dimensions from 'Dimensions';
 
 const windowWidth = Dimensions.get('window').width;
 
-import Layout from './Layout';
-import Colors from './Colors';
+import Layout from '../Layout';
+import Colors from '../Colors';
 
 class Question extends Component {
   constructor(props) {

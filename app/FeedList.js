@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-   right: -Layout.lines(1.5), // to offset the padding of the container
+    right: -Layout.lines(1.5), // to offset the padding of the container
     backgroundColor: Colors.base,
     flex: 1,
     flexDirection: 'row',

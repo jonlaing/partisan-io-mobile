@@ -8,9 +8,9 @@ import React, {
   Text
 } from 'react-native';
 
-import Router from './Router';
-import Layout from './Layout';
-import Colors from './Colors';
+import Router from '../Router';
+import Layout from '../Layout';
+import Colors from '../Colors';
 
 class ProfileFTUEWelcome extends Component {
   render() {

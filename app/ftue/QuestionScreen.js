@@ -7,9 +7,9 @@ import React, {
   Text
 } from 'react-native';
 
-import Net from './Network';
-import Colors from './Colors';
-import Layout from './Layout';
+import Net from '../Network';
+import Colors from '../Colors';
+import Layout from '../Layout';
 
 import Question from './Question';
 

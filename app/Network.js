@@ -120,6 +120,24 @@ let Net = {
             birthdate: date
           })
         });
+      },
+      updateGender(gender) {
+        return fetch('http://localhost:4000/api/v1/users', {
+          headers: _headers(token),
+          method: 'PATCH',
+          body: JSON.stringify({
+            gender: gender
+          })
+        });
+      },
+      updateLookingFor(val) {
+        return fetch('http://localhost:4000/api/v1/users', {
+          headers: _headers(token),
+          method: 'PATCH',
+          body: JSON.stringify({
+            looking_for: val
+          })
+        });
       }
     });
   }

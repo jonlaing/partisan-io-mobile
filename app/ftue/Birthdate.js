@@ -10,46 +10,68 @@ import React, {
   Text
 } from 'react-native';
 
-import Net from './Network';
-import Router from './Router';
-import Layout from './Layout';
-import Colors from './Colors';
+import Net from '../Network';
+import Router from '../Router';
+import Layout from '../Layout';
+import Colors from '../Colors';
 
 class ProfileFTUEBirthdate extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {birthdate: new Date()};
+    this.state = {birthdate: new Date(), error: false};
   }
 
   _handleSubmit() {
     Net.profile(this.props.token).updateBirthdate(this.state.birthdate)
-    .then((resp) => console.log(resp))
-    .catch((err) => console.log("error", err));
+    .then((resp) => {
+      if(resp.status !== 500) {
+        this.props.navigator.push(Router.profileFTUEGender(this.props.token));
+      } else {
+        this.setState({error: true});
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      this.setState({error: true});
+    });
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Enter your Birthdate</Text>
+        <Text style={styles.paragraph}>This will help us match you with other users.</Text>
         <View style={styles.inputContainer}>
           <DatePickerIOS
+            style={{flex: 1}}
             onDateChange={(date) => this.setState({birthdate: date})}
             date={this.state.birthdate}
             maximumDate={new Date()}
             mode="date"
           />
         </View>
+        {this._showError()}
         <View style={styles.actionContainer}>
           <TouchableHighlight style={styles.submitButton} underlayColor={Colors.actionHighlight2} onPress={this._handleSubmit.bind(this)}>
             <Text style={styles.submitText}>Submit</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.signUpButton} underlayColor="white">
-            <Text style={styles.signUpText}>Skip</Text>
+          <TouchableHighlight style={styles.skipButton} underlayColor="white" onPress={() => this.props.navigator.push(Router.profileFTUEGender(this.props.token))}>
+            <Text style={styles.skipText}>Skip</Text>
           </TouchableHighlight>
         </View>
       </View>
     );
+  }
+
+  _showError() {
+    if(this.state.error === true) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>There was an error submitting. Check your connection and try again.</Text>
+        </View>
+      );
+    }
   }
 }
 
@@ -67,9 +89,15 @@ var styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "200"
   },
+  paragraph: {
+    marginBottom: Layout.lines(1),
+    textAlign: 'center'
+  },
   inputContainer: {
-    flex: 2,
-    justifyContent: 'space-around'
+    flex: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: -Layout.lines(2)
   },
   input: {
     height: Layout.lines(3),
@@ -99,14 +127,14 @@ var styles = StyleSheet.create({
     color: Colors.action,
     fontSize: 18
   },
-  signUpButton: {
+  skipButton: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
     maxHeight: Layout.lines(3),
     padding: Layout.lines(0.25)
   },
-  signUpText: {
+  skipText: {
     fontSize: 14,
     textAlign: 'right',
     color: Colors.darkGrey
