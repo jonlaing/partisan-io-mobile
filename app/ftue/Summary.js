@@ -25,7 +25,7 @@ class ProfileFTUESummary extends Component {
   }
 
   _handleSubmit() {
-    api(this.props.navigator.environment).profile(this.props.token).updateSummary(this.state.summary)
+    api(this.props.navigator.props.environment).profile(this.props.token).updateSummary(this.state.summary)
     .then((resp) => {
       if(resp.status !== 500) {
         this.props.navigator.push(Router.profileFTUESummary(this.props.token));

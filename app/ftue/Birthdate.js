@@ -23,7 +23,7 @@ class ProfileFTUEBirthdate extends Component {
   }
 
   _handleSubmit() {
-    api(this.props.navigator.environment).profile(this.props.token).updateBirthdate(this.state.birthdate)
+    api(this.props.navigator.props.environment).profile(this.props.token).updateBirthdate(this.state.birthdate)
     .then((resp) => {
       if(resp.status !== 500) {
         this.props.navigator.push(Router.profileFTUEGender(this.props.token));

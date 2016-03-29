@@ -26,7 +26,7 @@ class PostComposer extends Component {
   }
 
   _handlePost() {
-    api(this.props.navigator.environment).posts(this.props.token).create(this.state.value)
+    api(this.props.navigator.props.environment).posts(this.props.token).create(this.state.value)
     .then(res => JSON.parse(res._bodyInit)) // not sure, but i think if there was a problem, it would fail here
     .then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
     .then(() => this.props.navigator.pop());

@@ -23,7 +23,7 @@ class PostScreen extends Component {
   }
 
   componentDidMount() {
-    api(this.props.navigator.environment).posts(this.props.token).get(this.props.postID)
+    api(this.props.navigator.props.environment).posts(this.props.token).get(this.props.postID)
     .then((res) => JSON.parse(res._bodyInit))
     .then((data) => this.setState({ post: data.post, user: data.user }));
   }

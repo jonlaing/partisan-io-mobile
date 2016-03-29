@@ -21,14 +21,14 @@ class QuestionScreen extends Component {
   }
 
   componentDidMount() {
-    api(this.props.navigator.environment).questions(this.props.token).get()
+    api(this.props.navigator.props.environment).questions(this.props.token).get()
     .then((res) => JSON.parse(res._bodyInit))
     .then((data) => this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions) }))
     .catch(err => console.log(err));
   }
 
   _getQuestions(index = 0) {
-    api(this.props.navigator.environment).questions(this.props.token).get()
+    api(this.props.navigator.props.environment).questions(this.props.token).get()
     .then((res) => JSON.parse(res._bodyInit))
     .then((data) => this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions), index: index }))
     .catch(err => console.log(err));
@@ -43,7 +43,7 @@ class QuestionScreen extends Component {
         return;
       }
 
-      api(this.props.navigator.environment).questions(this.props.token).answer(q, agree)
+      api(this.props.navigator.props.environment).questions(this.props.token).answer(q, agree)
       .then(() => this.setState({currQuestions: [this.state.questions[index]], index: index}))
       .catch(err => console.log(err));
     };

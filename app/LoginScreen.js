@@ -30,7 +30,7 @@ class LoginScreen extends Component {
   }
 
   _handleLogin() {
-    api(this.props.navigator.environment).auth().login(this.state.email, this.state.pw)
+    api(this.props.navigator.props.environment).auth().login(this.state.email, this.state.pw)
     .then((resp) => {
       if(resp.status === _SUCCESS) {
         let data = JSON.parse(resp._bodyInit);

@@ -21,7 +21,7 @@ class CommentList extends Component {
   }
 
   componentDidMount() {
-    api(this.props.navigator.environment).comments(this.props.token).list(this.props.postID)
+    api(this.props.navigator.props.environment).comments(this.props.token).list(this.props.postID)
     .then((res) => JSON.parse(res._bodyInit))
     .then((data) => this.setState({comments: data.comments}))
     .catch(err => console.log(err));

@@ -21,7 +21,7 @@ const window = Dimensions.get('window');
 
 class SideMenu extends Component {
   _handleLogout() {
-    api(this.props.navigator.environment).auth().logout();
+    api(this.props.navigator.props.environment).auth().logout();
 
     AsyncStorage.removeItem('AUTH_TOKEN')
       .then(() => this.props.navigator.replace(Router.welcomeScreen()))

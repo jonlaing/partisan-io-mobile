@@ -38,7 +38,7 @@ class LookingForFTUE extends Component {
       callback = this.props.onSubmit;
     }
 
-    api(this.props.navigator.environment).profile(this.props.token).updateLookingFor(this.state.lookingFor)
+    api(this.props.navigator.props.environment).profile(this.props.token).updateLookingFor(this.state.lookingFor)
     .then(callback)
     .catch((err) => console.log(err));
   }

@@ -38,7 +38,7 @@ class SignUp extends Component {
       passwordConfirm: this.state.passwordConfirm
     };
 
-    api(this.props.navigator.environment).auth().signUp(user)
+    api(this.props.navigator.props.environment).auth().signUp(user)
     .then((resp) => {
       if(resp.status === _SUCCESS) {
         let data = JSON.parse(resp._bodyInit);

@@ -61,7 +61,7 @@ class FeedList extends Component {
 
     var page = refresh ? 1 : this.state.page + 1;
 
-    api(this.props.navigator.environment).feed(this.props.token).get(page)
+    api(this.props.navigator.props.environment).feed(this.props.token).get(page)
     .then(res => JSON.parse(res._bodyInit))
     .then(data => data.feed_items)
     .then(items => refresh ? items : this.state.items.concat(items) ) // either refresh the items or append them
