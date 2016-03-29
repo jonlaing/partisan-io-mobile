@@ -30,6 +30,15 @@ let Router = {
     };
   },
 
+  questionWelcome(token) {
+    return {
+      renderScene(navigator) {
+        let QuestionWelcome = require('./QuestionWelcome');
+        return <QuestionWelcome token={token} navigator={navigator} />;
+      }
+    };
+  },
+
   questionScreen(token) {
     return {
       renderScene(navigator) {

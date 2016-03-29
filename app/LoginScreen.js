@@ -3,6 +3,7 @@
 
 import React, {
   AsyncStorage,
+  Dimensions,
   StyleSheet,
   Component,
   TouchableHighlight,
@@ -11,8 +12,11 @@ import React, {
   Text
 } from 'react-native';
 
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+
 import Net from './Network';
 import Router from './Router';
+import Layout from './Layout';
 import Colors from './Colors';
 
 const _SUCCESS = 200;
@@ -68,6 +72,7 @@ class LoginScreen extends Component {
             onChangeText={(val) => this.setState({email: val})}
             placeholder="you@email.com"
             value={this.state.email}
+            autoFocus={true}
           />
           <TextInput
             style={styles.input}
@@ -80,13 +85,14 @@ class LoginScreen extends Component {
           />
         </View>
         <View style={styles.actionContainer}>
-          <TouchableHighlight style={styles.submit} onPress={this._handleLogin.bind(this)}>
+          <TouchableHighlight style={styles.submitButton} underlayColor={Colors.actionHighlight2} onPress={this._handleLogin.bind(this)}>
             <Text style={styles.submitText}>Login</Text>
           </TouchableHighlight>
-          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.signUpScreen())}>
-            <Text style={styles.signUpButton}>Sign up</Text>
+          <TouchableHighlight style={styles.signUpButton} underlayColor="white" onPress={() => this.props.navigator.replace(Router.signUpScreen())}>
+            <Text style={styles.signUpText}>Sign up</Text>
           </TouchableHighlight>
         </View>
+        <KeyboardSpacer />
       </View>
     );
   }
@@ -104,55 +110,67 @@ class LoginScreen extends Component {
 
 var styles = StyleSheet.create({
   container: {
-    paddingTop: 64,
-    paddingLeft: 48,
-    paddingRight: 48,
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center'
+    paddingTop: Layout.lines(4),
+    paddingLeft: Layout.lines(2),
+    paddingRight: Layout.lines(2)
   },
   header: {
     textAlign: 'center',
     fontSize: 24,
-    color: Colors.darkGrey,
+    color: Colors.base,
+    fontWeight: "200",
     flex: 1
   },
   inputContainer: {
-    flex: 1
+    flex: 2,
+    justifyContent: 'space-around'
   },
   input: {
-    height: 48,
+    height: Layout.lines(3),
     borderColor: Colors.grey,
     borderWidth: 1,
-    paddingTop: 6,
-    paddingRight: 18,
-    paddingBottom: 6,
-    paddingLeft: 18,
-    marginBottom: 24
+    paddingVertical: Layout.lines(0.5),
+    paddingHorizontal: Layout.lines(1)
+  },
+  actionContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: Layout.lines(1)
+  },
+  submitButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.action,
+    borderRadius: Layout.lines(0.5),
+    padding: Layout.lines(0.5),
+    maxHeight: Layout.lines(3)
   },
   submitText: {
     textAlign: 'center',
     color: Colors.action,
-    fontSize: 36,
-    fontWeight: "200",
-    marginBottom: 36
-  },
-  actionContainer: {
-    flex: 1
+    fontSize: 18
   },
   signUpButton: {
-    fontSize: 18,
-    textAlign: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    maxHeight: Layout.lines(3),
+    padding: Layout.lines(0.25)
+  },
+  signUpText: {
+    fontSize: 14,
+    textAlign: 'right',
     color: Colors.darkGrey
   },
   errorContainer: {
     backgroundColor: Colors.accent,
-    borderRadius: 8,
-    paddingTop: 9,
-    paddingRight: 9,
-    paddingBottom: 9,
-    paddingLeft: 9,
-    marginBottom: 24
+    borderRadius: Layout.lines(0.5),
+    padding: Layout.lines(0.5),
+    marginBottom: Layout.lines(1.5)
   },
   errorText: {
     textAlign: 'center',

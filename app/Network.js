@@ -32,6 +32,20 @@ let Net = {
 
       logout() {
         return fetch("http://localhost:4000/api/v1/logout", { headers: _headers() });
+      },
+
+      signUp(user) {
+        return fetch("http://localhost:4000/api/v1/users", {
+          method: 'POST',
+          headers: _headers(),
+          body: JSON.stringify({
+            email: user.email,
+            username: user.username,
+            postal_code: user.postalCode,
+            password: user.password,
+            password_confirm: user.passwordConfirm
+          })
+        });
       }
     });
   },

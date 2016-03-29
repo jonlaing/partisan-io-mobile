@@ -21,10 +21,10 @@ class Welcome extends Component {
         </View>
         <Text style={styles.headerText}>Welcome to Partisan.IO</Text>
         <View style={styles.buttonContainer}>
-          <TouchableHighlight style={styles.signUpButton} onPress={() => this.props.navigator.push(Router.signUpScreen())}>
+          <TouchableHighlight style={styles.signUpButton} underlayColor={Colors.actionHighlight} onPress={() => this.props.navigator.push(Router.signUpScreen())}>
             <Text style={styles.signUpButtonText}>Sign Up</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.loginButton} onPress={() => this.props.navigator.push(Router.loginScreen())}>
+          <TouchableHighlight style={styles.loginButton} underlayColor={Colors.actionHighlight2} onPress={() => this.props.navigator.push(Router.loginScreen())}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableHighlight>
         </View>
