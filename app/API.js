@@ -2,7 +2,7 @@
 'use strict';
 
 const _DEV = 0;
-// const _PROD = 1;
+const _PROD = 1;
 
 function _headers(token) {
   if(token !== undefined) {
@@ -22,9 +22,11 @@ function _headers(token) {
 function _root(env) {
   if(env === _DEV) {
     return 'http://localhost:4000/api/v1';
+  } else if (env === _PROD) {
+    return 'http://www.partisan.io/api/v1';
   }
 
-  return 'http://www.partisan.io/api/v1';
+  throw "UNKNOWN ENVIRONMENT: CANNOT PERFORM NETWORK REQUESTS";
 }
 
 
