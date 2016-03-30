@@ -8,6 +8,7 @@ import React, {
 } from 'react-native';
 
 import api from '../API';
+import Router from '../Router';
 import Colors from '../Colors';
 import Layout from '../Layout';
 
@@ -29,8 +30,15 @@ class QuestionScreen extends Component {
 
   _getQuestions(index = 0) {
     api(this.props.navigator.props.environment).questions(this.props.token).get()
-    .then((res) => JSON.parse(res._bodyInit))
-    .then((data) => this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions), index: index }))
+    .then((res) => {
+      if(res.status === 200) {
+        let data = JSON.parse(res._bodyInit);
+        this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions), index: index });
+      } else {
+        console.log("problem with questions");
+        this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
+      }
+    })
     .catch(err => console.log(err));
   }
 

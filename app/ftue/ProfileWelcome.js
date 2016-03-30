@@ -24,7 +24,7 @@ class ProfileFTUEWelcome extends Component {
             and it gives you a chance to tell other users more about yourself.
           </Text>
         </View>
-        <TouchableHighlight style={styles.getStarted} onPress={() => { this.props.navigator.push(Router.profileFTUEBasic(this.props.token)); }}>
+        <TouchableHighlight style={styles.getStarted} onPress={() => { this.props.navigator.push(Router.profileFTUEBirthdate(this.props.token)); }}>
           <Text style={styles.getStartedText}>Let's Do It</Text>
         </TouchableHighlight>
       </View>

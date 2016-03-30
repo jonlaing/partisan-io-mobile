@@ -38,7 +38,7 @@ class Partisan extends Component {
   _initialRoute(token) {
     // we got the token, but it came back null, so we need to render the login screen
     if(token === null) {
-      return Router.profileFTUELookingFor();
+      return Router.welcomeScreen();
     } else {
       return Router.feed(this.state.token);
     }

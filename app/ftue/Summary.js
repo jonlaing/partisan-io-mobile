@@ -28,7 +28,7 @@ class ProfileFTUESummary extends Component {
     api(this.props.navigator.props.environment).profile(this.props.token).updateSummary(this.state.summary)
     .then((resp) => {
       if(resp.status !== 500) {
-        this.props.navigator.push(Router.profileFTUESummary(this.props.token));
+        this.props.navigator.push(Router.profileFTUELookingFor(this.props.token));
       } else {
         this.setState({error: true});
       }

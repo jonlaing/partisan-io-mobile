@@ -145,6 +145,15 @@ let api = function(env) {
             })
           });
         },
+        updateSummary(summary) {
+          return fetch(_root(env) + '/users', {
+            headers: _headers(token),
+            method: 'PATCH',
+            body: JSON.stringify({
+              summary: summary
+            })
+          });
+        },
         updateLookingFor(val) {
           return fetch(_root(env) + '/users', {
             headers: _headers(token),
