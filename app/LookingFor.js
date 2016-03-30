@@ -11,9 +11,9 @@ import React, {
 import Icon from 'react-native-vector-icons/Foundation';
 import ExNavigator from '@exponent/react-native-navigator';
 
-import Api from '../Api';
-import Layout from '../Layout';
-import Colors from '../Colors';
+import Api from './Api';
+import Layout from './Layout';
+import Colors from './Colors';
 
 class LookingFor extends Component {
   constructor(props) {
