@@ -40,7 +40,7 @@ class Partisan extends Component {
     if(token === null) {
       return Router.welcomeScreen();
     } else {
-      return Router.feed(this.state.token);
+      return Router.profileFTUELookingFor(this.state.token);
     }
   }
 

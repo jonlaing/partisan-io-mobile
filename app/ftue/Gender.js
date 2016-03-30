@@ -25,7 +25,7 @@ class ProfileFTUEGender extends Component {
   }
 
   _handleSubmit() {
-    Api.profile(this.props.token).updateGender(this.state.summary)
+    Api.profile(this.props.token).updateGender(this.state.gender)
     .then((resp) => {
       if(resp.status !== 500) {
         this.props.navigator.push(Router.profileFTUESummary(this.props.token));

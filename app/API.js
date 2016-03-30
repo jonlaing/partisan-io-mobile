@@ -3,17 +3,17 @@
 
 import Config from './Config';
 
-function _headers(token) {
+function _headers(token, json = true) {
   if(token !== undefined) {
     return {
       'Accept': 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': json ? 'application/json' : 'application/x-www-form-urlencoded; charset=UTF-8',
       'X-Auth-Token': token
     };
   } else {
     return {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': json ? 'application/json' : 'application/x-www-form-urlencoded; charset=UTF-8'
     };
   }
 }
@@ -126,43 +126,72 @@ let Api = {
   profile(token) {
     return ({
       updateBirthdate(date) {
+        let body = new FormData();
+        let fDate = date.toJSON().split('T')[0]; // format it for the server
+        body.append('birthdate', fDate);
+
         return fetch(_root() + '/users', {
-          headers: _headers(token),
+          headers: _headers(token, false),
           method: 'PATCH',
-          body: JSON.stringify({
-            birthdate: date
-          })
+          body: body
         });
       },
+
       updateGender(gender) {
+        let body = new FormData();
+        body.append('gender', gender);
+
         return fetch(_root() + '/users', {
-          headers: _headers(token),
+          headers: _headers(token, false),
           method: 'PATCH',
-          body: JSON.stringify({
-            gender: gender
-          })
+          body: body
         });
       },
       updateSummary(summary) {
-        return fetch(_root() + '/users', {
-          headers: _headers(token),
+        let body = new FormData();
+        body.append('summary', summary);
+
+        return fetch(_root() + '/profile', {
+          headers: _headers(token, false),
           method: 'PATCH',
-          body: JSON.stringify({
-            summary: summary
-          })
+          body: body
         });
       },
       updateLookingFor(val) {
-        return fetch(_root() + '/users', {
-          headers: _headers(token),
+        let body = new FormData();
+        body.append('looking_for', val.toString());
+
+        return fetch(_root() + '/profile', {
+          headers: _headers(token, false),
           method: 'PATCH',
-          body: JSON.stringify({
-            looking_for: val
-          })
+          body: body
+        });
+      }
+    });
+  },
+
+  matches(token) {
+    return ({
+      get(page = 1, distance = 25, gender = "", minAge = -1, maxAge = -1) {
+        return fetch(_root() + '/matches?' + _urlParams({
+            page: page,
+            distance: distance,
+            gender: gender,
+            minAge: minAge,
+            maxAge: maxAge
+        }),
+        {
+          headers: _headers(token),
+          method: 'GET'
         });
       }
     });
   }
+
 };
+
+function _urlParams(params) {
+  return Object.keys(params).map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(params[k])).join('&');
+}
 
 module.exports = Api;

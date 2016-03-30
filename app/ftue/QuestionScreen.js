@@ -16,6 +16,8 @@ import Layout from '../Layout';
 
 import Question from './Question';
 
+const _MAX_QUESTIONS = 16;
+
 class QuestionScreen extends Component {
   constructor(props) {
     super(props);
@@ -51,6 +53,10 @@ class QuestionScreen extends Component {
       if(index % 4 === 0) {
         this._getQuestions(index);
         return;
+      }
+
+      if(index >= _MAX_QUESTIONS) {
+        this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
       }
 
       Api.questions(this.props.token).answer(q, agree)

@@ -34,7 +34,7 @@ class LookingFor extends Component {
 
   _handleSubmit() {
     Api.profile(this.props.token).updateLookingFor(this.state.lookingFor)
-    .then(this.props.onSubmit)
+    .then((resp) => this.props.onSubmit(resp))
     .catch((err) => console.log(err));
   }
 
