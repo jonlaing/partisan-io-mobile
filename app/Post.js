@@ -20,22 +20,20 @@ import Avatar from './Avatar';
 
 class Post extends Component {
   _postImage() {
-    if(this.props.imageAttachment !== undefined) {
-      let url = this.props.imageAttachment.image_url;
+    let url = this.props.imageAttachment.image_url;
 
-      if(url.length > 0) {
-        if(!url.includes('amazonaws.com')) {
-          url = "http://localhost:4000" + url;
-        }
-
-        return (
-          <View style={styles.postImageContainer}>
-            <Image
-              source={{uri: url}}
-              style={styles.postImage} />
-          </View>
-        );
+    if(url.length > 0) {
+      if(!url.includes('amazonaws.com')) {
+        url = "http://localhost:4000" + url;
       }
+
+      return (
+        <View style={styles.postImageContainer}>
+          <Image
+            source={{uri: url}}
+            style={styles.postImage} />
+        </View>
+      );
     }
 
     return (<View />);
@@ -83,6 +81,25 @@ class Post extends Component {
     );
   }
 }
+
+Post.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  user: React.PropTypes.shape({ username: React.PropTypes.string }).isRequired,
+  post: React.PropTypes.shape({
+    id: React.PropTypes.number,
+    created_at: React.PropTypes.oneOfType([ React.PropTypes.number, React.PropTypes.string ]),
+    body: React.PropTypes.string
+  }).isRequired,
+  likeCount: React.PropTypes.number,
+  commentCount: React.PropTypes.number,
+  imageAttachment: React.PropTypes.shape({ image_url: React.PropTypes.string })
+};
+
+Post.defaultProps = {
+  likeCount: 0,
+  commentCount: 0,
+  imageAttachment: { image_url: '' }
+};
 
 let styles = StyleSheet.create({
   container: {

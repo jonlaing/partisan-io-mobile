@@ -9,16 +9,17 @@ import React, {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Foundation';
+import ExNavigator from '@exponent/react-native-navigator';
 
-import api from '../API';
+import Api from '../Api';
 import Layout from '../Layout';
 import Colors from '../Colors';
 
-class LookingForFTUE extends Component {
+class LookingFor extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {lookingFor: 0};
+    this.state = {lookingFor: this.props.initialLookingFor};
   }
 
   _handleToggle(i) {
@@ -32,14 +33,8 @@ class LookingForFTUE extends Component {
   }
 
   _handleSubmit() {
-    let callback = () => {};
-
-    if(this.props.onSubmit !== undefined) {
-      callback = this.props.onSubmit;
-    }
-
-    api(this.props.navigator.props.environment).profile(this.props.token).updateLookingFor(this.state.lookingFor)
-    .then(callback)
+    Api.profile(this.props.token).updateLookingFor(this.state.lookingFor)
+    .then(this.props.onSubmit)
     .catch((err) => console.log(err));
   }
 
@@ -102,6 +97,18 @@ class LookingForFTUE extends Component {
     return (this.state.lookingFor & 1 << i) !== 0;
   }
 }
+
+LookingFor.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
+  initialLookingFor: React.PropTypes.number,
+  onSubmit: React.PropTypes.func
+};
+
+LookingFor.defaultProps = {
+  initialLookingFor: 0,
+  onSubmit: function() { LookingFor.props.navigator.pop(); }
+};
 
 let styles = StyleSheet.create({
   container: {
@@ -174,4 +181,4 @@ let styles = StyleSheet.create({
   }
 });
 
-module.exports = LookingForFTUE;
+module.exports = LookingFor;

@@ -7,7 +7,9 @@ import React, {
   Text
 } from 'react-native';
 
-import api from '../API';
+import ExNavigator from '@exponent/react-native-navigator';
+
+import Api from '../Api';
 import Router from '../Router';
 import Colors from '../Colors';
 import Layout from '../Layout';
@@ -22,14 +24,14 @@ class QuestionScreen extends Component {
   }
 
   componentDidMount() {
-    api(this.props.navigator.props.environment).questions(this.props.token).get()
+    Api.questions(this.props.token).get()
     .then((res) => JSON.parse(res._bodyInit))
     .then((data) => this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions) }))
     .catch(err => console.log(err));
   }
 
   _getQuestions(index = 0) {
-    api(this.props.navigator.props.environment).questions(this.props.token).get()
+    Api.questions(this.props.token).get()
     .then((res) => {
       if(res.status === 200) {
         let data = JSON.parse(res._bodyInit);
@@ -51,7 +53,7 @@ class QuestionScreen extends Component {
         return;
       }
 
-      api(this.props.navigator.props.environment).questions(this.props.token).answer(q, agree)
+      Api.questions(this.props.token).answer(q, agree)
       .then(() => this.setState({currQuestions: [this.state.questions[index]], index: index}))
       .catch(err => console.log(err));
     };
@@ -73,6 +75,11 @@ class QuestionScreen extends Component {
     );
   }
 }
+
+QuestionScreen.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+};
 
 let styles = StyleSheet.create({
   container: {

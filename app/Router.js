@@ -87,7 +87,7 @@ let Router = {
   profileFTUELookingFor(token) {
     return {
       renderScene(navigator) {
-        let ProfileFTUELookingFor = require('./ftue/LookingFor');
+        let ProfileFTUELookingFor = require('./LookingFor');
         return <ProfileFTUELookingFor token={token} navigator={navigator} onSubmit={() => navigator.push(Router.profileFTUEAvatar(token))}/>;
       }
     };
@@ -107,6 +107,15 @@ let Router = {
       renderScene(navigator) {
         let FeedList = require('./FeedList');
         return <FeedList token={token} navigator={navigator} />;
+      }
+    };
+  },
+
+  matches(token, sideMenu = true) {
+    return {
+      renderScene(navigator) {
+        let MatchList = require('./MatchList');
+        return <MatchList token={token} navigator={navigator} sideMenu={sideMenu} />;
       }
     };
   },

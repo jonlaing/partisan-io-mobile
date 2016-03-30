@@ -1,4 +1,3 @@
-/*global fetch */
 'use strict';
 
 import React, {
@@ -10,7 +9,9 @@ import React, {
   Text
 } from 'react-native';
 
-import api from '../API';
+import ExNavigator from '@exponent/react-native-navigator';
+
+import Api from '../Api';
 import Router from '../Router';
 import Layout from '../Layout';
 import Colors from '../Colors';
@@ -23,7 +24,7 @@ class ProfileFTUEBirthdate extends Component {
   }
 
   _handleSubmit() {
-    api(this.props.navigator.props.environment).profile(this.props.token).updateBirthdate(this.state.birthdate)
+    Api.profile(this.props.token).updateBirthdate(this.state.birthdate)
     .then((resp) => {
       if(resp.status !== 500) {
         this.props.navigator.push(Router.profileFTUEGender(this.props.token));
@@ -74,6 +75,11 @@ class ProfileFTUEBirthdate extends Component {
     }
   }
 }
+
+ProfileFTUEBirthdate.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+};
 
 var styles = StyleSheet.create({
   container: {

@@ -4,11 +4,13 @@ import React, {
   View
 } from 'react-native';
 
+import ExNavigator from '@exponent/react-native-navigator';
+
 import Router from './Router';
 import Layout from './Layout';
 
 import Post from './Post';
-import CommentList from './CommentList';
+// import CommentList from './CommentList';
 
 class FeedRow extends Component {
   render() {
@@ -30,5 +32,20 @@ class FeedRow extends Component {
     );
   }
 }
+
+FeedRow.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
+  item: React.PropTypes.shape({
+    record: React.PropTypes.shape({
+      post: React.PropTypes.object,
+      user: React.PropTypes.object,
+      image_attachment: React.PropTypes.object,
+      likeCount: React.PropTypes.number,
+      liked: React.PropTypes.bool,
+      commentCount: React.PropTypes.number
+    })
+  }).isRequired
+};
 
 module.exports = FeedRow;

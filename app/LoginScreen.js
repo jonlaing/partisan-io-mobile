@@ -3,7 +3,6 @@
 
 import React, {
   AsyncStorage,
-  Dimensions,
   StyleSheet,
   Component,
   TouchableHighlight,
@@ -14,7 +13,7 @@ import React, {
 
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-import api from './API';
+import Api from './Api';
 import Router from './Router';
 import Layout from './Layout';
 import Colors from './Colors';
@@ -30,7 +29,7 @@ class LoginScreen extends Component {
   }
 
   _handleLogin() {
-    api(this.props.navigator.props.environment).auth().login(this.state.email, this.state.pw)
+    Api.auth().login(this.state.email, this.state.pw)
     .then((resp) => {
       if(resp.status === _SUCCESS) {
         let data = JSON.parse(resp._bodyInit);

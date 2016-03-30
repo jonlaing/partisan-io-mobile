@@ -8,6 +8,8 @@ import React, {
   Text
 } from 'react-native';
 
+import ExNavigator from '@exponent/react-native-navigator';
+
 import Router from '../Router';
 import Layout from '../Layout';
 import Colors from '../Colors';
@@ -31,6 +33,11 @@ class QuestionWelcome extends Component {
     );
   }
 }
+
+QuestionWelcome.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+};
 
 let styles = StyleSheet.create({
   container: {

@@ -73,11 +73,6 @@ class Question extends Component {
     this.setState({threshold: true});
 
     let dest;
-    let cb = () => { return; };
-
-    if(this.props.onFlick !== undefined) {
-      cb = this.props.onFlick;
-    }
 
     if(moveX < windowWidth / 2) {
       dest = -windowWidth - 100;
@@ -90,7 +85,7 @@ class Question extends Component {
     Animated.timing(this.state.pan, {
       duration: 300,
       toValue: {x: dest, y: this._animatedValueY }
-    }).start(() => cb(false));
+    }).start(() => this.props.onFlick(dest > 0));
   }
 
   _getStyle() {
@@ -124,6 +119,16 @@ class Question extends Component {
     );
   }
 }
+
+Question.propTypes = {
+  index: React.PropTypes.number.isRequired,
+  prompt: React.PropTypes.string.isRequired,
+  onFlick: React.PropTypes.func
+};
+
+Question.defaultProps = {
+  onFlick: function(didAgree) { return didAgree; }
+};
 
 let styles = StyleSheet.create({
   container: {

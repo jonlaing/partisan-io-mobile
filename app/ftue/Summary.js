@@ -1,4 +1,3 @@
-/*global fetch */
 'use strict';
 
 import React, {
@@ -11,8 +10,9 @@ import React, {
 } from 'react-native';
 
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import ExNavigator from '@exponent/react-native-navigator';
 
-import api from '../API';
+import Api from '../Api';
 import Router from '../Router';
 import Layout from '../Layout';
 import Colors from '../Colors';
@@ -25,7 +25,7 @@ class ProfileFTUESummary extends Component {
   }
 
   _handleSubmit() {
-    api(this.props.navigator.props.environment).profile(this.props.token).updateSummary(this.state.summary)
+    Api.profile(this.props.token).updateSummary(this.state.summary)
     .then((resp) => {
       if(resp.status !== 500) {
         this.props.navigator.push(Router.profileFTUELookingFor(this.props.token));
@@ -76,6 +76,11 @@ class ProfileFTUESummary extends Component {
     }
   }
 }
+
+ProfileFTUESummary.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+};
 
 var styles = StyleSheet.create({
   container: {

@@ -8,7 +8,9 @@ import React, {
   Text
 } from 'react-native';
 
-import api from './API';
+import ExNavigator from '@exponent/react-native-navigator';
+
+import Api from './Api';
 import Colors from './Colors';
 import Layout from './Layout';
 
@@ -23,7 +25,7 @@ class PostScreen extends Component {
   }
 
   componentDidMount() {
-    api(this.props.navigator.props.environment).posts(this.props.token).get(this.props.postID)
+    Api(this.props.navigator.props.environment).posts(this.props.token).get(this.props.postID)
     .then((res) => JSON.parse(res._bodyInit))
     .then((data) => this.setState({ post: data.post, user: data.user }));
   }
@@ -55,6 +57,12 @@ class PostScreen extends Component {
     );
   }
 }
+
+PostScreen.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
+  postID: React.PropTypes.number.isRequired
+};
 
 let styles = StyleSheet.create({
   container: {

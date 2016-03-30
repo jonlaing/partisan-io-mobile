@@ -11,7 +11,7 @@ import React, {
 } from 'react-native';
 
 import Router from './Router';
-import api from './API';
+import Api from './Api';
 import Layout from './Layout';
 import Colors from './Colors';
 
@@ -38,7 +38,7 @@ class SignUp extends Component {
       passwordConfirm: this.state.passwordConfirm
     };
 
-    api(this.props.navigator.props.environment).auth().signUp(user)
+    Api.auth().signUp(user)
     .then((resp) => {
       if(resp.status === _SUCCESS) {
         let data = JSON.parse(resp._bodyInit);

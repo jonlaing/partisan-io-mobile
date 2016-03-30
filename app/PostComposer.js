@@ -10,8 +10,9 @@ import React, {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ExNavigator from '@exponent/react-native-navigator';
 
-import api from './API';
+import Api from './Api';
 import Colors from './Colors';
 import Layout from './Layout';
 
@@ -26,7 +27,7 @@ class PostComposer extends Component {
   }
 
   _handlePost() {
-    api(this.props.navigator.props.environment).posts(this.props.token).create(this.state.value)
+    Api.posts(this.props.token).create(this.state.value)
     .then(res => JSON.parse(res._bodyInit)) // not sure, but i think if there was a problem, it would fail here
     .then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
     .then(() => this.props.navigator.pop());
@@ -69,6 +70,11 @@ class PostComposer extends Component {
     );
   }
 }
+
+PostComposer.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+};
 
 const styles = StyleSheet.create({
   navBar: {

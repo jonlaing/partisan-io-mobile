@@ -12,8 +12,9 @@ import React, {
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SideMenuNav from 'react-native-side-menu';
+import ExNavigator from '@exponent/react-native-navigator';
 
-import api from './API';
+import Api from './Api';
 import Router from './Router';
 import Colors from './Colors';
 import Layout from './Layout';
@@ -55,13 +56,9 @@ class FeedList extends Component {
   }
 
   getFeed(refresh = false) {
-    if(this.props.token.length <= 0) {
-      return;
-    }
-
     var page = refresh ? 1 : this.state.page + 1;
 
-    api(this.props.navigator.props.environment).feed(this.props.token).get(page)
+    Api.feed(this.props.token).get(page)
     .then(res => JSON.parse(res._bodyInit))
     .then(data => data.feed_items)
     .then(items => refresh ? items : this.state.items.concat(items) ) // either refresh the items or append them
@@ -70,7 +67,11 @@ class FeedList extends Component {
       dataSource: this.state.dataSource.cloneWithRows(items),
       page: page,
       isRefreshing: false
-    }));
+    }))
+    .catch((err) => {
+      console.log(err);
+      this.setState({isRefreshing: false});
+    });
   }
 
   _handlePostSuccess() {
@@ -99,7 +100,7 @@ class FeedList extends Component {
 
   render() {
     return (
-      <SideMenuNav ref="sidemenu" menu={<SideMenu navigator={this.props.navigator} />}>
+      <SideMenuNav ref="sidemenu" menu={<SideMenu navigator={this.props.navigator} token={this.props.token} />}>
         <View style={styles.container}>
           <View style={styles.navBar}>
             <TouchableHighlight style={styles.navBarLeft} onPress={this._handleHamburger.bind(this)}>
@@ -112,6 +113,7 @@ class FeedList extends Component {
               <Icon name="pencil-square-o" color="rgb(255,255,255)" size={24} />
             </TouchableHighlight>
           </View>
+          {this._noFriends()}
           <ListView
             scrollToTop={true}
             dataSource={this.state.dataSource}
@@ -133,7 +135,36 @@ class FeedList extends Component {
       </SideMenuNav>
     );
   }
+
+  _noFriends() {
+    if(this.state.isRefreshing === false && this.state.items.length < 1) {
+      return (
+        <View style={styles.noFriendsContainer}>
+          <Text style={styles.noFriendsHeader}>You don't have any friends!</Text>
+          <View style={styles.noFriendsFrown}>
+            <Icon name="frown-o" color={Colors.grey} size={Layout.lines(4)} />
+          </View>
+          <Text style={styles.noFriendsParagraph}>
+            Well, not on Partisan, anyway. Find matches to fill up your feed
+            with posts from other people who have similar political opinions to yours.
+          </Text>
+          <View style={styles.noFriendsHR} />
+          <TouchableHighlight
+            style={styles.noFriendsButton}
+            underlayColor={Colors.actionHighlight2}
+            onPress={() => this.props.navigator.push(Router.matches(this.props.token, false))}>
+            <Text style={styles.noFriendsButtonText}>Find Matches!</Text>
+          </TouchableHighlight>
+        </View>
+      );
+    }
+  }
 }
+
+FeedList.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+};
 
 const styles = StyleSheet.create({
   navBar: {
@@ -165,11 +196,51 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'stretch',
     backgroundColor: Colors.lightGrey,
     paddingTop: Layout.lines(4),
     paddingHorizontal: Layout.lines(0.75)
+  },
+  noFriendsContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    marginVertical: Layout.lines(1),
+    padding: Layout.lines(1),
+    backgroundColor: 'white'
+  },
+  noFriendsHeader: {
+    flex: 2,
+    textAlign: 'center',
+    fontSize: Layout.lines(1.5),
+    color: Colors.darkGrey,
+    paddingBottom: Layout.lines(1)
+  },
+  noFriendsFrown: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: Layout.lines(1)
+  },
+  noFriendsParagraph: {
+    flex: 3,
+    paddingVertical: Layout.lines(1)
+  },
+  noFriendsButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Layout.lines(1),
+    marginVertical: Layout.lines(1),
+    borderWidth: 1,
+    borderColor: Colors.action,
+    borderRadius: Layout.lines(0.5)
+  },
+  noFriendsButtonText: {
+    textAlign: 'center',
+    fontSize: Layout.lines(1),
+    color: Colors.action
   }
 });
 

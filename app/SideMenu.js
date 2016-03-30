@@ -12,8 +12,9 @@ import React, {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ExNavigator from '@exponent/react-native-navigator';
 
-import api from './API';
+import Api from './Api';
 import Router from './Router';
 import Colors from './Colors';
 
@@ -21,7 +22,7 @@ const window = Dimensions.get('window');
 
 class SideMenu extends Component {
   _handleLogout() {
-    api(this.props.navigator.props.environment).auth().logout();
+    Api.auth().logout();
 
     AsyncStorage.removeItem('AUTH_TOKEN')
       .then(() => this.props.navigator.replace(Router.welcomeScreen()))
@@ -32,18 +33,22 @@ class SideMenu extends Component {
     return (
       <ScrollView scrollToTop={false} style={styles.menu} >
         <View style={styles.container}>
-          <View style={styles.item}>
-            <Icon name="th-list" size={14} color="white" style={styles.itemIcon}/>
-            <Text style={styles.itemText}>Feed</Text>
-          </View>
+          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.feed(this.props.token))}>
+            <View style={styles.item}>
+              <Icon name="th-list" size={14} color="white" style={styles.itemIcon}/>
+              <Text style={styles.itemText}>Feed</Text>
+            </View>
+          </TouchableHighlight>
           <View style={styles.item}>
             <Icon name="bell" size={14} color="white" style={styles.itemIcon}/>
             <Text style={styles.itemText}>Notification</Text>
           </View>
-          <View style={styles.item}>
-            <Icon name="globe" size={14} color="white" style={styles.itemIcon}/>
-            <Text style={styles.itemText}>Matches</Text>
-          </View>
+          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.matches(this.props.token))}>
+            <View style={styles.item}>
+              <Icon name="globe" size={14} color="white" style={styles.itemIcon}/>
+              <Text style={styles.itemText}>Matches</Text>
+            </View>
+          </TouchableHighlight>
           <View style={styles.item}>
             <Icon name="group" size={14} color="white" style={styles.itemIcon}/>
             <Text style={styles.itemText}>Friends</Text>
@@ -69,6 +74,11 @@ class SideMenu extends Component {
     );
   }
 }
+
+SideMenu.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+};
 
 const styles = StyleSheet.create({
   menu: {
