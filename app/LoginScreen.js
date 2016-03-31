@@ -33,7 +33,7 @@ class LoginScreen extends Component {
     .then((resp) => {
       if(resp.status === _SUCCESS) {
         let data = JSON.parse(resp._bodyInit);
-        this._handleSuccess(data.token);
+        this._handleSuccess(data.token, data.user.username, data.user.avatar_thumbnail_url);
       } else {
         this._handleFail(resp);
       }
@@ -41,8 +41,8 @@ class LoginScreen extends Component {
     .catch(err => console.log("login error: " + err));
   }
 
-  _handleSuccess(token) {
-    AsyncStorage.setItem('AUTH_TOKEN', token)
+  _handleSuccess(token, username, avatarUrl) {
+    AsyncStorage.multiSet([ ['AUTH_TOKEN', token], ['username', username], ['avatarUrl', avatarUrl] ])
       .then(() => this.props.navigator.replace(Router.feed(token)))
       .catch((err) => console.log('Error setting AUTH_TOKEN: ' + err));
   }

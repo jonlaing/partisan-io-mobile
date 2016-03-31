@@ -2,7 +2,6 @@
  * Sample React Native App
  * https://github.com/facebook/react-native
  */
-/*global fetch */
 'use strict';
 import React, {
   AppRegistry,
@@ -22,21 +21,45 @@ class Partisan extends Component {
     super(props);
 
     this.eventEmitter = new EventEmitter();
-    this.state = { token: null, tokenFetched: false, username: '' };
+    this.state = { token: null, tokenFetched: false, username: null, avatarUrl: null };
   }
 
   componentWillMount() {
   }
 
   componentDidMount() {
-    AsyncStorage.getItem('AUTH_TOKEN')
-      .then((tok) => this.setState({token: tok, tokenFetched: true}))
+    AsyncStorage.multiGet(['AUTH_TOKEN', 'username', 'avatarUrl'])
+      .then((arr) => {
+        let tok = '';
+        let username = '';
+        let avatarUrl = '';
+
+        arr.map((g) => {
+          if(g[0] === 'AUTH_TOKEN') {
+            tok = g[1];
+          }
+
+          if(g[0] === 'username') {
+            username = g[1];
+          }
+
+          if(g[0] === 'avatarUrl') {
+            avatarUrl = g[1];
+          }
+        });
+
+        if(tok === '' || username === '' || avatarUrl === '') {
+          throw "Couldn't get token or username";
+        }
+
+        this.setState({token: tok, username: username, avatarUrl: avatarUrl, tokenFetched: true});
+      })
       .catch((err) => console.log('Error getting or initializing AUTH_TOKEN: ' + err));
   }
 
-  _initialRoute(token) {
+  _initialRoute(token, username) {
     // we got the token, but it came back null, so we need to render the login screen
-    if(token === null) {
+    if(token === null || username === null) {
       return Router.welcomeScreen();
     } else {
       return Router.feed(this.state.token);
@@ -55,10 +78,12 @@ class Partisan extends Component {
 
     return (
       <ExNavigator
-        initialRoute={this._initialRoute(this.state.token)}
+        initialRoute={this._initialRoute(this.state.token, this.state.username)}
         style={{flex: 1}}
         showNavigationBar={false}
         eventEmitter={this.eventEmitter}
+        username={this.state.username}
+        avatarUrl={this.state.avatarUrl}
         ref="nav"
       />
     );

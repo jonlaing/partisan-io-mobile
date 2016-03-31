@@ -16,7 +16,10 @@ import ExNavigator from '@exponent/react-native-navigator';
 
 import Api from './Api';
 import Router from './Router';
+import Layout from './Layout';
 import Colors from './Colors';
+
+import Avatar from './Avatar';
 
 const window = Dimensions.get('window');
 
@@ -24,7 +27,7 @@ class SideMenu extends Component {
   _handleLogout() {
     Api.auth().logout();
 
-    AsyncStorage.removeItem('AUTH_TOKEN')
+    AsyncStorage.multiRemove(['AUTH_TOKEN', 'username'])
       .then(() => this.props.navigator.replace(Router.welcomeScreen()))
       .catch(err => console.log(err));
   }
@@ -60,8 +63,8 @@ class SideMenu extends Component {
         </View>
         <View style={styles.accountContainer}>
           <View style={styles.item}>
-            <Icon name="comments" size={14} color="white" style={styles.itemIcon}/>
-            <Text style={styles.itemText}>@{this.props.username}</Text>
+            <Avatar style={styles.avatar} user={{ avatar_thumbnail_url: this.props.navigator.props.avatarUrl }} />
+            <Text style={styles.itemText}>@{this.props.navigator.props.username}</Text>
           </View>
           <TouchableHighlight onPress={this._handleLogout.bind(this)}>
             <View style={styles.item}>
@@ -89,29 +92,35 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 64
+    paddingTop: Layout.lines(4)
   },
   accountContainer: {
     flex: 1,
-    paddingTop: 64,
-    paddingBottom: 64
+    paddingTop: Layout.lines(4),
+    paddingBottom: Layout.lines(4)
   },
   item: {
     flex: 1,
     flexDirection: 'row',
-    paddingTop: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingBottom: 10
+    paddingTop: Layout.lines(0.5),
+    paddingLeft: Layout.lines(1),
+    paddingRight: Layout.lines(1),
+    paddingBottom: Layout.lines(0.5)
   },
   itemIcon: {
-    marginTop: 5,
-    marginRight: 20
+    marginTop: Layout.lines(0.25),
+    marginRight: Layout.lines(1)
   },
   itemText: {
     color: 'white',
     fontSize: 18,
     flex: 1
+  },
+  avatar: {
+    marginTop: Layout.lines(0.25),
+    marginRight: Layout.lines(0.5),
+    width: Layout.lines(1.25),
+    height: Layout.lines(1.25)
   }
 });
 
