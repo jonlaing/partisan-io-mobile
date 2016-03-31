@@ -1,4 +1,4 @@
-/*global fetch, FormData */
+/*global fetch, FormData, XMLHttpRequest */
 'use strict';
 
 import Config from './Config';
@@ -165,6 +165,35 @@ let Api = {
           headers: _headers(token, false),
           method: 'PATCH',
           body: body
+        });
+      },
+
+      avatarUpload(uri) {
+        let body = new FormData();
+        const photo = {
+          uri: uri,
+          type: 'image/jpeg',
+          name: 'avatar.jpg'
+        };
+        var xhr = new XMLHttpRequest();
+
+        body.append('avatar', photo);
+
+        return new Promise(function(resolve, reject) {
+          xhr.onreadystatechange = () => {
+            if (xhr.readyState !== 4) {
+              return;
+            }
+
+            if (xhr.status === 200) {
+              resolve(xhr.response);
+            } else {
+              reject(xhr.statusText);
+            }
+          };
+
+          xhr.open('POST', _root() + '/users/avatar_upload');
+          xhr.send(body);
         });
       }
     });

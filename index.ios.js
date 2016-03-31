@@ -29,7 +29,6 @@ class Partisan extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
     AsyncStorage.getItem('AUTH_TOKEN')
       .then((tok) => this.setState({token: tok, tokenFetched: true}))
       .catch((err) => console.log('Error getting or initializing AUTH_TOKEN: ' + err));
@@ -40,7 +39,7 @@ class Partisan extends Component {
     if(token === null) {
       return Router.welcomeScreen();
     } else {
-      return Router.profileFTUELookingFor(this.state.token);
+      return Router.feed(this.state.token);
     }
   }
 

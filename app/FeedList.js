@@ -208,24 +208,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginVertical: Layout.lines(1),
     padding: Layout.lines(1),
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    minHeight: Layout.lines(24)
   },
   noFriendsHeader: {
-    flex: 2,
+    flex: 1,
     textAlign: 'center',
-    fontSize: Layout.lines(1.5),
+    fontSize: Layout.lines(1.25),
     color: Colors.darkGrey,
     paddingBottom: Layout.lines(1)
   },
   noFriendsFrown: {
-    flex: 2,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: Layout.lines(1)
   },
   noFriendsParagraph: {
     flex: 3,
-    paddingVertical: Layout.lines(1)
+    paddingVertical: Layout.lines(1),
+    lineHeight: Layout.lines(1.5)
   },
   noFriendsButton: {
     flex: 1,

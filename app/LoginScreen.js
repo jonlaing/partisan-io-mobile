@@ -123,14 +123,15 @@ var styles = StyleSheet.create({
   },
   inputContainer: {
     flex: 2,
-    justifyContent: 'space-around'
+    justifyContent: 'flex-start'
   },
   input: {
     height: Layout.lines(3),
     borderColor: Colors.grey,
     borderWidth: 1,
     paddingVertical: Layout.lines(0.5),
-    paddingHorizontal: Layout.lines(1)
+    paddingHorizontal: Layout.lines(1),
+    marginBottom: Layout.lines(1)
   },
   actionContainer: {
     flex: 1,
