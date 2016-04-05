@@ -22,13 +22,26 @@ class QuestionScreen extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { currQuestions: [], questions: [], index: 0 };
+    this.state = {
+      currQuestions: [],
+      questions: [
+        {
+          map: [],
+          prompt: "Swipe right to agree."
+        },
+        {
+          map: [],
+          prompt: "Swiple left to disagree."
+        }
+      ],
+      index: 0
+    };
   }
 
   componentDidMount() {
     Api.questions(this.props.token).get()
     .then((res) => JSON.parse(res._bodyInit))
-    .then((data) => this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions) }))
+    .then((data) => this.setState({currQuestions: [this.state.questions[0]], questions: this.state.questions.concat(data.questions) }))
     .catch(err => console.log(err));
   }
 
@@ -50,12 +63,12 @@ class QuestionScreen extends Component {
     return (agree) => {
       let index = this.state.index + 1;
 
-      if(index % 4 === 0) {
+      if((index + 2) % 4 === 0) {
         this._getQuestions(index);
         return;
       }
 
-      if(index >= _MAX_QUESTIONS) {
+      if(index >= _MAX_QUESTIONS + 2) {
         this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
       }
 
@@ -67,7 +80,15 @@ class QuestionScreen extends Component {
 
   render() {
     let questions = this.state.currQuestions.map((q) => {
-      return <Question style={{ flex: 1 }} key={q.prompt} prompt={q.prompt} index={this.state.index} onFlick={this._handleFlick(q).bind(this)} />;
+      return (
+        <Question
+          style={{ flex: 1 }}
+          key={q.prompt}
+          prompt={q.prompt}
+          index={this.state.index}
+          onFlick={this._handleFlick(q).bind(this)}
+          maxQuestions={_MAX_QUESTIONS + 2}/>
+      );
     });
 
     return (

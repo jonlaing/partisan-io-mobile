@@ -112,7 +112,7 @@ class Question extends Component {
     return (
       <View style={styles.container}>
         <Animated.View style={this._getStyle()} {...this._panResponder.panHandlers} >
-          <Text style={styles.cardNumber}>{this.props.index + 1} of 20</Text>
+          <Text style={styles.cardNumber}>{this.props.index + 1} of {this.props.maxQuestions}</Text>
           <Text style={styles.questionText}>{this.props.prompt}</Text>
         </Animated.View>
       </View>
@@ -123,10 +123,12 @@ class Question extends Component {
 Question.propTypes = {
   index: React.PropTypes.number.isRequired,
   prompt: React.PropTypes.string.isRequired,
+  maxQuestions: React.PropTypes.number,
   onFlick: React.PropTypes.func
 };
 
 Question.defaultProps = {
+  maxQuestions: 20,
   onFlick: function(didAgree) { return didAgree; }
 };
 
