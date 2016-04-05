@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   navBarLeft: {
-    width: 24
+    // width: 24
   },
   navBarTitle: {
     flex: 1
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   navBarRight: {
-    width: 24
+    // width: 24
   }
 });
 

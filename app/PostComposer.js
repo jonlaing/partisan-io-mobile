@@ -1,25 +1,34 @@
 'use strict';
 
 import React, {
+  ActionSheetIOS,
   Component,
   View,
   TextInput,
   StyleSheet,
   TouchableHighlight,
+  ActivityIndicatorIOS,
+  Image,
   Text
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import ExNavigator from '@exponent/react-native-navigator';
 
 import Api from './Api';
 import Colors from './Colors';
 import Layout from './Layout';
 
+import CameraRollView from './CameraRollView';
+import NavBar from './NavBar';
+
+var _sent = false;
+
 class PostComposer extends Component {
   constructor(props) {
     super(props);
-    this.state = { value: '' };
+    this.state = { value: '', image: "", showCameraRoll: false };
   }
 
   _changeText(text) {
@@ -27,30 +36,31 @@ class PostComposer extends Component {
   }
 
   _handlePost() {
-    Api.posts(this.props.token).create(this.state.value)
-    .then(res => JSON.parse(res._bodyInit)) // not sure, but i think if there was a problem, it would fail here
-    .then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
-    .then(() => this.props.navigator.pop());
+    if(_sent !== true && (this.state.value.length > 0 || this.state.image.length > 0)) {
+      _sent = true;
+      Api.posts(this.props.token).create(this.state.value, [this.state.image])
+      .then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
+      .then(() => this.props.navigator.pop())
+      .then(() => { _sent = false; })
+      .catch(err => console.log(err));
+    }
   }
 
   _handleCancel() {
     this.props.navigator.pop();
   }
 
+  _rightButton() {
+    if(_sent === true) {
+      return <ActivityIndicatorIOS animating={true} color='white' size="small" />;
+    }
+
+    return <Text style={styles.navBarRightText}>Post</Text>;
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.navBar}>
-          <TouchableHighlight style={styles.navBarLeft} onPress={this._handleCancel.bind(this)}>
-            <Text style={styles.navBarLeftText}>Cancel</Text>
-          </TouchableHighlight>
-          <View style={styles.navBarTitle}>
-            <Text style={styles.navBarTitleText}>Write a Post</Text>
-          </View>
-          <TouchableHighlight style={styles.navBarRight} onPress={this._handlePost.bind(this)}>
-            <Text style={styles.navBarRightText}>Post</Text>
-          </TouchableHighlight>
-        </View>
         <TextInput
           style={styles.text}
           multiline={true}
@@ -59,15 +69,64 @@ class PostComposer extends Component {
           autoFocus={true}
           keyboardType="twitter"
           returnKeyType="done"
+          editable={!_sent}
+          ref="text"
         />
         <View style={styles.postFooter}>
-          <TouchableHighlight style={styles.camera}>
-            <Icon name="camera-retro" color={Colors.darkGrey} size={24} />
-          </TouchableHighlight>
+          {this._imagePreview()}
         </View>
-        <View style={styles.textBuffer}></View>
+        <KeyboardSpacer />
+        <NavBar
+          title="Write a Post"
+          leftButton={<Text style={styles.navBarLeftText}>Cancel</Text>}
+          leftButtonPress={this._handleCancel.bind(this)}
+          rightButton={this._rightButton()}
+          rightButtonPress={this._handlePost.bind(this)}
+        />
+        <CameraRollView show={this.state.showCameraRoll} onFinish={(images) => { this.setState({ image: images[0], showCameraRoll: false }); this.refs.text.focus(); }}/>
       </View>
     );
+  }
+
+  _imagePreview() {
+    if(this.state.image.length > 0) {
+      return (
+        <TouchableHighlight onPress={this._showActionSheet.bind(this)}>
+          <Image style={styles.preview} source={{ uri: this.state.image }} />
+        </TouchableHighlight>
+      );
+    }
+
+    return (
+      <TouchableHighlight style={styles.camera} onPress={() => { this.refs.text.blur(); this.setState({ showCameraRoll: true }); }}>
+        <Icon name="camera-retro" color={Colors.darkGrey} size={24} />
+      </TouchableHighlight>
+    );
+  }
+
+  _showActionSheet() {
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: [
+        'Select a different photo',
+        'Remove photo',
+        'Cancel'
+      ],
+      cancelButtonIndex: 2,
+      destructiveButtonIndex: 1
+    },
+    (buttonIndex) => {
+      switch(buttonIndex) {
+        case 0:
+          this.refs.text.blur();
+          this.setState({ image: "", showCameraRoll: true });
+          break;
+        case 1:
+          this.setState({ image: "" });
+          break;
+        default:
+          break;
+      }
+    });
   }
 }
 
@@ -115,13 +174,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightGrey
   },
   postFooter: {
-    height: Layout.lines(3),
     paddingVertical: Layout.lines(0.5),
     paddingHorizontal: Layout.lines(0.75)
   },
   camera: {
     width: 24,
     height: 24,
+    alignSelf: 'flex-end'
+  },
+  preview: {
+    width: Layout.lines(3),
+    height: Layout.lines(3),
     alignSelf: 'flex-end'
   },
   text: {
@@ -132,9 +195,6 @@ const styles = StyleSheet.create({
     padding: Layout.lines(0.75),
     color: 'black',
     backgroundColor: 'white'
-  },
-  textBuffer: {
-    flex: 1
   }
 });
 

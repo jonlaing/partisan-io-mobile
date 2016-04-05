@@ -80,15 +80,48 @@ let Api = {
       },
 
       create(body, attachments = []) {
-        var request = new FormData();
+        // var request = new FormData();
 
-        attachments.forEach((val) => request.append('attachment', val));
+        // attachments.forEach((val) => request.append('attachment', val));
+        // request.append('body', body);
+
+        // return fetch(_root() + '/posts', {
+        //   method: 'POST',
+        //   headers: _headers(token),
+        //   body: request
+        // });
+
+        let request = new FormData();
+
+        attachments.forEach((uri) => {
+          if(uri.length > 0) {
+            request.append('attachment', {
+              uri: uri,
+              type: 'image/jpeg',
+              name: 'post.jpg'
+            });
+          }
+        });
+
         request.append('body', body);
 
-        return fetch(_root() + '/posts', {
-          method: 'POST',
-          headers: _headers(token),
-          body: request
+        var xhr = new XMLHttpRequest();
+
+        return new Promise(function(resolve, reject) {
+          xhr.onreadystatechange = () => {
+            if (xhr.readyState !== 4) {
+              return;
+            }
+
+            if (xhr.status === 201) {
+              resolve(xhr.response);
+            } else {
+              reject(xhr.statusText);
+            }
+          };
+
+          xhr.open('POST', _root() + '/posts/');
+          xhr.send(request);
         });
       }
     });
@@ -199,6 +232,7 @@ let Api = {
             }
           };
 
+          xhr.setRequestHeader( 'X-Auth-Token', token);
           xhr.open('POST', _root() + '/users/avatar_upload');
           xhr.send(body);
         });
