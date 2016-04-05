@@ -19,6 +19,8 @@ import Colors from './Colors';
 import LoadingScreen from './LoadingScreen';
 import NavBar from './NavBar';
 import Avatar from './Avatar';
+import LookingFor from './LookingForWidget';
+import FriendButton from './FriendButton';
 
 class Profile extends Component {
   constructor(props) {
@@ -28,6 +30,10 @@ class Profile extends Component {
   }
 
   componentDidMount() {
+    this._fetchProfile();
+  }
+
+  _fetchProfile() {
     Api.profile(this.props.token).get(this.props.userID)
     .then(resp => {
       if(resp.status === 200) {
@@ -58,13 +64,22 @@ class Profile extends Component {
               <Text style={styles.basicDetailsText}>{Utils.cityState(this.state.user.location)}</Text>
               <Text style={styles.basicDetailsText}>{Utils.gender(this.state.user.gender)}</Text>
             </View>
-            <Text>Looking For: {this.state.profile.looking_for}</Text>
+            <View style={styles.matchContainer}>
+              <Text style={styles.matchText}>{Utils.match(this.state.match)} Match</Text>
+            </View>
+            <View style={styles.lookingForContainer}>
+              <Text style={styles.header}>LOOKING FOR:</Text>
+              <LookingFor value={this.state.profile.looking_for} />
+            </View>
             <View style={styles.summaryContainer}>
-              <Text>Summary:</Text>
-              <Text>{this.state.profile.summary}</Text>
+              <Text style={styles.header}>SUMMARY:</Text>
+              <Text style={styles.summaryText}>{this.state.profile.summary}</Text>
             </View>
           </View>
         </ScrollView>
+        <View style={styles.friendContainer}>
+          <FriendButton token={this.props.token} userID={this.props.userID} />
+        </View>
         <NavBar
           title={'@' + this.state.user.username}
           leftButton={<Icon name="chevron-left" color="rgb(255,255,255)" size={24} />}
@@ -85,7 +100,7 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     paddingTop: Layout.lines(4),
-    backgroundColor: Colors.base
+    backgroundColor: 'white'
   },
   container: {
     flex: 1,
@@ -99,9 +114,9 @@ const styles = StyleSheet.create({
   navBarExtend: {
     position: 'absolute',
     left: 0,
-    top: 0,
+    top: -Layout.lines(15),
     right: 0,
-    height: Layout.lines(3),
+    height: Layout.lines(18),
     backgroundColor: Colors.base
   },
   avatar: {
@@ -112,17 +127,51 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     marginBottom: Layout.lines(1)
   },
+  header: {
+    fontSize: Layout.lines(0.75),
+    textAlign: 'center',
+    marginBottom: Layout.lines(0.75)
+  },
   basicDetails: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: Layout.lines(0.75)
   },
   basicDetailsText: {
     marginHorizontal: Layout.lines(1)
   },
+  lookingForContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: Layout.lines(0.75)
+  },
   summaryContainer: {
-    marginVertical: Layout.lines(2)
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: Layout.lines(1.25)
+  },
+  summaryText: {
+    fontSize: Layout.lines(0.85),
+    lineHeight: Layout.lines(1.5)
+  },
+  friendContainer: {
+    height: Layout.lines(5)
+  },
+  matchContainer: {
+    marginVertical: Layout.lines(1),
+    paddingHorizontal: Layout.lines(2),
+    paddingVertical: Layout.lines(1),
+    backgroundColor: Colors.lightGrey
+  },
+  matchText: {
+    fontSize: Layout.lines(2),
+    fontWeight: "200"
   }
 });
 

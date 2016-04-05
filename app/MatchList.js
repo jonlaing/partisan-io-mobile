@@ -3,7 +3,6 @@
 import React, {
   Component,
   StyleSheet,
-  TouchableHighlight,
   ListView,
   RefreshControl,
   View,
@@ -120,7 +119,7 @@ class MatchList extends Component {
         <NavBar
           title="Matches"
           leftButton={this._navBarLeft()}
-          leftButtonPress={this._handleNavBarLeftPress}
+          leftButtonPress={this._handleNavBarLeftPress.bind(this)}
           rightButton={ <Icon name="sliders" color="rgb(255,255,255)" size={24} /> }
           rightButtonPress={() => this.setState({showFilters: !this.state.showFilters})}
         />

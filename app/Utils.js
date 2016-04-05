@@ -24,5 +24,9 @@ module.exports = {
 
   gender(g) {
     return g.length < 1 ? "No Gender" : g;
+  },
+
+  match(m) {
+    return Math.round(m * 100) + '%';
   }
 };

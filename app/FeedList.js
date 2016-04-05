@@ -1,5 +1,5 @@
-/*global fetch  */
 'use strict';
+
 import React, {
   Component,
   StyleSheet,
@@ -27,11 +27,12 @@ class FeedList extends Component {
   constructor(props) {
     super(props);
     var ds = new ListView.DataSource({rowHasChanged: this._rowHasChanged});
-    this.state = { items: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: true };
+    this.state = { items: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: true, hasFriends: true };
   }
 
   componentDidMount() {
     this.getFeed(true);
+    Api.friends(this.props.token).count().then(count => this.setState({hasFriends: count > 0}));
     this.props.navigator.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
   }
 
@@ -104,6 +105,7 @@ class FeedList extends Component {
       <SideMenuNav ref="sidemenu" menu={<SideMenu navigator={this.props.navigator} token={this.props.token} />}>
         <View style={styles.container}>
           {this._noFriends()}
+          {this._noFeed()}
           <ListView
             scrollToTop={true}
             dataSource={this.state.dataSource}
@@ -133,8 +135,14 @@ class FeedList extends Component {
     );
   }
 
+  _noFeed() {
+    if(this.state.isRefreshing === false && this.state.items.length < 1 && this.state.hasFriends === true) {
+      return <Text style={{padding: Layout.lines(1), textAlign: 'center', color: Colors.darkGrey}}>Nothing to show!</Text>;
+    }
+  }
+
   _noFriends() {
-    if(this.state.isRefreshing === false && this.state.items.length < 1) {
+    if(this.state.hasFriends === false) {
       return (
         <View style={styles.noFriendsContainer}>
           <Text style={styles.noFriendsHeader}>You don't have any friends!</Text>

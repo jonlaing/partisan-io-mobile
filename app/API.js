@@ -222,6 +222,48 @@ let Api = {
         });
       }
     });
+  },
+
+  friendships(token) {
+    return ({
+      count() {
+        return fetch(_root() + '/friendships', {
+          headers: _headers(token),
+          method: 'GET'
+        })
+        .then(res => res.json())
+        .then(data => data.length);
+      },
+
+      get(friendID) {
+        return fetch(_root() + '/friendships/' + friendID, {
+          headers: _headers(token),
+          method: 'GET'
+        });
+      },
+
+      request(friendID) {
+        var body = new FormData();
+        body.append('friend_id', friendID.toString());
+
+        return fetch(_root() + '/friendships', {
+          method: 'POST',
+          headers: _headers(token, false),
+          body: body
+        });
+      },
+
+      confirm(friendID) {
+        let body = new FormData();
+        body.append('friend_id', friendID.toString());
+
+        return fetch(_root() + '/friendships/', {
+          headers: _headers(token, false),
+          method: 'PATCH',
+          body: body
+        });
+      }
+    });
   }
 
 };
