@@ -20,5 +20,9 @@ module.exports = {
 
   cityState(location) {
     return location.replace(/\s\d+.*$/, '');
+  },
+
+  gender(g) {
+    return g.length < 1 ? "No Gender" : g;
   }
 };

@@ -125,6 +125,13 @@ let Api = {
   // PROFILE
   profile(token) {
     return ({
+      get(userID) {
+        return fetch(_root() + '/profiles/' + userID, {
+          headers: _headers(token),
+          method: 'GET'
+        });
+      },
+
       updateBirthdate(date) {
         let body = new FormData();
         let fDate = date.toJSON().split('T')[0]; // format it for the server

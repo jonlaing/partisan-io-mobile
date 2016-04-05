@@ -20,6 +20,7 @@ import Colors from './Colors';
 import Layout from './Layout';
 
 import SideMenu from './SideMenu';
+import NavBar from './NavBar';
 import FeedRow from './FeedRow';
 
 class FeedList extends Component {
@@ -102,17 +103,6 @@ class FeedList extends Component {
     return (
       <SideMenuNav ref="sidemenu" menu={<SideMenu navigator={this.props.navigator} token={this.props.token} />}>
         <View style={styles.container}>
-          <View style={styles.navBar}>
-            <TouchableHighlight style={styles.navBarLeft} onPress={this._handleHamburger.bind(this)}>
-              <Icon name="bars" color="rgb(255,255,255)" size={24} />
-            </TouchableHighlight>
-            <View style={styles.navBarTitle}>
-              <Text style={styles.navBarTitleText}>Feed</Text>
-            </View>
-            <TouchableHighlight style={styles.navBarRight} onPress={this._handlePost.bind(this)}>
-              <Icon name="pencil-square-o" color="rgb(255,255,255)" size={24} />
-            </TouchableHighlight>
-          </View>
           {this._noFriends()}
           <ListView
             scrollToTop={true}
@@ -132,6 +122,13 @@ class FeedList extends Component {
             }
           />
         </View>
+        <NavBar
+          title="Feed"
+          leftButton={ <Icon name="bars" color="rgb(255,255,255)" size={24} /> }
+          leftButtonPress={this._handleHamburger.bind(this)}
+          rightButton={ <Icon name="pencil-square-o" color="rgb(255,255,255)" size={24} /> }
+          rightButtonPress={this._handlePost.bind(this)}
+        />
       </SideMenuNav>
     );
   }
@@ -167,33 +164,6 @@ FeedList.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  navBar: {
-    height: Layout.lines(4),
-    padding: Layout.lines(0.75),
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: -Layout.lines(1.5), // to offset the padding of the container
-    backgroundColor: Colors.base,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end'
-  },
-  navBarLeft: {
-    width: 24
-  },
-  navBarTitle: {
-    flex: 1
-  },
-  navBarTitleText: {
-    fontSize: 22,
-    textAlign: 'center',
-    color: 'white'
-  },
-  navBarRight: {
-    width: 24
-  },
   container: {
     flex: 1,
     flexDirection: 'column',

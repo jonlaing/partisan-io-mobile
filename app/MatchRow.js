@@ -3,10 +3,14 @@
 import React, {
   Component,
   StyleSheet,
+  TouchableHighlight,
   View,
   Text
 } from 'react-native';
 
+import ExNavigator from '@exponent/react-native-navigator';
+
+import Router from './Router';
 import Utils from './Utils';
 import Layout from './Layout';
 import Colors from './Colors';
@@ -22,25 +26,33 @@ class MatchRow extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        {this._avatar(styles.avatar)}
-        <View style={styles.stats}>
-          <Text style={styles.user}>@{this.props.username}</Text>
-          <View style={styles.extraInfoContainer}>
-            <Text style={styles.extraInfo}>{Utils.age(this.props.birthdate)}</Text>
-            <Text style={styles.extraInfo}>{Utils.cityState(this.props.location)}</Text>
-          </View>
-          <View style={styles.matchContainer}>
-            <Text style={styles.matchLabel}>Match:</Text>
-            <Text style={styles.match}>{this.props.match}%</Text>
+      <TouchableHighlight onPress={() => this.props.navigator.push(Router.profile(this.props.token, this.props.user.id))}>
+        <View style={styles.container}>
+          {this._avatar(styles.avatar)}
+          <View style={styles.stats}>
+            <Text style={styles.user}>@{this.props.username}</Text>
+            <View style={styles.extraInfoContainer}>
+              <Text style={styles.extraInfo}>{Utils.age(this.props.birthdate)}</Text>
+              <Text style={styles.extraInfo}>{Utils.cityState(this.props.location)}</Text>
+            </View>
+            <View style={styles.matchContainer}>
+              <Text style={styles.matchLabel}>Match:</Text>
+              <Text style={styles.match}>{this.props.match}%</Text>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableHighlight>
     );
   }
 }
 
 MatchRow.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
+  user: React.PropTypes.shape({
+    id: React.PropTypes.number,
+    avatar_thumbnail_url: React.PropTypes.string
+  }).isRequired,
   username: React.PropTypes.string.isRequired,
   birthdate: React.PropTypes.oneOfType([ React.PropTypes.number, React.PropTypes.string ]),
   location: React.PropTypes.string.isRequired,

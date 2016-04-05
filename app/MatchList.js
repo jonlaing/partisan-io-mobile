@@ -19,6 +19,7 @@ import Layout from './Layout';
 import Colors from './Colors';
 
 import SideMenu from './SideMenu';
+import NavBar from './NavBar';
 import MatchRow from './MatchRow';
 
 class MatchList extends Component {
@@ -54,24 +55,26 @@ class MatchList extends Component {
 
   _navBarLeft() {
     if(this.props.sideMenu === false) {
-      return (
-        <TouchableHighlight style={styles.navBarLeft} onPress={() => this.props.navigator.pop()}>
-          <Icon name="chevron-left" color="rgb(255,255,255)" size={24} />
-        </TouchableHighlight>
-      );
+      return <Icon name="chevron-left" color="rgb(255,255,255)" size={24} />;
     }
 
-    return (
-      <TouchableHighlight style={styles.navBarLeft} onPress={this._handleHamburger.bind(this)}>
-        <Icon name="bars" color="rgb(255,255,255)" size={24} />
-      </TouchableHighlight>
-    );
+    return <Icon name="bars" color="rgb(255,255,255)" size={24} />;
+  }
+
+  _handleNavBarLeftPress() {
+    if(this.props.sideMenu === false) {
+      this.props.navigator.pop();
+    } else {
+      this._handleHamburger();
+    }
   }
 
   _renderRow(match) {
     return (
       <MatchRow
         key={match.user.username}
+        navigator={this.props.navigator}
+        token={this.props.token}
         user={match.user}
         username={match.user.username}
         birthdate={match.user.birthdate}
@@ -95,15 +98,6 @@ class MatchList extends Component {
     return (
       <SideMenuNav ref="sidemenu" menu={<SideMenu navigator={this.props.navigator} token={this.props.token} />}>
         <View style={styles.container}>
-          <View style={styles.navBar}>
-            {this._navBarLeft()}
-            <View style={styles.navBarTitle}>
-              <Text style={styles.navBarTitleText}>Matches</Text>
-            </View>
-            <TouchableHighlight style={styles.navBarRight} onPress={() => this.setState({showFilters: !this.state.showFilters})}>
-              <Icon name="sliders" color="rgb(255,255,255)" size={24} />
-            </TouchableHighlight>
-          </View>
           {this._searchFilters()}
           <ListView
             scrollToTop={true}
@@ -123,6 +117,13 @@ class MatchList extends Component {
             }
           />
         </View>
+        <NavBar
+          title="Matches"
+          leftButton={this._navBarLeft()}
+          leftButtonPress={this._handleNavBarLeftPress}
+          rightButton={ <Icon name="sliders" color="rgb(255,255,255)" size={24} /> }
+          rightButtonPress={() => this.setState({showFilters: !this.state.showFilters})}
+        />
       </SideMenuNav>
     );
   }
@@ -139,33 +140,6 @@ MatchList.defaultProps = {
 };
 
 let styles = StyleSheet.create({
-  navBar: {
-    height: Layout.lines(4),
-    padding: Layout.lines(0.75),
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: -Layout.lines(1.5), // to offset the padding of the container
-    backgroundColor: Colors.base,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end'
-  },
-  navBarLeft: {
-    width: 24
-  },
-  navBarTitle: {
-    flex: 1
-  },
-  navBarTitleText: {
-    fontSize: 22,
-    textAlign: 'center',
-    color: 'white'
-  },
-  navBarRight: {
-    width: 24
-  },
   container: {
     flex: 1,
     flexDirection: 'column',

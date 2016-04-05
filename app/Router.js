@@ -102,6 +102,15 @@ let Router = {
     };
   },
 
+  profile(token, userID) {
+    return {
+      renderScene(navigator) {
+        let Profile = require('./Profile');
+        return <Profile token={token} navigator={navigator} userID={userID} />;
+      }
+    };
+  },
+
   feed(token) {
     return {
       renderScene(navigator) {
