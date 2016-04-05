@@ -6,8 +6,6 @@
 import React, {
   AppRegistry,
   Component,
-  View,
-  Text,
   AsyncStorage
 } from 'react-native';
 
@@ -15,6 +13,8 @@ import EventEmitter from 'EventEmitter';
 import ExNavigator from '@exponent/react-native-navigator';
 
 import Router from './app/Router';
+
+import LoadingScreen from './app/LoadingScreen';
 
 class Partisan extends Component {
   constructor(props) {
@@ -69,11 +69,7 @@ class Partisan extends Component {
   render() {
     // We haven't gotten the token yet
     if(this.state.tokenFetched === false) {
-      return (
-        <View>
-          <Text>Loading...</Text>
-        </View>
-      );
+      return <LoadingScreen />;
     }
 
     return (
