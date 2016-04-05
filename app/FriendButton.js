@@ -60,7 +60,7 @@ class FriendButton extends Component {
       if(this.state.friendship.confirmed === true) {
         return (
           <TouchableHighlight style={{flex: 1}}>
-            <View style={[styles.container, {backgroundColor: Colors.lighGrey}]}>
+            <View style={[styles.container, {backgroundColor: Colors.lightGrey}]}>
               <Icon style={styles.icon} name="check" color={Colors.base} size={24} />
               <Text style={[styles.text, {color: Colors.base}]}>Friends</Text>
             </View>

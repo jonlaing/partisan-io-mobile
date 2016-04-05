@@ -23,9 +23,9 @@ function _root() {
     return 'http://localhost:4000/api/v1';
   } else if (Config.env.prod()) {
     return 'http://www.partisan.io/api/v1';
+  } else {
+    throw "UNKNOWN ENVIRONMENT: CANNOT PERFORM NETWORK REQUESTS";
   }
-
-  throw "UNKNOWN ENVIRONMENT: CANNOT PERFORM NETWORK REQUESTS";
 }
 
 
@@ -226,13 +226,15 @@ let Api = {
 
   friendships(token) {
     return ({
-      count() {
+      list() {
         return fetch(_root() + '/friendships', {
           headers: _headers(token),
           method: 'GET'
-        })
-        .then(res => res.json())
-        .then(data => data.length);
+        });
+      },
+
+      count() {
+        return Api.friendships(token).list().then(data => data.json()).then(json => json.friendships === null ? 0 : json.friendships.length);
       },
 
       get(friendID) {
@@ -246,9 +248,9 @@ let Api = {
         var body = new FormData();
         body.append('friend_id', friendID.toString());
 
-        return fetch(_root() + '/friendships', {
-          method: 'POST',
+        return fetch(_root() + '/friendships/', {
           headers: _headers(token, false),
+          method: 'POST',
           body: body
         });
       },

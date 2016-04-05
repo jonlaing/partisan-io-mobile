@@ -4,7 +4,6 @@ import React, {
   Component,
   StyleSheet,
   ListView,
-  TouchableHighlight,
   RefreshControl,
   View,
   Text
@@ -22,6 +21,7 @@ import Layout from './Layout';
 import SideMenu from './SideMenu';
 import NavBar from './NavBar';
 import FeedRow from './FeedRow';
+import NoFriends from './NoFriends';
 
 class FeedList extends Component {
   constructor(props) {
@@ -32,7 +32,7 @@ class FeedList extends Component {
 
   componentDidMount() {
     this.getFeed(true);
-    Api.friends(this.props.token).count().then(count => this.setState({hasFriends: count > 0}));
+    Api.friendships(this.props.token).count().then(count => { this.setState({hasFriends: count > 0}); console.log(count); }).catch(err => console.log(err));
     this.props.navigator.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
   }
 
@@ -143,25 +143,7 @@ class FeedList extends Component {
 
   _noFriends() {
     if(this.state.hasFriends === false) {
-      return (
-        <View style={styles.noFriendsContainer}>
-          <Text style={styles.noFriendsHeader}>You don't have any friends!</Text>
-          <View style={styles.noFriendsFrown}>
-            <Icon name="frown-o" color={Colors.grey} size={Layout.lines(4)} />
-          </View>
-          <Text style={styles.noFriendsParagraph}>
-            Well, not on Partisan, anyway. Find matches to fill up your feed
-            with posts from other people who have similar political opinions to yours.
-          </Text>
-          <View style={styles.noFriendsHR} />
-          <TouchableHighlight
-            style={styles.noFriendsButton}
-            underlayColor={Colors.actionHighlight2}
-            onPress={() => this.props.navigator.push(Router.matches(this.props.token, false))}>
-            <Text style={styles.noFriendsButtonText}>Find Matches!</Text>
-          </TouchableHighlight>
-        </View>
-      );
+      return <NoFriends token={this.props.token} navigator={this.props.navigator} />;
     }
   }
 }
@@ -179,48 +161,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightGrey,
     paddingTop: Layout.lines(4),
     paddingHorizontal: Layout.lines(0.75)
-  },
-  noFriendsContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    marginVertical: Layout.lines(1),
-    padding: Layout.lines(1),
-    backgroundColor: 'white',
-    minHeight: Layout.lines(24)
-  },
-  noFriendsHeader: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: Layout.lines(1.25),
-    color: Colors.darkGrey,
-    paddingBottom: Layout.lines(1)
-  },
-  noFriendsFrown: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: Layout.lines(1)
-  },
-  noFriendsParagraph: {
-    flex: 3,
-    paddingVertical: Layout.lines(1),
-    lineHeight: Layout.lines(1.5)
-  },
-  noFriendsButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: Layout.lines(1),
-    marginVertical: Layout.lines(1),
-    borderWidth: 1,
-    borderColor: Colors.action,
-    borderRadius: Layout.lines(0.5)
-  },
-  noFriendsButtonText: {
-    textAlign: 'center',
-    fontSize: Layout.lines(1),
-    color: Colors.action
   }
 });
 

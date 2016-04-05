@@ -129,6 +129,15 @@ let Router = {
     };
   },
 
+  friends(token) {
+    return {
+      renderScene(navigator) {
+        let FriendList = require('./FriendList');
+        return <FriendList token={token} navigator={navigator} />;
+      }
+    };
+  },
+
   postComposer(token) {
     return {
       renderScene(navigator) {
