@@ -1,4 +1,4 @@
-/*global fetch, FormData, XMLHttpRequest */
+/*global fetch, FormData, XMLHttpRequest, WebSocket */
 'use strict';
 
 import Config from './Config';
@@ -18,11 +18,11 @@ function _headers(token, json = true) {
   }
 }
 
-function _root() {
+function _root(protocol = 'http://') {
   if(Config.env.dev()) {
-    return 'http://localhost:4000/api/v1';
+    return `${protocol}localhost:4000/api/v1`;
   } else if (Config.env.prod()) {
-    return 'http://www.partisan.io/api/v1';
+    return `${protocol}www.partisan.io/api/v1`;
   } else {
     throw "UNKNOWN ENVIRONMENT: CANNOT PERFORM NETWORK REQUESTS";
   }
@@ -270,6 +270,29 @@ let Api = {
           method: 'PATCH',
           body: body
         });
+      }
+    });
+  },
+
+  notifications(token) {
+    return ({
+      countSocket(onMessage, onError) {
+        fetch(`${_root()}/socket_ticket`, { headers: _headers(token) })
+        .then(res => res.json())
+        .then(ticket => {
+          var _socket = new WebSocket(`${_root("ws://")}/notifications/count?key=${ticket.key}`);
+
+          _socket.onmessage = onMessage;
+          _socket.onerror = onError;
+
+          _socket.onopen = () => {
+            _socket.send("whatever");
+            setInterval(() => {
+              _socket.send("whatever");
+            }, 5000);
+          };
+        })
+        .catch(onError);
       }
     });
   }

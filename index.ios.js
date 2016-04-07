@@ -12,6 +12,7 @@ import React, {
 import EventEmitter from 'EventEmitter';
 import ExNavigator from '@exponent/react-native-navigator';
 
+import Api from './app/Api';
 import Router from './app/Router';
 
 import LoadingScreen from './app/LoadingScreen';
@@ -21,13 +22,17 @@ class Partisan extends Component {
     super(props);
 
     this.eventEmitter = new EventEmitter();
-    this.state = { token: null, tokenFetched: false, username: null, avatarUrl: null };
+    this.state = { token: null, tokenFetched: false, username: null, avatarUrl: null, notificationCount: 0 };
   }
 
   componentWillMount() {
   }
 
   componentDidMount() {
+    this._getUserInfo();
+  }
+
+  _getUserInfo() {
     AsyncStorage.multiGet(['AUTH_TOKEN', 'username', 'avatarUrl'])
       .then((arr) => {
         let tok = '';
@@ -56,6 +61,7 @@ class Partisan extends Component {
       })
       .catch((err) => console.log('Error getting or initializing AUTH_TOKEN: ' + err));
   }
+
 
   _initialRoute(token, username) {
     // we got the token, but it came back null, so we need to render the login screen

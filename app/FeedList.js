@@ -22,17 +22,29 @@ import SideMenu from './SideMenu';
 import NavBar from './NavBar';
 import FeedRow from './FeedRow';
 import NoFriends from './NoFriends';
+import NotifBadge from './NotifBadge';
+
+var _menuOpen = false;
 
 class FeedList extends Component {
   constructor(props) {
     super(props);
     var ds = new ListView.DataSource({rowHasChanged: this._rowHasChanged});
-    this.state = { items: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: true, hasFriends: true };
+    this.state = {
+      items: [],
+      dataSource: ds.cloneWithRows([]),
+      page: 1,
+      isRefreshing: true,
+      menuOpen: false,
+      hasFriends: true,
+      notificationCount: 0
+    };
   }
 
   componentDidMount() {
     this.getFeed(true);
-    Api.friendships(this.props.token).count().then(count => { this.setState({hasFriends: count > 0}); console.log(count); }).catch(err => console.log(err));
+    this._getNotifs();
+    Api.friendships(this.props.token).count().then(count => this.setState({hasFriends: count > 0})).catch(err => console.log(err));
     this.props.navigator.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
   }
 
@@ -80,11 +92,24 @@ class FeedList extends Component {
     });
   }
 
+  _getNotifs() {
+    Api.notifications(this.props.token).countSocket(
+      function(res) {
+        if(!_menuOpen) {
+          let data = JSON.parse(res.data);
+          this.setState({ notificationCount: data.count });
+        }
+      }.bind(this),
+      err => console.log(err)
+    );
+  }
+
   _handlePostSuccess() {
     this.getFeed(true);
   }
 
   _handleHamburger() {
+    _menuOpen = !_menuOpen;
     this.refs.sidemenu.openMenu(true);
   }
 
@@ -129,7 +154,7 @@ class FeedList extends Component {
 
   render() {
     return (
-      <SideMenuNav ref="sidemenu" menu={<SideMenu navigator={this.props.navigator} token={this.props.token} />}>
+      <SideMenuNav ref="sidemenu" menu={ <SideMenu navigator={this.props.navigator} token={this.props.token} notificationCount={this.state.notificationCount} /> }>
         <View style={styles.container}>
           {this._noFriends()}
           {this._noFeed()}
@@ -157,6 +182,7 @@ class FeedList extends Component {
           leftButtonPress={this._handleHamburger.bind(this)}
           rightButton={ <Icon name="pencil-square-o" color="rgb(255,255,255)" size={24} /> }
           rightButtonPress={this._handlePost.bind(this)}
+          badgeLeft={<NotifBadge active={this.state.notificationCount > 0} />}
         />
       </SideMenuNav>
     );

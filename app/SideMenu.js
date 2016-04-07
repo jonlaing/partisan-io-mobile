@@ -32,6 +32,15 @@ class SideMenu extends Component {
       .catch(err => console.log(err));
   }
 
+  _notifCount() {
+    let count = this.props.notificationCount;
+    if(count > 0) {
+      return <Text style={styles.counter}>{count}</Text>;
+    }
+
+    return <View />;
+  }
+
   render() {
     return (
       <ScrollView scrollToTop={false} style={styles.menu} >
@@ -44,7 +53,8 @@ class SideMenu extends Component {
           </TouchableHighlight>
           <View style={styles.item}>
             <Icon name="bell" size={14} color="white" style={styles.itemIcon}/>
-            <Text style={styles.itemText}>Notification</Text>
+            <Text style={styles.itemText}>Notifications</Text>
+            {this._notifCount()}
           </View>
           <TouchableHighlight onPress={() => this.props.navigator.replace(Router.matches(this.props.token))}>
             <View style={styles.item}>
@@ -123,6 +133,10 @@ const styles = StyleSheet.create({
     marginRight: Layout.lines(0.5),
     width: Layout.lines(1.25),
     height: Layout.lines(1.25)
+  },
+  counter: {
+    flex: 1,
+    color: 'white'
   }
 });
 

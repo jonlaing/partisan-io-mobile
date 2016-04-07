@@ -24,6 +24,9 @@ class NavBar extends Component {
         <TouchableHighlight style={styles.navBarRight} onPress={this.props.rightButtonPress}>
           {this.props.rightButton}
         </TouchableHighlight>
+        <View style={styles.badgeLeft}>
+          {this.props.badgeLeft}
+        </View>
       </View>
     );
   }
@@ -34,7 +37,8 @@ NavBar.propTypes = {
   leftButton: React.PropTypes.element,
   leftButtonPress: React.PropTypes.func,
   rightButton: React.PropTypes.element,
-  rightButtonPress: React.PropTypes.func
+  rightButtonPress: React.PropTypes.func,
+  badgeLeft: React.PropTypes.element
 };
 
 NavBar.defaultProps = {
@@ -58,9 +62,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end'
   },
-  navBarLeft: {
-    // width: 24
-  },
   navBarTitle: {
     flex: 1
   },
@@ -69,8 +70,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white'
   },
-  navBarRight: {
-    // width: 24
+  badgeLeft: {
+    position: 'absolute',
+    top: Layout.lines(1.5),
+    left: Layout.lines(0.25)
   }
 });
 
