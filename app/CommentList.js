@@ -49,12 +49,25 @@ class CommentList extends Component {
 let styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: Layout.lines(1),
+    flexDirection: 'column',
     backgroundColor: Colors.lightGrey
   },
+  header: {
+    marginBottom: Layout.lines(1)
+  },
+  headerText: {
+    fontWeight: 'bold',
+    color: Colors.darkGrey
+  },
+  horizontalRule: {
+    height: 0,
+    borderColor: Colors.grey,
+    borderWidth: 1
+  },
   noComments: {
+    padding: Layout.lines(1),
     fontSize: 12,
-    color: Colors.grey
+    color: Colors.darkGrey
   }
 });
 

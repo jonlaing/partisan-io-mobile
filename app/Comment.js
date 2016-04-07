@@ -16,9 +16,8 @@ import Avatar from './Avatar';
 
 class Comment extends Component {
   render() {
-    console.log(this.props.item);
     return (
-      <View style={styles.commentContainer}>
+      <View style={styles.container}>
         <View style={styles.commentHeader}>
           <Avatar user={this.props.item.user} style={styles.avatar} />
           <Text style={styles.userText}>@{this.props.item.user.username}</Text>
@@ -33,6 +32,12 @@ class Comment extends Component {
 }
 
 let styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: Layout.lines(1),
+    borderColor: Colors.grey,
+    borderBottomWidth: 0.5
+  },
   commentHeader: {
     flex: 1,
     flexDirection: 'row'

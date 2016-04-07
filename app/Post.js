@@ -47,6 +47,21 @@ class Post extends Component {
     console.log("No onHeaderPress defined for Post");
   }
 
+  _comments() {
+    if(this.props.showComments === true) {
+      return (
+        <TouchableHighlight style={styles.action} onPress={this.props.onComment}>
+          <View style={styles.actionContainerRight}>
+            <Icon name="comments-o" color={Colors.grey} size={Layout.lines(1.5)} style={styles.actionIcon} />
+            <Text style={styles.actionText} >Comment ({this.props.commentCount})</Text>
+          </View>
+        </TouchableHighlight>
+      );
+    }
+
+    return <View />;
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -65,12 +80,7 @@ class Post extends Component {
         </View>
         <View style={styles.actions}>
           <LikeButton active={this.props.liked} count={this.props.likeCount} onPress={this.props.onLike} />
-          <TouchableHighlight style={styles.action} onPress={this.props.onComment}>
-            <View style={styles.actionContainerRight}>
-              <Icon name="comments-o" color={Colors.grey} size={Layout.lines(1.5)} style={styles.actionIcon} />
-              <Text style={styles.actionText} >Comment ({this.props.commentCount})</Text>
-            </View>
-          </TouchableHighlight>
+          {this._comments()}
         </View>
       </View>
     );
@@ -88,7 +98,8 @@ Post.propTypes = {
   commentCount: React.PropTypes.number,
   imageAttachment: React.PropTypes.shape({ image_url: React.PropTypes.string }),
   onLike: React.PropTypes.func,
-  onComment: React.PropTypes.func
+  onComment: React.PropTypes.func,
+  showComments: React.PropTypes.bool
 };
 
 Post.defaultProps = {
@@ -96,7 +107,8 @@ Post.defaultProps = {
   commentCount: 0,
   imageAttachment: { image_url: '' },
   onLike: () => {},
-  onComment: () => {}
+  onComment: () => {},
+  showComments: true
 };
 
 let styles = StyleSheet.create({

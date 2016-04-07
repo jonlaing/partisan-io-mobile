@@ -25,13 +25,13 @@ class PostScreen extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { post: {}, user: {}, commentCount: 0, likeCount: 0, liked: false, imageAttachment: { image_url: '' } };
+    this.state = { post: {}, user: {}, likeCount: 0, liked: false, imageAttachment: { image_url: '' } };
   }
 
   componentDidMount() {
     Api.posts(this.props.token).get(this.props.postID)
     .then(res => res.json())
-    .then((data) => this.setState({ post: data.post, user: data.user, imageAttachment: data.image_attachment }));
+    .then((data) => { console.log(data); this.setState({ post: data.post, user: data.user, imageAttachment: data.image_attachment, liked: data.liked, likeCount: data.like_count }); });
   }
 
   _handleLike() {
@@ -63,7 +63,7 @@ class PostScreen extends Component {
             navigator={this.props.navigator}
             onHeaderPress={() => this.props.navigator.push(Router.profile(this.props.token, this.state.user.id))}
             onLike={this._handleLike.bind(this)}
-            onComment={() => this.refs.commentComposer.focus()}
+            showComments={false}
           />
           <CommentList token={this.props.token} postID={this.state.post.id} />
         </ScrollView>
