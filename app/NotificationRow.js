@@ -1,6 +1,7 @@
 'user strict';
 import React, {
   Component,
+  TouchableHighlight,
   View,
   Text,
   Image,
@@ -8,6 +9,9 @@ import React, {
 } from 'react-native';
 
 import moment from 'moment';
+import ExNavigator from '@exponent/react-native-navigator';
+
+import Router from './Router';
 
 class NotificationRow extends Component {
   _avatar(user) {
@@ -30,9 +34,10 @@ class NotificationRow extends Component {
 
   _notifText(notif) {
     let username = notif.user.username;
+    let action = notif.notification.record_type;
     let recordType = notif.record.record_type;
 
-    switch(notif.notification.record_type) {
+    switch(action) {
         case "user_tag":
           return "@" + username + " tagged you in a " + recordType;
         case "like":
@@ -42,18 +47,42 @@ class NotificationRow extends Component {
     }
   }
 
+  _handlePress() {
+    let action = this.props.notif.notification.record_type;
+    let record = this.props.notif.record;
+
+    switch(action) {
+      case "user_tag":
+      case "like":
+        if(record.record_type === "post") {
+          this.props.navigator.push(Router.postScreen(record.record_id, this.props.token));
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        {this._avatar(this.props.notif.user)}
-        <View style={styles.textContainer}>
-          <Text>{this._notifText(this.props.notif)}</Text>
-          <Text style={styles.time}>{moment(this.props.notif.notification.created_at).fromNow()}</Text>
+      <TouchableHighlight onPress={this._handlePress.bind(this)}>
+        <View style={styles.container} >
+          {this._avatar(this.props.notif.user)}
+          <View style={styles.textContainer}>
+            <Text>{this._notifText(this.props.notif)}</Text>
+            <Text style={styles.time}>{moment(this.props.notif.notification.created_at).fromNow()}</Text>
+          </View>
         </View>
-      </View>
+      </TouchableHighlight>
     );
   }
 }
+
+NotificationRow.propTypes = {
+  token: React.PropTypes.string.isRequired,
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
+  notif: React.PropTypes.object.isRequired
+};
 
 const styles = StyleSheet.create({
   container: {

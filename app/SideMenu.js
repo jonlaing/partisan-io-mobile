@@ -51,11 +51,13 @@ class SideMenu extends Component {
               <Text style={styles.itemText}>Feed</Text>
             </View>
           </TouchableHighlight>
-          <View style={styles.item}>
-            <Icon name="bell" size={14} color="white" style={styles.itemIcon}/>
-            <Text style={styles.itemText}>Notifications</Text>
-            {this._notifCount()}
-          </View>
+          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.notificationScreen(this.props.token))}>
+            <View style={styles.item}>
+              <Icon name="bell" size={14} color="white" style={styles.itemIcon}/>
+              <Text style={styles.itemText}>Notifications</Text>
+              {this._notifCount()}
+            </View>
+          </TouchableHighlight>
           <TouchableHighlight onPress={() => this.props.navigator.replace(Router.matches(this.props.token))}>
             <View style={styles.item}>
               <Icon name="globe" size={14} color="white" style={styles.itemIcon}/>

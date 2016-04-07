@@ -154,6 +154,15 @@ let Router = {
         return <PostScreen postID={id} token={token} navigator={navigator} comment={comment} />;
       }
     };
+  },
+
+  notificationScreen(token) {
+    return {
+      renderScene(navigator) {
+        let NotificationScreen = require('./NotificationScreen');
+        return <NotificationScreen token={token} navigator={navigator} />;
+      }
+    };
   }
 };
 

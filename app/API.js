@@ -276,6 +276,10 @@ let Api = {
 
   notifications(token) {
     return ({
+      list() {
+        return fetch(`${_root()}/notifications/`, { headers: _headers(token) });
+      },
+
       countSocket(onMessage, onError) {
         fetch(`${_root()}/socket_ticket`, { headers: _headers(token) })
         .then(res => res.json())
