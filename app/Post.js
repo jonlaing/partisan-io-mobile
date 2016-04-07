@@ -12,7 +12,6 @@ import React, {
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import Router from './Router';
 import Colors from './Colors';
 import Layout from './Layout';
 
@@ -68,7 +67,7 @@ class Post extends Component {
           <LikeButton active={this.props.liked} count={this.props.likeCount} onPress={this.props.onLike} />
           <TouchableHighlight style={styles.action} onPress={this.props.onComment}>
             <View style={styles.actionContainerRight}>
-              <Icon name="comments-o" color={Colors.grey} size={14} style={styles.actionIcon} />
+              <Icon name="comments-o" color={Colors.grey} size={Layout.lines(1.5)} style={styles.actionIcon} />
               <Text style={styles.actionText} >Comment ({this.props.commentCount})</Text>
             </View>
           </TouchableHighlight>
@@ -144,7 +143,8 @@ let styles = StyleSheet.create({
     height: Layout.lines(22),
     justifyContent: 'center',
     alignItems: 'stretch',
-    marginHorizontal: Layout.lines(-1)
+    marginHorizontal: Layout.lines(-1),
+    backgroundColor: Colors.grey
   },
   postImage: {
     flex: 1
@@ -162,10 +162,11 @@ let styles = StyleSheet.create({
   actionContainerRight: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
   actionIcon: {
-    width: 14,
+    width: Layout.lines(1.5),
     marginRight: Layout.lines(0.5)
   },
   actionText: {

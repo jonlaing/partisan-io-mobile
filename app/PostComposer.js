@@ -1,6 +1,7 @@
 'use strict';
 
 import React, {
+  Alert,
   ActionSheetIOS,
   Component,
   View,
@@ -42,7 +43,21 @@ class PostComposer extends Component {
       .then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
       .then(() => this.props.navigator.pop())
       .then(() => { _sent = false; })
-      .catch(err => console.log(err));
+      .catch(err => {
+        let message;
+
+        if(err === undefined) {
+          message = "An unknown error has occured.";
+        } else {
+          message = `An error has occurred:\n\n${err}`;
+        }
+
+        Alert.alert( 'Error', message,
+          [
+            {text: 'Try again', onPress: () => _sent = false },
+            {text: 'Cancel', onPress: () => { _sent = false; this.props.navigator.pop(); }}
+          ]);
+      });
     }
   }
 

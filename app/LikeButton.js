@@ -18,7 +18,7 @@ class LikeButton extends Component {
     return (
       <TouchableHighlight style={styles.container} underlayColor="white" onPress={this.props.onPress}>
         <View style={styles.buttonContainer}>
-          <Icon name="star" color={this.props.active ? Colors.accent : Colors.grey} size={14} style={styles.icon} />
+          <Icon name="star" color={this.props.active ? Colors.accent : Colors.grey} size={Layout.lines(1.5)} style={styles.icon} />
           <Text style={styles.text} >Favorites ({this.props.count})</Text>
         </View>
       </TouchableHighlight>
@@ -44,10 +44,11 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   icon: {
-    width: 14,
+    width: Layout.lines(1.5),
     marginRight: Layout.lines(0.5)
   },
   text: {
