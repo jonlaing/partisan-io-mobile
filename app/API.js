@@ -79,6 +79,13 @@ let Api = {
         return fetch(_root() + '/posts/' + id, { headers: _headers(token) });
       },
 
+      like(id) {
+        return fetch(_root() + '/posts/' + id + '/likes/', {
+          method: 'POST',
+          headers: _headers(token)
+        });
+      },
+
       create(body, attachments = []) {
         // var request = new FormData();
 
@@ -132,6 +139,13 @@ let Api = {
     return ({
       list(postID) {
         return fetch(_root() + '/posts/' + postID + '/comments', { headers: _headers(token) });
+      },
+
+      like(id) {
+        return fetch(_root() + '/comments/' + id + '/likes/', {
+          method: 'POST',
+          headers: _headers(token)
+        });
       }
     });
   },

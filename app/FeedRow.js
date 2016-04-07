@@ -27,7 +27,10 @@ class FeedRow extends Component {
           liked={record.liked}
           commentCount={record.comment_count}
           navigator={this.props.navigator}
-          onHeaderPress={() => this.props.navigator.push(Router.postScreen(record.post.id, this.props.token)) } />
+          onHeaderPress={() => this.props.navigator.push(Router.postScreen(record.post.id, this.props.token)) }
+          onLike={this.props.onLike}
+          onComment={() => this.props.navigator.push(Router.postScreen(record.post.id, this.props.token, true)) }
+        />
       </View>
     );
   }
@@ -45,7 +48,12 @@ FeedRow.propTypes = {
       liked: React.PropTypes.bool,
       commentCount: React.PropTypes.number
     })
-  }).isRequired
+  }).isRequired,
+  onLike: React.PropTypes.func
+};
+
+FeedRow.defaultProps = {
+  onLike: () => {}
 };
 
 module.exports = FeedRow;

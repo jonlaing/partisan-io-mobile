@@ -147,11 +147,11 @@ let Router = {
     };
   },
 
-  postScreen(id, token) {
+  postScreen(id, token, comment = false) {
     return {
       renderScene(navigator) {
         let PostScreen = require('./PostScreen');
-        return <PostScreen postID={id} token={token} navigator={navigator} />;
+        return <PostScreen postID={id} token={token} navigator={navigator} comment={comment} />;
       }
     };
   }

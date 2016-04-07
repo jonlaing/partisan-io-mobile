@@ -50,6 +50,10 @@ class FeedList extends Component {
       return true;
     }
 
+    if(r1.record.liked !== r2.record.liked) {
+      return true;
+    }
+
     if(r1.record.comment_count !== r2.record.comment_count) {
       return true;
     }
@@ -88,6 +92,28 @@ class FeedList extends Component {
     this.props.navigator.push(Router.postComposer(this.props.token));
   }
 
+  _handleLike(postID) {
+    return function() {
+      Api.posts(this.props.token).like(postID)
+      .then(res => res.json())
+      .then(data => {
+        let items = JSON.parse(JSON.stringify(this.state.items)); // stupid deep copy, there's gotta be a better way
+
+        items = items.map((item) => {
+          if(item.record.post.id === data.record_id) {
+            item.record.liked = data.liked;
+            item.record.like_count = data.like_count;
+          }
+
+          return item;
+        });
+
+        this.setState({ items: items, dataSource: this.state.dataSource.cloneWithRows(items) });
+      })
+      .catch(err => console.log(err));
+    };
+  }
+
   _renderRow(item) {
     return (
       <FeedRow
@@ -95,6 +121,7 @@ class FeedList extends Component {
         token={this.props.token}
         navigator={this.props.navigator}
         item={item}
+        onLike={this._handleLike(item.record.post.id).bind(this)}
       />
     );
   }

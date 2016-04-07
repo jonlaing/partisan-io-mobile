@@ -17,6 +17,7 @@ import Colors from './Colors';
 import Layout from './Layout';
 
 import Avatar from './Avatar';
+import LikeButton from './LikeButton';
 
 class Post extends Component {
   _postImage() {
@@ -64,13 +65,8 @@ class Post extends Component {
           <Text style={styles.postBodyText}>{this.props.post.body}</Text>
         </View>
         <View style={styles.actions}>
-          <TouchableHighlight style={styles.action} >
-            <View style={styles.actionContainerLeft}>
-              <Icon name="star" color={Colors.grey} size={14} style={styles.actionIcon} />
-              <Text style={styles.actionText} >Favorites ({this.props.likeCount})</Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight style={styles.action} onPress={() => this.props.navigator.push(Router.postScreen(this.props.post.id, this.props.token)) }>
+          <LikeButton active={this.props.liked} count={this.props.likeCount} onPress={this.props.onLike} />
+          <TouchableHighlight style={styles.action} onPress={this.props.onComment}>
             <View style={styles.actionContainerRight}>
               <Icon name="comments-o" color={Colors.grey} size={14} style={styles.actionIcon} />
               <Text style={styles.actionText} >Comment ({this.props.commentCount})</Text>
@@ -83,7 +79,6 @@ class Post extends Component {
 }
 
 Post.propTypes = {
-  token: React.PropTypes.string.isRequired,
   user: React.PropTypes.shape({ username: React.PropTypes.string }).isRequired,
   post: React.PropTypes.shape({
     id: React.PropTypes.number,
@@ -92,13 +87,17 @@ Post.propTypes = {
   }).isRequired,
   likeCount: React.PropTypes.number,
   commentCount: React.PropTypes.number,
-  imageAttachment: React.PropTypes.shape({ image_url: React.PropTypes.string })
+  imageAttachment: React.PropTypes.shape({ image_url: React.PropTypes.string }),
+  onLike: React.PropTypes.func,
+  onComment: React.PropTypes.func
 };
 
 Post.defaultProps = {
   likeCount: 0,
   commentCount: 0,
-  imageAttachment: { image_url: '' }
+  imageAttachment: { image_url: '' },
+  onLike: () => {},
+  onComment: () => {}
 };
 
 let styles = StyleSheet.create({
@@ -144,7 +143,8 @@ let styles = StyleSheet.create({
     flex: 1,
     height: Layout.lines(22),
     justifyContent: 'center',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    marginHorizontal: Layout.lines(-1)
   },
   postImage: {
     flex: 1
@@ -158,10 +158,6 @@ let styles = StyleSheet.create({
   },
   action: {
     flex: 1
-  },
-  actionContainerLeft: {
-    flex: 1,
-    flexDirection: 'row'
   },
   actionContainerRight: {
     flex: 1,

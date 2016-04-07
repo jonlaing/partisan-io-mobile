@@ -4,13 +4,17 @@ import React, {
   Component,
   TouchableHighlight,
   StyleSheet,
+  ScrollView,
+  TextInput,
   View,
   Text
 } from 'react-native';
 
 import ExNavigator from '@exponent/react-native-navigator';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 import Api from './Api';
+import Router from './Router';
 import Colors from './Colors';
 import Layout from './Layout';
 
@@ -21,13 +25,20 @@ class PostScreen extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { post: {}, user: {}, commentCount: 0, likeCount: 0, liked: false };
+    this.state = { post: {}, user: {}, commentCount: 0, likeCount: 0, liked: false, imageAttachment: { image_url: '' } };
   }
 
   componentDidMount() {
-    Api(this.props.navigator.props.environment).posts(this.props.token).get(this.props.postID)
-    .then((res) => JSON.parse(res._bodyInit))
-    .then((data) => this.setState({ post: data.post, user: data.user }));
+    Api.posts(this.props.token).get(this.props.postID)
+    .then(res => res.json())
+    .then((data) => this.setState({ post: data.post, user: data.user, imageAttachment: data.image_attachment }));
+  }
+
+  _handleLike() {
+    Api.posts(this.props.token).like(this.props.postID)
+    .then(res => res.json())
+    .then(data => this.setState({likeCount: data.like_count, liked: data.liked}))
+    .catch(err => console.log(err));
   }
 
   render() {
@@ -42,17 +53,27 @@ class PostScreen extends Component {
             <Text>Back</Text>
           </TouchableHighlight>
         </View>
-        <Post
-          token={this.props.token}
-          post={this.state.post}
-          user={this.state.user}
-          imageAttachment={this.state.imageAttachment}
-          likeCount={this.state.likeCount}
-          liked={this.state.liked}
-          navigator={this.props.navigator}
-          onHeaderPress={() => console.log("header pressed")}
+        <ScrollView>
+          <Post
+            post={this.state.post}
+            user={this.state.user}
+            imageAttachment={this.state.imageAttachment}
+            likeCount={this.state.likeCount}
+            liked={this.state.liked}
+            navigator={this.props.navigator}
+            onHeaderPress={() => this.props.navigator.push(Router.profile(this.props.token, this.state.user.id))}
+            onLike={this._handleLike.bind(this)}
+            onComment={() => this.refs.commentComposer.focus()}
+          />
+          <CommentList token={this.props.token} postID={this.state.post.id} />
+        </ScrollView>
+        <TextInput
+          style={styles.commentComposer}
+          autoFocus={this.props.comment}
+          placeholder="Write a comment..."
+          ref="commentComposer"
         />
-        <CommentList token={this.props.token} postID={this.state.post.id} />
+        <KeyboardSpacer />
       </View>
     );
   }
@@ -61,11 +82,17 @@ class PostScreen extends Component {
 PostScreen.propTypes = {
   token: React.PropTypes.string.isRequired,
   navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
-  postID: React.PropTypes.number.isRequired
+  postID: React.PropTypes.number.isRequired,
+  comment: React.PropTypes.bool
+};
+
+PostScreen.defaultProps = {
+  comment: false
 };
 
 let styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: Colors.lightGrey
   },
   header: {
@@ -74,6 +101,16 @@ let styles = StyleSheet.create({
     paddingBottom: Layout.lines(1),
     borderColor: Colors.lightGrey,
     borderBottomWidth: 1,
+    backgroundColor: 'white'
+  },
+  scrollView: {
+    flex: 1
+  },
+  commentComposer: {
+    minHeight: Layout.lines(3),
+    paddingHorizontal: Layout.lines(1),
+    borderColor: Colors.lightGrey,
+    borderWidth: 1,
     backgroundColor: 'white'
   }
 });
