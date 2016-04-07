@@ -21,6 +21,14 @@ class CommentList extends Component {
   }
 
   componentDidMount() {
+    this._getComments();
+  }
+
+  refresh() {
+    this._getComments();
+  }
+
+  _getComments() {
     Api.comments(this.props.token).list(this.props.postID)
     .then((res) => JSON.parse(res._bodyInit))
     .then((data) => this.setState({comments: data.comments}))

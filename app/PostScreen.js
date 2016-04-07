@@ -5,7 +5,6 @@ import React, {
   TouchableHighlight,
   StyleSheet,
   ScrollView,
-  TextInput,
   View,
   Text
 } from 'react-native';
@@ -20,6 +19,7 @@ import Layout from './Layout';
 
 import Post from './Post';
 import CommentList from './CommentList';
+import CommentComposer from './CommentComposer';
 
 class PostScreen extends Component {
   constructor(props) {
@@ -65,14 +65,14 @@ class PostScreen extends Component {
             onLike={this._handleLike.bind(this)}
             showComments={false}
           />
-          <CommentList token={this.props.token} postID={this.state.post.id} />
+          <CommentList token={this.props.token} postID={this.state.post.id} ref="commentList" />
         </ScrollView>
-        <TextInput
-          style={styles.commentComposer}
+        <CommentComposer
+          token={this.props.token}
+          postID={this.state.post.id}
           autoFocus={this.props.comment}
-          placeholder="Write a comment..."
-          ref="commentComposer"
-        />
+          onFinish={() => this.refs.commentList.refresh() }
+          ref="commentComposer"/>
         <KeyboardSpacer />
       </View>
     );
@@ -105,13 +105,6 @@ let styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1
-  },
-  commentComposer: {
-    minHeight: Layout.lines(3),
-    paddingHorizontal: Layout.lines(1),
-    borderColor: Colors.lightGrey,
-    borderWidth: 1,
-    backgroundColor: 'white'
   }
 });
 

@@ -117,7 +117,26 @@ let Api = {
           method: 'POST',
           headers: _headers(token)
         });
+      },
+
+      create(postID, body, attachments = []) {
+        let request = new FormData();
+
+        attachments.forEach((uri) => {
+          if(uri.length > 0) {
+            request.append('attachment', {
+              uri: uri,
+              type: 'image/jpeg',
+              name: 'post.jpg'
+            });
+          }
+        });
+
+        request.append('post_id', postID.toString());
+        request.append('body', body);
+        return _xhrUpload(request, `${_root()}/comments/`, token);
       }
+
     });
   },
 
@@ -319,7 +338,11 @@ function _xhrUpload(formData, url, token, method = 'POST') {
       }
 
       if (_ok(xhr.status)) {
-        resolve(xhr.response);
+        if(xhr.response === undefined) {
+          resolve(xhr.responseText);
+        } else {
+          resolve(xhr.response);
+        }
       } else {
         reject(xhr.statusText);
       }

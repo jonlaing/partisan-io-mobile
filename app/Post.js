@@ -47,6 +47,18 @@ class Post extends Component {
     console.log("No onHeaderPress defined for Post");
   }
 
+  _postBody() {
+    if(this.props.post.body.length > 0) {
+      return (
+        <View style={styles.postBody}>
+          <Text style={styles.postBodyText}>{this.props.post.body}</Text>
+        </View>
+      );
+    }
+
+    return <View />;
+  }
+
   _comments() {
     if(this.props.showComments === true) {
       return (
@@ -75,9 +87,7 @@ class Post extends Component {
           </View>
         </TouchableHighlight>
         {this._postImage()}
-        <View style={styles.postBody}>
-          <Text style={styles.postBodyText}>{this.props.post.body}</Text>
-        </View>
+        {this._postBody()}
         <View style={styles.actions}>
           <LikeButton active={this.props.liked} count={this.props.likeCount} onPress={this.props.onLike} />
           {this._comments()}

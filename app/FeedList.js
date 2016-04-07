@@ -95,8 +95,8 @@ class FeedList extends Component {
   _getNotifs() {
     Api.notifications(this.props.token).countSocket(
       function(res) {
-        if(!_menuOpen) {
-          let data = JSON.parse(res.data);
+        let data = JSON.parse(res.data);
+        if(!_menuOpen && this.state.notificationCount !== data.count) {
           this.setState({ notificationCount: data.count });
         }
       }.bind(this),

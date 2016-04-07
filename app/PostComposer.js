@@ -24,12 +24,10 @@ import Layout from './Layout';
 import CameraRollView from './CameraRollView';
 import NavBar from './NavBar';
 
-var _sent = false;
-
 class PostComposer extends Component {
   constructor(props) {
     super(props);
-    this.state = { value: '', image: "", showCameraRoll: false };
+    this.state = { value: '', image: "", showCameraRoll: false, isSubmitting: false };
   }
 
   _changeText(text) {
@@ -37,12 +35,13 @@ class PostComposer extends Component {
   }
 
   _handlePost() {
-    if(_sent !== true && (this.state.value.length > 0 || this.state.image.length > 0)) {
-      _sent = true;
+    if(this.state.isSubmitting !== true && (this.state.value.length > 0 || this.state.image.length > 0)) {
+      this.setState({isSubmitting: true});
+
       Api.posts(this.props.token).create(this.state.value, [this.state.image])
       .then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
       .then(() => this.props.navigator.pop())
-      .then(() => { _sent = false; })
+      .then(() => this.setState({ isSubmitting: false }) )
       .catch(err => {
         let message;
 
@@ -54,8 +53,8 @@ class PostComposer extends Component {
 
         Alert.alert( 'Error', message,
           [
-            {text: 'Try again', onPress: () => _sent = false },
-            {text: 'Cancel', onPress: () => { _sent = false; this.props.navigator.pop(); }}
+            {text: 'Try again', onPress: () => this.setState({ isSubmitting: false }) },
+            {text: 'Cancel', onPress: () => { this.setState({ isSubmitting: false }); this.props.navigator.pop(); }}
           ]);
       });
     }
@@ -66,11 +65,13 @@ class PostComposer extends Component {
   }
 
   _rightButton() {
-    if(_sent === true) {
-      return <ActivityIndicatorIOS animating={true} color='white' size="small" />;
-    }
-
-    return <Text style={styles.navBarRightText}>Post</Text>;
+    let style = this.state.value.length < 1 || this.state.isSubmitting ? [styles.navBarRightText, {color: Colors.baseLight}] : styles.navBarRightText;
+    return (
+      <View style={{flex: 1, flexDirection: 'row'}}>
+        <ActivityIndicatorIOS animating={this.state.isSubmitting} color='white' size="small" />
+        <Text style={style}>Post</Text>
+      </View>
+    );
   }
 
   render() {
@@ -84,7 +85,7 @@ class PostComposer extends Component {
           autoFocus={true}
           keyboardType="twitter"
           returnKeyType="done"
-          editable={!_sent}
+          editable={!this.state.isSubmitting}
           ref="text"
         />
         <View style={styles.postFooter}>
@@ -177,6 +178,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   navBarRightText: {
+    marginLeft: Layout.lines(0.5),
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white'

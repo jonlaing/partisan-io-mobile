@@ -1,5 +1,6 @@
 module.exports = {
   base: "rgb(0,210,195)",
+  baseLight: "rgb(97,231,222)",
   baseDark: "rgb(22,166,155)",
   action: "rgb(209,21,178)",
   actionHighlight: "rgb(166,17,141)",

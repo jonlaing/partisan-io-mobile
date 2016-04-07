@@ -64,7 +64,7 @@ class NotificationScreen extends Component {
                 refreshing={this.state.isRefreshing}
                 onRefresh={() => {
                   this.setState({isRefreshing: true});
-                  this.getFeed(true);
+                  this._getNotifs();
                 }}
                 tintColor="rgb(191,191,191)"
                 title="Loading..."
