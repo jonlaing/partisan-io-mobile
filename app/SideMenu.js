@@ -70,10 +70,12 @@ class SideMenu extends Component {
               <Text style={styles.itemText}>Friends</Text>
             </View>
           </TouchableHighlight>
-          <View style={styles.item}>
-            <Icon name="comments" size={14} color="white" style={styles.itemIcon}/>
-            <Text style={styles.itemText}>Messages</Text>
-          </View>
+          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.messageList(this.props.token))}>
+            <View style={styles.item}>
+              <Icon name="comments" size={14} color="white" style={styles.itemIcon}/>
+              <Text style={styles.itemText}>Messages</Text>
+            </View>
+          </TouchableHighlight>
         </View>
         <View style={styles.accountContainer}>
           <View style={styles.item}>

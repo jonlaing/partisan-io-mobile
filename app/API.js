@@ -1,6 +1,8 @@
 /*global fetch, FormData, XMLHttpRequest, WebSocket */
 'use strict';
 
+import moment from 'moment';
+
 import Config from './Config';
 
 function _headers(token, json = true) {
@@ -300,9 +302,10 @@ let Api = {
       },
 
       countSocket(onMessage, onError) {
-        fetch(`${_root()}/socket_ticket`, { headers: _headers(token) })
-        .then(res => res.json())
-        .then(ticket => {
+        // get the ticket first
+        _withTicket(token, (ticket) => {
+          // once we get the ticket througha normal http request, open up the socket
+          // using the ticket for authentication
           var _socket = new WebSocket(`${_root("ws://")}/notifications/count?key=${ticket.key}`);
 
           _socket.onmessage = onMessage;
@@ -314,10 +317,69 @@ let Api = {
               _socket.send("whatever");
             }, 5000);
           };
-        })
-        .catch(onError);
+        }, onError);
       }
     });
+  },
+
+  messages(token) {
+    return {
+      threads() {
+        return fetch(`${_root()}/messages/threads/`, { headers: _headers(token) });
+      },
+
+      list(threadID) {
+        return fetch(`${_root()}/messages/threads/${threadID}`, { headers: _headers(token) });
+      },
+
+      socket(threadID, onMessage, onError) {
+        var _socket = null;
+        var sendInterval, reopenInterval;
+
+        _withTicket(token, (ticket) => {
+          // once we get the ticket througha normal http request, open up the socket
+          // using the ticket for authentication
+          if(!_socket) {
+            _socket = new WebSocket(`${_root("ws://")}/messages/threads/${threadID}/socket?key=${ticket.key}`);
+          } else {
+            return;
+          }
+
+          let start = function() {
+            _socket.onmessage = onMessage;
+            _socket.onerror = onError;
+
+            _socket.onopen = () => {
+              clearInterval(reopenInterval);
+
+              let lastNow = moment(Date.now()).unix();
+
+              sendInterval = setInterval(() => {
+                if(!_socket || _socket.readyState === 2 || _socket.readyState === 3) {
+                  clearInterval(sendInterval);
+                  return;
+                }
+
+                _socket.send(lastNow.toString());
+                lastNow = moment(Date.now()).unix();
+              }, 1000);
+            };
+
+            reopenInterval = setInterval(() => {
+              if(!_socket || _socket.readyState === 0 || _socket.readyState === 1) {
+                clearInterval(reopenInterval);
+                return;
+              }
+
+              _socket = null;
+              start();
+            }, 5000);
+          };
+
+          start();
+        }, onError);
+      }
+    };
   }
 
 };
@@ -352,6 +414,13 @@ function _xhrUpload(formData, url, token, method = 'POST') {
     xhr.setRequestHeader( 'X-Auth-Token', token);
     xhr.send(formData);
   });
+}
+
+function _withTicket(token, success, err) {
+    fetch(`${_root()}/socket_ticket`, { headers: _headers(token) })
+    .then(res => res.json())
+    .then(data => success(data))
+    .catch(e => err(e));
 }
 
 let _ok = (status) => status >= 200 && status < 300;

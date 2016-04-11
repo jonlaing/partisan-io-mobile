@@ -163,6 +163,24 @@ let Router = {
         return <NotificationScreen token={token} navigator={navigator} />;
       }
     };
+  },
+
+  messageList(token) {
+    return {
+      renderScene(navigator) {
+        let MessageList = require('./MessageList');
+        return <MessageList token={token} navigator={navigator} />;
+      }
+    };
+  },
+
+  chat(threadID, token) {
+    return {
+      renderScene(navigator) {
+        let Chat = require('./Chat');
+        return <Chat threadID={threadID} token={token} navigator={navigator} />;
+      }
+    };
   }
 };
 
