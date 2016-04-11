@@ -143,8 +143,7 @@ let styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 1,
     borderRadius: Layout.lines(0.5),
-    minHeight: Layout.lines(3.5),
-    maxHeight: Layout.lines(6)
+    height: Layout.lines(6)
   },
   buttonInner: {
     flex: 1,

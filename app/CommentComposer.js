@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    minHeight: Layout.lines(3),
+    height: Layout.lines(3),
     paddingVertical: Layout.lines(0.5),
     paddingHorizontal: Layout.lines(1),
     borderColor: Colors.lightGrey,

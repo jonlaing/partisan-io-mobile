@@ -50,7 +50,7 @@ NavBar.defaultProps = {
 
 const styles = StyleSheet.create({
   navBar: {
-    minHeight: Layout.lines(4),
+    height: Layout.lines(4),
     padding: Layout.lines(0.75),
     position: 'absolute',
     top: 0,

@@ -76,7 +76,7 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: Layout.lines(1),
-    maxHeight: Layout.lines(4),
+    height: Layout.lines(4),
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: Layout.lines(0.5)

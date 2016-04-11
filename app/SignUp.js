@@ -200,7 +200,7 @@ let styles = StyleSheet.create({
     borderColor: Colors.action,
     borderRadius: Layout.lines(0.5),
     padding: Layout.lines(0.5),
-    maxHeight: Layout.lines(3),
+    height: Layout.lines(3),
     marginRight: Layout.lines(0.5)
   },
   submitText: {
@@ -216,7 +216,7 @@ let styles = StyleSheet.create({
     borderColor: Colors.grey,
     borderRadius: Layout.lines(0.5),
     padding: Layout.lines(0.5),
-    maxHeight: Layout.lines(3),
+    height: Layout.lines(3),
     marginLeft: Layout.lines(0.5)
   },
   cancelText: {

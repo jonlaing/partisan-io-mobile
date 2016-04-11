@@ -130,7 +130,7 @@ let styles = StyleSheet.create({
     borderColor: Colors.base,
     borderRadius: Layout.lines(0.5),
     padding: Layout.lines(1),
-    maxHeight: Layout.lines(4)
+    height: Layout.lines(4)
   },
   actionText: {
     flex: 3,

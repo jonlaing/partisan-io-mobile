@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     marginVertical: Layout.lines(1),
     padding: Layout.lines(1),
     backgroundColor: 'white',
-    minHeight: Layout.lines(24)
+    height: Layout.lines(24)
   },
   noFriendsHeader: {
     flex: 1,

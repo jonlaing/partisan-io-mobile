@@ -125,7 +125,7 @@ var styles = StyleSheet.create({
     borderColor: Colors.action,
     borderRadius: Layout.lines(0.5),
     padding: Layout.lines(0.5),
-    maxHeight: Layout.lines(3)
+    height: Layout.lines(3)
   },
   submitText: {
     textAlign: 'center',
@@ -136,7 +136,7 @@ var styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    maxHeight: Layout.lines(3),
+    height: Layout.lines(3),
     padding: Layout.lines(0.25)
   },
   skipText: {
