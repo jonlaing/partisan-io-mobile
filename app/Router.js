@@ -174,11 +174,11 @@ let Router = {
     };
   },
 
-  chat(threadID, token) {
+  chat(threadID, user, token) {
     return {
       renderScene(navigator) {
         let Chat = require('./Chat');
-        return <Chat threadID={threadID} token={token} navigator={navigator} />;
+        return <Chat threadID={threadID} user={user} token={token} navigator={navigator} />;
       }
     };
   }

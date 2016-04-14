@@ -37,7 +37,9 @@ class CameraRollView extends Component {
       fetchParams.after = this.state.after;
     }
 
-    CameraRoll.getPhotos(fetchParams, this._storePhotos.bind(this), this._logError.bind(this));
+    CameraRoll.getPhotos(fetchParams)
+    .then(data => this._storePhotos(data))
+    .catch(err => this._logError(err));
   }
 
   _storePhotos(data) {

@@ -27,7 +27,7 @@ class FriendList extends Component {
     super(props);
 
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = { friendships: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: true, showFilters: false };
+    this.state = { friendships: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: false, showFilters: false };
   }
 
   componentDidMount() {
@@ -85,6 +85,7 @@ class FriendList extends Component {
             scrollToTop={true}
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
+            enableEmptySections={true}
             refreshControl={
               <RefreshControl
                 refreshing={this.state.isRefreshing}

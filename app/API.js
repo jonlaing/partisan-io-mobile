@@ -20,7 +20,7 @@ function _headers(token, json = true) {
   }
 }
 
-function _root(protocol = 'http://') {
+function _root(protocol = 'https://') {
   if(Config.env.dev()) {
     return `${protocol}localhost:4000/api/v1`;
   } else if (Config.env.prod()) {
@@ -304,9 +304,9 @@ let Api = {
       countSocket(onMessage, onError) {
         // get the ticket first
         _withTicket(token, (ticket) => {
-          // once we get the ticket througha normal http request, open up the socket
+          // once we get the ticket througha normal https request, open up the socket
           // using the ticket for authentication
-          var _socket = new WebSocket(`${_root("ws://")}/notifications/count?key=${ticket.key}`);
+          var _socket = new WebSocket(`${_root("wss://")}/notifications/count?key=${ticket.key}`);
 
           _socket.onmessage = onMessage;
           _socket.onerror = onError;
@@ -332,15 +332,26 @@ let Api = {
         return fetch(`${_root()}/messages/threads/${threadID}`, { headers: _headers(token) });
       },
 
+      send(threadID, text) {
+        let request = new FormData();
+        request.append("body", text);
+
+        return fetch(`${_root()}/messages/threads/${threadID}`, {
+          headers: _headers(token),
+          body: request,
+          method: 'POST'
+        });
+      },
+
       socket(threadID, onMessage, onError) {
         var _socket = null;
         var sendInterval, reopenInterval;
 
         _withTicket(token, (ticket) => {
-          // once we get the ticket througha normal http request, open up the socket
+          // once we get the ticket througha normal https request, open up the socket
           // using the ticket for authentication
           if(!_socket) {
-            _socket = new WebSocket(`${_root("ws://")}/messages/threads/${threadID}/socket?key=${ticket.key}`);
+            _socket = new WebSocket(`${_root("wss://")}/messages/threads/${threadID}/socket?key=${ticket.key}`);
           } else {
             return;
           }

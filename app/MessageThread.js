@@ -35,7 +35,7 @@ class MessageThread extends Component {
   }
 
   _handlePress() {
-    this.props.navigator.push(Router.chat(this.props.thread.thread_user.thread_id, this.props.token));
+    this.props.navigator.push(Router.chat(this.props.thread.thread_user.thread_id, this.props.thread.thread_user.user, this.props.token));
   }
 
   render() {

@@ -28,7 +28,7 @@ class MessageList extends Component {
     this.state = {
       items: [],
       dataSource: ds.cloneWithRows([]),
-      isRefreshing: true
+      isRefreshing: false
     };
   }
 
@@ -60,6 +60,7 @@ class MessageList extends Component {
             scrollToTop={true}
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
+            enableEmptySections={true}
             refreshControl={
               <RefreshControl
                 refreshing={this.state.isRefreshing}

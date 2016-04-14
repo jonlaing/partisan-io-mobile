@@ -26,7 +26,7 @@ class MatchList extends Component {
     super(props);
 
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = { matches: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: true, showFilters: false };
+    this.state = { matches: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: false, showFilters: false };
   }
 
   componentDidMount() {
@@ -37,7 +37,7 @@ class MatchList extends Component {
     var page = refresh ? 1 : this.state.page + 1;
 
     Api.matches(this.props.token).get(page)
-    .then(resp => JSON.parse(resp._bodyInit))
+    .then(resp => resp.json())
     .then(matches => refresh ? matches : this.state.matches.concat(matches).filter((m) => m !== null) ) // either refresh the items or append them
     .then(matches => this.setState({
       matches: matches,
@@ -102,6 +102,7 @@ class MatchList extends Component {
             scrollToTop={true}
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
+            enableEmptySections={true}
             onEndReached={() => this.getMatches()}
             refreshControl={
               <RefreshControl

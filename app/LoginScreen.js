@@ -87,7 +87,7 @@ class LoginScreen extends Component {
           <TouchableHighlight style={styles.submitButton} underlayColor={Colors.actionHighlight2} onPress={this._handleLogin.bind(this)}>
             <Text style={styles.submitText}>Login</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.signUpButton} underlayColor="white" onPress={() => this.props.navigator.replace(Router.signUpScreen())}>
+          <TouchableHighlight style={styles.signUpButton} underlayColor="white" onPress={() => this.props.navigator.push(Router.signUpScreen())}>
             <Text style={styles.signUpText}>Sign up</Text>
           </TouchableHighlight>
         </View>

@@ -37,7 +37,7 @@ class Profile extends Component {
     Api.profile(this.props.token).get(this.props.userID)
     .then(resp => {
       if(resp.status === 200) {
-        return JSON.parse(resp._bodyInit);
+        return resp.json();
       } else {
         throw resp.statusText;
       }

@@ -4,7 +4,7 @@ const _DEV = 0;
 const _PROD = 1;
 
 module.exports = {
-  env: _environment(_DEV)
+  env: _environment(_PROD)
 };
 
 function _environment(env) {

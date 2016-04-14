@@ -34,7 +34,7 @@ class FeedList extends Component {
       items: [],
       dataSource: ds.cloneWithRows([]),
       page: 1,
-      isRefreshing: true,
+      isRefreshing: false,
       menuOpen: false,
       hasFriends: true,
       notificationCount: 0
@@ -77,7 +77,7 @@ class FeedList extends Component {
     var page = refresh ? 1 : this.state.page + 1;
 
     Api.feed(this.props.token).get(page)
-    .then(res => JSON.parse(res._bodyInit))
+    .then(res => res.json())
     .then(data => data.feed_items)
     .then(items => refresh ? items : this.state.items.concat(items) ) // either refresh the items or append them
     .then(items => this.setState({
@@ -162,6 +162,7 @@ class FeedList extends Component {
             scrollToTop={true}
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
+            enableEmptySections={true}
             onEndReached={() => this.getFeed()}
             refreshControl={
               <RefreshControl

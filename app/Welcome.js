@@ -3,6 +3,7 @@
 import React, {
   StyleSheet,
   Component,
+  Image,
   TouchableHighlight,
   View,
   Text
@@ -15,20 +16,20 @@ import Colors from './Colors';
 class Welcome extends Component {
   render() {
     return (
-      <View style={styles.container}>
+      <Image style={styles.container} source={require('./images/login_bg.png')} resizeMode="stretch">
         <View style={styles.logoContainer}>
-          <View style={styles.logo}></View>
+          <Image style={styles.logo} source={require('./images/logo_grey_lg.png')}/>
         </View>
         <Text style={styles.headerText}>Welcome to Partisan.IO</Text>
         <View style={styles.buttonContainer}>
-          <TouchableHighlight style={styles.signUpButton} underlayColor={Colors.actionHighlight} onPress={() => this.props.navigator.push(Router.signUpScreen())}>
+          <TouchableHighlight style={styles.signUpButton} underlayColor='transparent' onPress={() => this.props.navigator.push(Router.signUpScreen())}>
             <Text style={styles.signUpButtonText}>Sign Up</Text>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.loginButton} underlayColor={Colors.actionHighlight2} onPress={() => this.props.navigator.push(Router.loginScreen())}>
+          <TouchableHighlight style={styles.loginButton} underlayColor='transparent' onPress={() => this.props.navigator.push(Router.loginScreen())}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableHighlight>
         </View>
-      </View>
+      </Image>
     );
   }
 }
@@ -39,21 +40,35 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     padding: Layout.lines(2),
-    backgroundColor: Colors.lightGrey
+    backgroundColor: Colors.lightGrey,
+    width: null,
+    height: null
+  },
+  backgroundContainer: {
+    position: "absolute",
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    top: 0,
+    left: 0
+  },
+  background: {
+    flex: 1,
+    resizeMode: 'contain'
   },
   logoContainer: {
     justifyContent: 'center',
     alignItems: 'center'
   },
   logo: {
-    height: 200,
-    width: 200,
-    backgroundColor: Colors.grey
   },
   headerText: {
-    fontSize: 18,
+    fontSize: Layout.lines(1.5),
+    fontWeight: '200',
     textAlign: 'center',
-    color: Colors.darkGrey
+    color: 'white',
+    backgroundColor: 'transparent'
   },
   buttonContainers: {
     flex: 1,
@@ -63,24 +78,26 @@ let styles = StyleSheet.create({
     padding: Layout.lines(1),
     marginBottom: Layout.lines(2),
     borderRadius: 4,
-    backgroundColor: Colors.action
+    backgroundColor: Colors.base
   },
   signUpButtonText: {
     fontSize: 24,
+    fontWeight: '200',
     textAlign: 'center',
     color: 'white'
   },
   loginButton: {
     padding: Layout.lines(1),
     borderRadius: 4,
-    borderColor: Colors.action,
+    borderColor: Colors.base,
     borderWidth: 1
   },
   loginButtonText: {
     fontSize: 24,
+    fontWeight: '200',
     textAlign: 'center',
-    color: Colors.action
-  },
+    color: Colors.base
+  }
 });
 
 module.exports = Welcome;
