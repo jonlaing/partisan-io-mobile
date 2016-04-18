@@ -92,4 +92,4 @@ class Partisan extends Component {
   }
 }
 
-AppRegistry.registerComponent('Partisan', () => Partisan);
+AppRegistry.registerComponent('Partisan.IO', () => Partisan);
