@@ -154,4 +154,87 @@ describe('Api', () => {
       });
     });
   });
+
+  describe('feed', () => {
+    describe('get', () => {
+      pit('successfully gets feed', () => {
+        fetch = jest.fn(() => successPromise(
+           JSON.stringify({
+             feed_items: [
+               { body: "item 1" },
+               { body: "item 2" },
+               { body: "item 3" }
+             ]
+           }),
+           { status: 200 }
+        ));
+
+        return Api.feed("token").get(0)
+        .then(items => {
+          expect(items.length).toEqual(3);
+          fetch.mockClear();
+        })
+        .catch(err => {
+          console.log(err);
+          expect(err).toBeUndefined();
+          fetch.mockClear();
+        });
+      });
+    });
+  });
+
+  describe('posts', () => {
+    describe('get', () => {
+      pit('successfully gets post', () => {
+        let post = {
+          post: { body: "body" },
+          user: { username: "user1" },
+          imageAttachment: { url: "whatever" },
+          liked: true,
+          like_count: 3
+        };
+
+        fetch = jest.fn(() => successPromise( JSON.stringify(post), { status: 200 } ));
+
+        return Api.posts("token").get(4)
+        .then(data => {
+          expect(data.post.body).toEqual(post.post.body);
+          expect(data.user.username).toEqual(post.user.username);
+          expect(data.imageAttachment.url).toEqual(post.imageAttachment.url);
+          expect(data.liked).toEqual(true);
+          expect(data.like_count).toEqual(post.like_count);
+          fetch.mockClear();
+        })
+        .catch(err => {
+          console.log(err);
+          expect(err).toBeUndefined();
+          fetch.mockClear();
+        });
+      });
+    });
+
+    describe('like', () => {
+      pit('successfully likes post', () => {
+        let like = {
+          like_count: 3,
+          liked: true
+        };
+
+        fetch = jest.fn(() => successPromise( JSON.stringify(like), { status: 200 } ));
+
+        return Api.posts("token").like(4)
+        .then(data => {
+          expect(data.like_count).toEqual(3);
+          expect(data.liked).toEqual(true);
+          fetch.mockClear();
+        })
+        .catch(err => {
+          console.log(err);
+          expect(err).toBeUndefined();
+          fetch.mockClear();
+        });
+
+      });
+    });
+  });
 });

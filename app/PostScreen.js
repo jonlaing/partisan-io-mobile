@@ -30,13 +30,11 @@ class PostScreen extends Component {
 
   componentDidMount() {
     Api.posts(this.props.token).get(this.props.postID)
-    .then(res => res.json())
     .then((data) => { console.log(data); this.setState({ post: data.post, user: data.user, imageAttachment: data.image_attachment, liked: data.liked, likeCount: data.like_count }); });
   }
 
   _handleLike() {
     Api.posts(this.props.token).like(this.props.postID)
-    .then(res => res.json())
     .then(data => this.setState({likeCount: data.like_count, liked: data.liked}))
     .catch(err => console.log(err));
   }

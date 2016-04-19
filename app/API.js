@@ -97,7 +97,9 @@ let Api = {
   feed(token) {
     return ({
       get(page) {
-        return fetch(`${_root()}/feed?page=${page}`, { headers: _headers(token) });
+        return fetch(`${_root()}/feed?page=${page}`, { headers: _headers(token) })
+          .then(res => res.json())
+          .then(data => data.feed_items);
       }
     });
   },
@@ -106,14 +108,16 @@ let Api = {
   posts(token) {
     return ({
       get(id) {
-        return fetch(`${_root()}/posts/${id}`, { headers: _headers(token) });
+        return fetch(`${_root()}/posts/${id}`, { headers: _headers(token) })
+          .then(res => res.json());
       },
 
       like(id) {
         return fetch(`${_root()}/posts/${id}/likes/`, {
           method: 'POST',
           headers: _headers(token)
-        });
+        })
+        .then(res => res.json());
       },
 
       create(body, attachments = []) {
