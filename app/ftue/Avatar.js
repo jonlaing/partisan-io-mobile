@@ -39,7 +39,7 @@ class AvatarFTUE extends Component {
     this.setState({uploading: true});
 
     Api.profile(this.props.token).avatarUpload(this.state.uri)
-    .then(resp => console.log("success:", resp))
+    .then(() => console.log("success!"))
     .then(() => this.setState({uploading: false}))
     .then(() => this.props.navigator.push(Router.feed(this.props.token)))
     .catch(err => console.log("error:", err));

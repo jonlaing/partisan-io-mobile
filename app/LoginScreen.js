@@ -18,9 +18,6 @@ import Router from './Router';
 import Layout from './Layout';
 import Colors from './Colors';
 
-const _SUCCESS = 200;
-const _UNAUTHORIZED = 401;
-
 class LoginScreen extends Component {
   constructor(props) {
     super(props);
@@ -28,33 +25,31 @@ class LoginScreen extends Component {
     this.state = { email: "", pw: "", error: ""};
   }
 
-  _handleLogin() {
+  handleLogin() {
     Api.auth().login(this.state.email, this.state.pw)
-    .then((resp) => {
-      if(resp.status === _SUCCESS) {
-        let data = JSON.parse(resp._bodyInit);
-        this._handleSuccess(data.token, data.user.username, data.user.avatar_thumbnail_url);
-      } else {
-        this._handleFail(resp);
-      }
-    })
-    .catch(err => console.log("login error: " + err));
+    .then(data => this.handleSuccess(data.token, data.user.username, data.user.avatar_thumbnail_url))
+    .catch(err => this.handleFail(err));
   }
 
-  _handleSuccess(token, username, avatarUrl) {
+  handleSuccess(token, username, avatarUrl) {
     AsyncStorage.multiSet([ ['AUTH_TOKEN', token], ['username', username], ['avatarUrl', avatarUrl] ])
       .then(() => this.props.navigator.replace(Router.feed(token)))
       .catch((err) => console.log('Error setting AUTH_TOKEN: ' + err));
   }
 
-  _handleFail(resp) {
-    if(resp.status === _UNAUTHORIZED) {
-      this.setState({error: "Incorrect username or password"});
+  handleFail(resp) {
+    // doing it this way because it's easier to test
+    let error = "";
+    if(resp.status === 401) {
+      error = "Incorrect username or password";
     } else {
-      this.setState({error: "An unknown error has occurred"});
+      error = "An unknown error has occurred";
     }
 
+    this.setState({error: error});
     console.log(resp);
+
+    return error;
   }
 
   render() {
@@ -84,7 +79,7 @@ class LoginScreen extends Component {
           />
         </View>
         <View style={styles.actionContainer}>
-          <TouchableHighlight style={styles.submitButton} underlayColor={Colors.actionHighlight2} onPress={this._handleLogin.bind(this)}>
+          <TouchableHighlight style={styles.submitButton} underlayColor={Colors.actionHighlight2} onPress={this.handleLogin.bind(this)}>
             <Text style={styles.submitText}>Login</Text>
           </TouchableHighlight>
           <TouchableHighlight style={styles.signUpButton} underlayColor="white" onPress={() => this.props.navigator.push(Router.signUpScreen())}>

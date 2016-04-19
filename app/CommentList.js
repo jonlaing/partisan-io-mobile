@@ -30,7 +30,7 @@ class CommentList extends Component {
 
   _getComments() {
     Api.comments(this.props.token).list(this.props.postID)
-    .then((res) => JSON.parse(res._bodyInit))
+    .then((res) => res.json())
     .then((data) => this.setState({comments: data.comments}))
     .catch(err => console.log(err));
   }

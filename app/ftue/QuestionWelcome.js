@@ -27,7 +27,9 @@ class QuestionWelcome extends Component {
           </Text>
         </View>
         <TouchableHighlight style={styles.getStarted} onPress={() => { this.props.navigator.push(Router.questionScreen(this.props.token)); }}>
-          <Text style={styles.getStartedText}>Get Started!</Text>
+          <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>Get Started!</Text>
+          </View>
         </TouchableHighlight>
       </View>
     );
@@ -71,10 +73,12 @@ let styles = StyleSheet.create({
     color: 'white',
     overflow: 'visible'
   },
-  getStarted: {
+  getStartedContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
+  },
+  getStarted: {
     padding: Layout.lines(1),
     height: Layout.lines(4),
     borderWidth: 1,

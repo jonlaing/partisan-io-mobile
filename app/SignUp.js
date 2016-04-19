@@ -3,6 +3,8 @@
 import React, {
   AsyncStorage,
   Component,
+  ActivityIndicatorIOS,
+  LayoutAnimation,
   TouchableHighlight,
   TextInput,
   StyleSheet,
@@ -22,11 +24,27 @@ class SignUp extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { email: '', username: '', zip: '', password: '', passwordConfirm: '', index: 0, errors: null };
+    this.state = {
+      email: '',
+      username: '',
+      zip: '',
+      password: '',
+      passwordConfirm: '',
+      index: 0,
+      errors: null,
+      isSubmitting: false
+    };
+  }
+
+  componentDidMount() {
+    LayoutAnimation.spring();
   }
 
   _handleFocus(index) {
-    return () => { this.setState({index: index}); };
+    return () => {
+      this.setState({index: index});
+      LayoutAnimation.easeInEaseOut();
+    };
   }
 
   _handleSubmit() {
@@ -38,31 +56,35 @@ class SignUp extends Component {
       passwordConfirm: this.state.passwordConfirm
     };
 
+    this.setState({isSubmitting: true});
+
     Api.auth().signUp(user)
-    .then((resp) => {
-      if(resp.status === _SUCCESS) {
-        let data = JSON.parse(resp._bodyInit);
-        this._handleSuccess(data.token);
-      } else {
-        this._handleFail(resp);
-      }
-    })
-    .then(() => this.setState({index: 0}))
-    .catch((err) => console.log("ERROR:", err));
+    .then(data => this._handleSuccess(data.token, data.user.username))
+    .then(() => this.setState({index: 0, isSubmitting: false}))
+    .catch((err) => this._handleFail(err));
   }
 
-  _handleSuccess(token) {
-    AsyncStorage.setItem('AUTH_TOKEN', token)
+  _handleSuccess(token, username) {
+    AsyncStorage.multiSet([
+      ['AUTH_TOKEN', token],
+      ['username', username]
+    ])
       .then(() => this.props.navigator.replace(Router.questionWelcome(token)))
       .catch((err) => console.log('Error setting AUTH_TOKEN: ' + err));
   }
 
-  _handleFail(resp) {
+  _handleFail(err) {
+    let resp = err.response;
+
     if(resp.status === _VALIDATIONERROR) {
-      this.setState({errors: JSON.parse(resp._bodyInit)});
+      resp.json()
+      .then(errors => this.setState({errors: errors, index: 0, isSubmitting: false}) )
+      .catch(error => this.setState({error: "An unknown error has occurred: " + error, index: 0}));
     } else {
-      this.setState({error: "An unknown error has occurred"});
+      this.setState({error: "An unknown error has occurred", index: 0, isSubmitting: false});
     }
+
+    this.refs.firstTextInput.focus();
 
     console.log(resp);
   }
@@ -82,6 +104,7 @@ class SignUp extends Component {
           autoCorrect={false}
           autoCapitalize="none"
           onFocus={this._handleFocus(0)}
+          ref="firstTextInput"
         />
         <TextInput
           style={this._inputStyle(1)}
@@ -121,14 +144,33 @@ class SignUp extends Component {
           onFocus={this._handleFocus(4)}
         />
         <View style={styles.actionContainer}>
-          <TouchableHighlight style={styles.submitButton} underlayColor={Colors.actionHighlight2} onPress={this._handleSubmit.bind(this)}>
-            <Text style={styles.submitText}>Submit</Text>
-          </TouchableHighlight>
+          {this._submitButton()}
           <TouchableHighlight style={styles.cancelButton} underlayColor="white" onPress={() => this.props.navigator.pop()}>
             <Text style={styles.cancelText}>Cancel</Text>
           </TouchableHighlight>
         </View>
       </View>
+    );
+  }
+
+  _submitButton() {
+    if(this.state.isSubmitting === true) {
+      return (
+        <TouchableHighlight style={styles.submitButton} underlayColor={Colors.actionHighlight2} onPress={this._handleSubmit.bind(this)}>
+          <View style={styles.submitButtonInner}>
+            <ActivityIndicatorIOS animating={this.state.isSubmitting} color={Colors.darkGrey} size="small" />
+            <Text style={styles.submitText}>Submit</Text>
+          </View>
+        </TouchableHighlight>
+      );
+    }
+
+    return (
+      <TouchableHighlight style={styles.submitButton} underlayColor={Colors.actionHighlight2} onPress={this._handleSubmit.bind(this)}>
+        <View style={styles.submitButtonInner}>
+          <Text style={styles.submitText}>Submit</Text>
+        </View>
+      </TouchableHighlight>
     );
   }
 
@@ -203,7 +245,15 @@ let styles = StyleSheet.create({
     height: Layout.lines(3),
     marginRight: Layout.lines(0.5)
   },
+  submitButtonInner: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
   submitText: {
+    flex: 2,
+    marginLeft: Layout.lines(1),
     textAlign: 'center',
     color: Colors.action,
     fontSize: 18

@@ -5,6 +5,10 @@ import moment from 'moment';
 
 import Config from './Config';
 
+// to check what kind of request this is
+const _HTTP = 0;
+const _SOCK = 1;
+
 function _headers(token, json = true) {
   if(token !== undefined) {
     return {
@@ -20,15 +24,37 @@ function _headers(token, json = true) {
   }
 }
 
-function _root(protocol = 'https://') {
+function _root(prot = _HTTP) {
   if(Config.env.dev()) {
-    return `${protocol}localhost:4000/api/v1`;
+    return `${_protocol(prot)}localhost:4000/api/v1`;
   } else if (Config.env.prod()) {
-    return `${protocol}www.partisan.io/api/v1`;
+    return `${_protocol(prot)}www.partisan.io/api/v1`;
   } else {
     throw "UNKNOWN ENVIRONMENT: CANNOT PERFORM NETWORK REQUESTS";
   }
 }
+
+function _protocol(prot) {
+  switch(prot) {
+    case _HTTP:
+      if(Config.env.dev()) {
+        return "http://";
+      } else {
+        return "https://";
+      }
+      break;
+    case _SOCK:
+      if(Config.env.dev()) {
+        return "ws://";
+      } else {
+        return "wss://";
+      }
+      break;
+    default:
+      return "https://";
+  }
+}
+
 
 
 let Api = {
@@ -42,7 +68,8 @@ let Api = {
             email: email,
             password: pw
           })
-        });
+        })
+        .then(resp => _processJSON(resp));
       },
 
       logout() {
@@ -60,7 +87,8 @@ let Api = {
             password: user.password,
             password_confirm: user.passwordConfirm
           })
-        });
+        })
+        .then(resp => _processJSON(resp));
       }
     });
   },
@@ -306,7 +334,7 @@ let Api = {
         _withTicket(token, (ticket) => {
           // once we get the ticket througha normal https request, open up the socket
           // using the ticket for authentication
-          var _socket = new WebSocket(`${_root("wss://")}/notifications/count?key=${ticket.key}`);
+          var _socket = new WebSocket(`${_root(_SOCK)}/notifications/count?key=${ticket.key}`);
 
           _socket.onmessage = onMessage;
           _socket.onerror = onError;
@@ -351,7 +379,7 @@ let Api = {
           // once we get the ticket througha normal https request, open up the socket
           // using the ticket for authentication
           if(!_socket) {
-            _socket = new WebSocket(`${_root("wss://")}/messages/threads/${threadID}/socket?key=${ticket.key}`);
+            _socket = new WebSocket(`${_root(_SOCK)}/messages/threads/${threadID}/socket?key=${ticket.key}`);
           } else {
             return;
           }
@@ -432,6 +460,18 @@ function _withTicket(token, success, err) {
     .then(res => res.json())
     .then(data => success(data))
     .catch(e => err(e));
+}
+
+function _processJSON(resp) {
+  // If the status is bad, throw a well-formatted error
+  if(!_ok(resp.status)) {
+    var error = new Error(resp.statusText);
+    error.response = resp;
+    throw error;
+  }
+
+  // otherwise return the JSON
+  return resp.json();
 }
 
 let _ok = (status) => status >= 200 && status < 300;

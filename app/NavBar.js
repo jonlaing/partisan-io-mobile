@@ -51,7 +51,6 @@ NavBar.defaultProps = {
 const styles = StyleSheet.create({
   navBar: {
     height: Layout.lines(4),
-    padding: Layout.lines(0.75),
     position: 'absolute',
     top: 0,
     left: 0,
@@ -63,12 +62,19 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   navBarTitle: {
-    flex: 1
+    flex: 1,
+    padding: Layout.lines(0.75)
   },
   navBarTitleText: {
     fontSize: 22,
     textAlign: 'center',
     color: 'white'
+  },
+  navBarLeft: {
+    padding: Layout.lines(0.75)
+  },
+  navBarRight: {
+    padding: Layout.lines(0.75)
   },
   badgeLeft: {
     position: 'absolute',

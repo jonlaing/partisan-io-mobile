@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start"
+    "test": "jest"
   },
   "dependencies": {
     "@exponent/react-native-navigator": "^0.4.1",
@@ -16,7 +16,8 @@
     "react-native-keyboard-spacer": "^0.1.6",
     "react-native-markdown": "^0.1.1",
     "react-native-side-menu": "^0.18.0",
-    "react-native-vector-icons": "^1.1.1"
+    "react-native-vector-icons": "^1.1.1",
+    "react-dom": "~0.14.0"
   },
   "eslintConfig": {
     "plugins": [
@@ -31,6 +32,7 @@
       "modules": true
     },
     "rules": {
+      "camelcase": ["error", {"properties": "never"}],
       "no-use-before-define": 0,
       "no-underscore-dangle": 0,
       "quotes": [
@@ -38,5 +40,28 @@
         "single"
       ]
     }
+  },
+  "devDependencies": {
+    "babel-jest": "^9.0.0",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "fetch-mock": "^4.4.0",
+    "jest-cli": "^11.0.2",
+    "react-addons-test-utils": "~0.14.0"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/react-native/jestSupport/preprocessor.js",
+    "setupEnvScriptFile": "<rootDir>node_modules/react-native/jestSupport/env.js",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "packager/react-packager/src/Activity/"
+    ],
+    "testFileExtensions": [
+      "js"
+    ],
+    "unmockedModulePathPatterns": [
+      "promise",
+      "source-map"
+    ]
   }
 }

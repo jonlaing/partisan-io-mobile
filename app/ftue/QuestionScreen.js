@@ -40,36 +40,45 @@ class QuestionScreen extends Component {
 
   componentDidMount() {
     Api.questions(this.props.token).get()
-    .then((res) => JSON.parse(res._bodyInit))
+    .then((res) => res.json())
     .then((data) => this.setState({currQuestions: [this.state.questions[0]], questions: this.state.questions.concat(data.questions) }))
     .catch(err => console.log(err));
   }
 
   _getQuestions(index = 0) {
+    console.log("getting questions");
     Api.questions(this.props.token).get()
-    .then((res) => {
-      if(res.status === 200) {
-        let data = JSON.parse(res._bodyInit);
-        this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions), index: index });
-      } else {
+    .then((resp) => {
+      if(resp.status !== 200) {
         console.log("problem with questions");
+        var error = new Error(resp.statusText);
+        error.response = resp;
+        throw error;
+      }
+
+      return resp.json();
+    })
+    .then(data => this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions), index: index }))
+    .catch(err => {
+      if(err.response.status === 404) {
+        // need a slicker way of dealing with this
         this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
       }
-    })
-    .catch(err => console.log(err));
+      console.log(err.response);
+    });
   }
 
   _handleFlick(q) {
     return (agree) => {
       let index = this.state.index + 1;
 
-      if((index + 2) % 4 === 0) {
-        this._getQuestions(index);
+      if(index > _MAX_QUESTIONS + 2) {
+        this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
         return;
       }
 
-      if(index >= _MAX_QUESTIONS + 2) {
-        this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
+      if((index - 2) % 4 === 0) {
+        this._getQuestions(index);
       }
 
       Api.questions(this.props.token).answer(q, agree)
