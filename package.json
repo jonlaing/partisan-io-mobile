@@ -32,7 +32,12 @@
       "modules": true
     },
     "rules": {
-      "camelcase": ["error", {"properties": "never"}],
+      "camelcase": [
+        "error",
+        {
+          "properties": "never"
+        }
+      ],
       "no-use-before-define": 0,
       "no-underscore-dangle": 0,
       "quotes": [
@@ -42,15 +47,16 @@
     }
   },
   "devDependencies": {
-    "babel-jest": "^9.0.0",
+    "babel-jest": "^9.0.2",
     "babel-preset-es2015": "*",
     "babel-preset-react": "*",
     "fetch-mock": "^4.4.0",
     "jest-cli": "^11.0.2",
-    "react-addons-test-utils": "~0.14.0"
+    "react-addons-test-utils": "~0.14.0",
+    "react-native-mock": "0.0.7"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/react-native/jestSupport/preprocessor.js",
+    "scriptPreprocessor": "<rootDir>/jestSupport/preprocessor.js",
     "setupEnvScriptFile": "<rootDir>/jestSupport/env.js",
     "testPathIgnorePatterns": [
       "/node_modules/",
