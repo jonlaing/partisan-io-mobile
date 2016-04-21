@@ -25,13 +25,6 @@ class ProfileFTUEBirthdate extends Component {
 
   _handleSubmit() {
     Api.profile(this.props.token).updateBirthdate(this.state.birthdate)
-    .then((resp) => {
-      if(resp.status !== 500) {
-        this.props.navigator.push(Router.profileFTUEGender(this.props.token));
-      } else {
-        this.setState({error: true});
-      }
-    })
     .catch((err) => {
       console.log(err);
       this.setState({error: true});

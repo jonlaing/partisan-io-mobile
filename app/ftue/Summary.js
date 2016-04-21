@@ -26,13 +26,6 @@ class ProfileFTUESummary extends Component {
 
   _handleSubmit() {
     Api.profile(this.props.token).updateSummary(this.state.summary)
-    .then((resp) => {
-      if(resp.status !== 500) {
-        this.props.navigator.push(Router.profileFTUELookingFor(this.props.token));
-      } else {
-        this.setState({error: true});
-      }
-    })
     .catch((err) => {
       console.log(err);
       this.setState({error: true});

@@ -51,7 +51,7 @@
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/react-native/jestSupport/preprocessor.js",
-    "setupEnvScriptFile": "<rootDir>node_modules/react-native/jestSupport/env.js",
+    "setupEnvScriptFile": "<rootDir>/jestSupport/env.js",
     "testPathIgnorePatterns": [
       "/node_modules/",
       "packager/react-packager/src/Activity/"

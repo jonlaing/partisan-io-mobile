@@ -36,8 +36,6 @@ class FriendList extends Component {
 
   getFriendships() {
     Api.friendships(this.props.token).list()
-    .then(resp => resp.json())
-    .then(json => json.friendships)
     .then(friendships => this.setState({
       friendships: friendships,
       dataSource: this.state.dataSource.cloneWithRows(friendships),

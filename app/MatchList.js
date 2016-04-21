@@ -37,7 +37,6 @@ class MatchList extends Component {
     var page = refresh ? 1 : this.state.page + 1;
 
     Api.matches(this.props.token).get(page)
-    .then(resp => resp.json())
     .then(matches => refresh ? matches : this.state.matches.concat(matches).filter((m) => m !== null) ) // either refresh the items or append them
     .then(matches => this.setState({
       matches: matches,

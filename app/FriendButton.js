@@ -25,16 +25,11 @@ class FriendButton extends Component {
 
   componentDidMount() {
     Api.friendships(this.props.token).get(this.props.userID)
-    .then((res) => {
-      if(res.status === NOTFOUND) {
-        this.setState({fetched: true});
-        return {};
-      }
-
-      return res.json();
-    })
     .then(data => this.setState({friendship: data, fetched: true}))
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      this.setState({fetched: true});
+    });
   }
 
   _handlePress() {
@@ -45,7 +40,6 @@ class FriendButton extends Component {
       .catch(err => console.log(err));
     } else {
       Api.friendships(this.props.token).request(this.props.userID)
-      .then((res) => res.json())
       .then((data) => this.setState({friendship: data}))
       .catch(err => console.log(err));
     }

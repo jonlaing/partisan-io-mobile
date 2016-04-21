@@ -38,7 +38,6 @@ class NotificationScreen extends Component {
 
   _getNotifs() {
     Api.notifications(this.props.token).list()
-    .then(res => res.json())
     .then(notifs => this.setState({ items: notifs.notifications, dataSource: this.state.dataSource.cloneWithRows(notifs.notifications)}))
     .catch(err => console.log(err));
   }

@@ -35,13 +35,6 @@ class Profile extends Component {
 
   _fetchProfile() {
     Api.profile(this.props.token).get(this.props.userID)
-    .then(resp => {
-      if(resp.status === 200) {
-        return resp.json();
-      } else {
-        throw resp.statusText;
-      }
-    })
     .then(data => this.setState({ user: data.user, profile: data.profile, match: data.match }))
     .catch(err => console.log(err));
   }
