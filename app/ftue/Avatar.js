@@ -5,6 +5,8 @@ import React, {
   StyleSheet,
   TouchableHighlight,
   ActivityIndicatorIOS,
+  ImageEditor,
+  ImageStore,
   Image,
   View,
   Text
@@ -20,33 +22,79 @@ import Colors from '../Colors';
 
 import CameraRollView from '../CameraRollView';
 
+const _cropData = {
+  offset: { x: 0, y: 0 },
+  size: { width: 1500, height: 1500 }, // max size on server. most images coming from camera roll are bigger than that
+  displaySize: { width: 1500, height: 1500 }, // max size on server. most images coming from camera roll are bigger than that
+  resizeMode: 'contain'
+};
+
+
 class AvatarFTUE extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { showCameraRoll: false, uri: '', uploading: false };
+    this.state = { showCameraRoll: false, photo: {}, uploading: false, error: false };
   }
 
-  _handleSelectPhoto(uris) {
-    this.setState({showCameraRoll: false, uri: uris[0]});
+  _handleSelectPhoto(photos) {
+    this.setState({showCameraRoll: false, photo: photos[0]});
   }
 
   _handleSubmit() {
-    if(this.state.uri.length < 1) {
+    if(this.state.photo.uri === undefined) {
       return; // TODO: Error handling
     }
 
     this.setState({uploading: true});
 
-    Api.profile(this.props.token).avatarUpload(this.state.uri)
+    if(this.state.photo.width > 1500 || this.state.photo.height > 1500) {
+      console.log("cropping");
+      ImageEditor.cropImage(
+        this.state.photo.uri,
+        _cropData,
+        (uri) => this._uploadPhoto(uri, true),
+        (err) => this._handleError(err)
+      );
+      return;
+    }
+
+    this._uploadPhoto(this.state.photo.uri);
+  }
+
+  _uploadPhoto(uri, cropped = false) {
+    Api.profile(this.props.token).avatarUpload(uri)
     .then(() => console.log("success!"))
     .then(() => this.setState({uploading: false}))
     .then(() => this.props.navigator.push(Router.feed(this.props.token)))
-    .catch(err => console.log("error:", err));
+    .then(() => {
+      if(cropped === true) {
+        console.log("removing image from store");
+        ImageStore.removeImageForTag(uri);
+      }
+    })
+    .catch(err => this._handleError(err));
+  }
+
+
+  _handleError() {
+    this.setState({ error: true, uploading: false });
+  }
+
+  _showError() {
+    if(this.state.error !== true) {
+      return <View style={{flex: 1}} />;
+    }
+
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>An error has occurred, please try again</Text>
+      </View>
+    );
   }
 
   _previewImage() {
-    if(this.state.uri.length < 1) {
+    if(this.state.photo.uri === undefined) {
       return (
         <TouchableHighlight style={styles.previewContainer} onPress={() => this.setState({showCameraRoll: true})}>
           <View style={styles.preview} />
@@ -56,7 +104,7 @@ class AvatarFTUE extends Component {
 
     return (
       <TouchableHighlight style={styles.previewContainer} onPress={() => this.setState({showCameraRoll: true})}>
-        <Image source={{ uri: this.state.uri }} style={styles.preview} />
+        <Image source={{ uri: this.state.photo.uri }} style={styles.preview} />
       </TouchableHighlight>
     );
   }
@@ -86,7 +134,11 @@ class AvatarFTUE extends Component {
         <View style={styles.container}>
           <Text style={styles.header}>Upload an Avatar</Text>
           {this._previewImage()}
+          {this._showError()}
           {this._submitButton()}
+          <TouchableHighlight style={styles.skipButton} onPress={() => this.props.navigator.push(Router.feed(this.props.token))}>
+            <Text style={styles.skipButtonText}>Skip this step</Text>
+          </TouchableHighlight>
         </View>
         <CameraRollView show={this.state.showCameraRoll} onFinish={this._handleSelectPhoto.bind(this)}/>
       </View>
@@ -144,6 +196,27 @@ let styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingLeft: Layout.lines(2)
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: Layout.lines(0.5),
+    marginVertical: Layout.lines(1),
+    backgroundColor: Colors.accent
+  },
+  errorText: {
+    textAlign: 'center',
+    color: 'white'
+  },
+  skipButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  skipButtonText: {
+    textAlign: 'center',
+    color: Colors.darkGrey
   }
 });
 

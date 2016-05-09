@@ -52,13 +52,13 @@ class CameraRollView extends Component {
     console.log(err);
   }
 
-  _selectImage(uri) {
+  _selectImage(photo) {
     let selected = this.state.selected;
 
     if(this.props.multiple === true) {
-      selected.push(uri);
+      selected.push(photo);
     } else {
-      selected = [uri];
+      selected = [photo];
     }
 
     this.setState({ selected: selected });
@@ -71,7 +71,7 @@ class CameraRollView extends Component {
 
   _renderImage(photo) {
     return (
-      <TouchableHighlight key={photo.uri} onPress={() => this._selectImage(photo.uri)}>
+      <TouchableHighlight key={photo.uri} onPress={() => this._selectImage(photo)}>
         <Image source={{ uri: photo.uri }} style={styles.photo} />
       </TouchableHighlight>
     );

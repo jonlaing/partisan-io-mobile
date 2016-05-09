@@ -4,6 +4,10 @@ import Config from '../Config';
 const _HTTP = 0;
 const _SOCKET = 1;
 
+const _millisecond = 1;
+const _second = 1000 * _millisecond;
+const _minute = 60 * _second;
+
 export let protocols = { http: _HTTP, ws: _SOCKET };
 
 export let ok = (status) => status >= 200 && status < 300;
@@ -85,6 +89,9 @@ export function xhrUpload(formData, url, token, method = 'POST') {
         reject(xhr.statusText);
       }
     };
+
+    xhr.timeout = _minute;
+    xhr.ontimeout = reject;
 
     xhr.open(method, url);
     xhr.setRequestHeader( 'X-Auth-Token', token);
