@@ -9,15 +9,12 @@ import React, {
   Text
 } from 'react-native';
 
-import SideMenuNav from 'react-native-side-menu';
 import ExNavigator from '@exponent/react-native-navigator';
 
 import Api from './Api';
 import Layout from './Layout';
 import Colors from './Colors';
 
-import SideMenu from './SideMenu';
-import NavBarMain from './NavBarMain';
 import FriendRow from './FriendRow';
 import NoFriends from './NoFriends';
 
@@ -41,10 +38,6 @@ class FriendList extends Component {
       isRefreshing: false
     }))
     .catch(err => {this.setState({isRefreshing: false}); console.log("error:", err); });
-  }
-
-  _handleHamburger() {
-    this.refs.sidemenu.openMenu(true);
   }
 
   _renderRow(friendship) {
@@ -74,35 +67,27 @@ class FriendList extends Component {
 
   render() {
     return (
-      <SideMenuNav ref="sidemenu" menu={<SideMenu navigator={this.props.navigator} token={this.props.token} />}>
-        <View style={styles.container}>
-          {this._searchFilters()}
-          {this._noFriends()}
-          <ListView
-            scrollToTop={true}
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
-            enableEmptySections={true}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.isRefreshing}
-                onRefresh={() => {
-                  this.getFriendships(true);
-                  this.setState({isRefreshing: true});
-                }}
-                tintColor="rgb(191,191,191)"
-                title="Loading..."
-              />
-            }
-          />
-        </View>
-        <NavBarMain
-          token={this.props.token}
-          navigator={this.props.navigator}
-          onLogoPress={this._handleHamburger.bind(this)}
-          currentTab="friends"
+      <View style={styles.container}>
+        {this._searchFilters()}
+        {this._noFriends()}
+        <ListView
+          scrollToTop={true}
+          dataSource={this.state.dataSource}
+          renderRow={this._renderRow.bind(this)}
+          enableEmptySections={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={() => {
+                this.getFriendships(true);
+                this.setState({isRefreshing: true});
+              }}
+              tintColor="rgb(191,191,191)"
+              title="Loading..."
+            />
+          }
         />
-      </SideMenuNav>
+      </View>
     );
   }
 
@@ -124,7 +109,6 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     backgroundColor: Colors.lightGrey,
-    paddingTop: Layout.lines(7),
     paddingHorizontal: Layout.lines(0.75)
   },
   filterContainer: {

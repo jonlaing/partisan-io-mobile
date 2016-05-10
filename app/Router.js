@@ -3,6 +3,15 @@
 import React from 'react-native';
 
 let Router = {
+  mainScreen(token) {
+    return {
+      renderScene(navigator) {
+        let MainScreen = require('./MainScreen');
+        return <MainScreen token={token} navigator={navigator} />;
+      }
+    };
+  },
+
   welcomeScreen() {
     return {
       renderScene(navigator) {
@@ -156,7 +165,7 @@ let Router = {
     };
   },
 
-  notificationScreen(token) {
+  notifications(token) {
     return {
       renderScene(navigator) {
         let NotificationScreen = require('./NotificationScreen');

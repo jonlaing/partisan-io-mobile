@@ -42,6 +42,8 @@ class NotificationRow extends Component {
           return "@" + username + " tagged you in a " + recordType;
         case "like":
           return "@" + username + " liked your " + recordType;
+        case "friendship":
+          return "@" + username + " accepted your friendship";
         default:
           return "Crazy notification...";
     }
@@ -58,6 +60,10 @@ class NotificationRow extends Component {
           this.props.navigator.push(Router.postScreen(record.record_id, this.props.token));
         }
         break;
+      case "friendship":
+              console.log(record);
+              this.props.navigator.push(Router.profile(this.props.token, record.friend_id));
+              break;
       default:
         break;
     }

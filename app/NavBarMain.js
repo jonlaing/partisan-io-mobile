@@ -10,11 +10,9 @@ import React, {
   Text
 } from 'react-native';
 
-import ExNavigator from '@exponent/react-native-navigator';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Api from './Api';
-import Router from './Router';
 
 import Layout from './Layout';
 import Colors from './Colors';
@@ -77,26 +75,26 @@ export default class NavBarMain extends Component {
             editable={true}
             placeholder="Search"
             style={styles.search} />
-          <TouchableHighlight style={styles.iconContainer} onPress={() => this.props.navigator.push(Router.notificationScreen(this.props.token))}>
+          <TouchableHighlight style={styles.iconContainer} onPress={this.props.onNotificationPress}>
             {this._notifs()}
           </TouchableHighlight>
-          <TouchableHighlight style={styles.iconContainer} onPress={() => this.props.navigator.push(Router.messageList(this.props.token))}>
+          <TouchableHighlight style={styles.iconContainer} onPress={this.props.onMessagePress}>
             <Icon style={styles.icon} name="message" size={24} color={Colors.darkGrey} />
           </TouchableHighlight>
         </View>
         <View style={styles.row}>
           <TouchableHighlight
-            onPress={() => !this._currentTab('feed') ? this.props.navigator.replace(Router.feed(this.props.token)) : {}}
+            onPress={() => this.props.onTabPress('feed')}
             style={[styles.tab, this._currentTab('feed') ? styles.tabSelected : {}]}>
             <Text>Feed</Text>
           </TouchableHighlight>
           <TouchableHighlight
-            onPress={() => !this._currentTab('matches') ? this.props.navigator.replace(Router.matches(this.props.token)) : {}}
+            onPress={() => this.props.onTabPress('matches')}
             style={[styles.tab, this._currentTab('matches') ? styles.tabSelected : {}]}>
             <Text>Matches</Text>
           </TouchableHighlight>
           <TouchableHighlight
-            onPress={() => !this._currentTab('friends') ? this.props.navigator.replace(Router.friends(this.props.token)) : {}}
+            onPress={() => this.props.onTabPress('friends')}
             style={[styles.tab, this._currentTab('friends') ? styles.tabSelected : {}]}>
             <Text>Friends</Text>
           </TouchableHighlight>
@@ -108,14 +106,19 @@ export default class NavBarMain extends Component {
 
 NavBarMain.propTypes = {
   token: React.PropTypes.string.isRequired,
-  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
   onLogoPress: React.PropTypes.func,
+  onNotificationPress: React.PropTypes.func,
+  onMessagesPress: React.PropTypes.func,
+  onTabPress: React.PropTypes.func,
   currentTab: React.PropTypes.oneOf(['none', 'feed', 'matches', 'friends'])
 };
 
 NavBarMain.defaultProps = {
   currentTab: 'none',
-  onLogoPress: () => {}
+  onLogoPress: () => {},
+  onNotificationPress: () => {},
+  onMesagePress: () => {},
+  onTabPress: () => {}
 };
 
 const styles = StyleSheet.create({

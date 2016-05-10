@@ -9,7 +9,6 @@ import React, {
   Text
 } from 'react-native';
 
-import SideMenuNav from 'react-native-side-menu';
 import ExNavigator from '@exponent/react-native-navigator';
 
 import Api from './Api';
@@ -17,18 +16,15 @@ import Router from './Router';
 import Colors from './Colors';
 import Layout from './Layout';
 
-import SideMenu from './SideMenu';
-import NavBarMain from './NavBarMain';
 import FeedRow from './FeedRow';
 import NoFriends from './NoFriends';
 import PostComposeButton from './PostComposeButton';
-
-var _menuOpen = false;
 
 class FeedList extends Component {
   constructor(props) {
     super(props);
     this.postListener = null;
+    this.parentNav = this.props.navigator.props.parentNavigator;
 
     var ds = new ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.state = {
@@ -45,7 +41,7 @@ class FeedList extends Component {
   componentDidMount() {
     this.getFeed(true);
     Api.friendships(this.props.token).count().then(count => this.setState({hasFriends: count > 0})).catch(err => console.log(err));
-    this.postListener = this.props.navigator.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
+    this.postListener = this.parentNav.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
   }
 
   componentWillUnmount() {
@@ -103,13 +99,8 @@ class FeedList extends Component {
     this.getFeed(true);
   }
 
-  _handleHamburger() {
-    _menuOpen = !_menuOpen;
-    this.refs.sidemenu.openMenu(true);
-  }
-
   _handlePost() {
-    this.props.navigator.push(Router.postComposer(this.props.token));
+    this.parentNav.push(Router.postComposer(this.props.token));
   }
 
   _handleLike(postID) {
@@ -142,7 +133,7 @@ class FeedList extends Component {
       <FeedRow
         key={item.id}
         token={this.props.token}
-        navigator={this.props.navigator}
+        navigator={this.parentNav}
         item={item}
         onLike={this._handleLike(item.record.post.id).bind(this)}
       />
@@ -152,37 +143,29 @@ class FeedList extends Component {
 
   render() {
     return (
-      <SideMenuNav ref="sidemenu" menu={ <SideMenu navigator={this.props.navigator} token={this.props.token} notificationCount={this.state.notificationCount} /> }>
-        <View style={styles.container}>
-          {this._noFriends()}
-          {this._noFeed()}
-          <ListView
-            scrollToTop={true}
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
-            enableEmptySections={true}
-            onEndReached={() => this.getFeed()}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.isRefreshing}
-                onRefresh={() => {
-                  this.setState({isRefreshing: true});
-                  this.getFeed(true);
-                }}
-                tintColor="rgb(191,191,191)"
-                title="Loading..."
-              />
-            }
-          />
-        </View>
-        <NavBarMain
-          token={this.props.token}
-          navigator={this.props.navigator}
-          onLogoPress={this._handleHamburger.bind(this)}
-          currentTab="feed"
+      <View style={styles.container}>
+        {this._noFriends()}
+        {this._noFeed()}
+        <ListView
+          scrollToTop={true}
+          dataSource={this.state.dataSource}
+          renderRow={this._renderRow.bind(this)}
+          enableEmptySections={true}
+          onEndReached={() => this.getFeed()}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={() => {
+                this.setState({isRefreshing: true});
+                this.getFeed(true);
+              }}
+              tintColor="rgb(191,191,191)"
+              title="Loading..."
+            />
+          }
         />
         <PostComposeButton onPress={this._handlePost.bind(this)} />
-      </SideMenuNav>
+      </View>
     );
   }
 
@@ -209,8 +192,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    backgroundColor: 'white',
-    paddingTop: Layout.lines(7)
+    backgroundColor: 'white'
   }
 });
 

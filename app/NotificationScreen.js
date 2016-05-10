@@ -10,14 +10,12 @@ import React, {
 
 import ExNavigator from '@exponent/react-native-navigator';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import SideMenuNav from 'react-native-side-menu';
 
 import Api from './Api';
 
 import Layout from './Layout';
 import Colors from './Colors';
 
-import SideMenu from './SideMenu';
 import NavBar from './NavBar';
 import NotificationRow from './NotificationRow';
 
@@ -42,42 +40,36 @@ class NotificationScreen extends Component {
     .catch(err => console.log(err));
   }
 
-  _handleHamburger() {
-    this.refs.sidemenu.openMenu(true);
-  }
-
   _renderRow(notif) {
     return <NotificationRow key={notif.notification.id} notif={notif} token={this.props.token} navigator={this.props.navigator} />;
   }
 
   render() {
     return (
-      <SideMenuNav ref="sidemenu" menu={ <SideMenu navigator={this.props.navigator} token={this.props.token} /> }>
-        <View style={styles.container}>
-          <ListView
-            scrollToTop={true}
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
-            enableEmptySections={true}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.isRefreshing}
-                onRefresh={() => {
-                  this.setState({isRefreshing: true});
-                  this._getNotifs();
-                }}
-                tintColor="rgb(191,191,191)"
-                title="Loading..."
-              />
-            }
-          />
-        </View>
+      <View style={styles.container}>
+        <ListView
+          scrollToTop={true}
+          dataSource={this.state.dataSource}
+          renderRow={this._renderRow.bind(this)}
+          enableEmptySections={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={() => {
+                this.setState({isRefreshing: true});
+                this._getNotifs();
+              }}
+              tintColor="rgb(191,191,191)"
+              title="Loading..."
+            />
+          }
+        />
         <NavBar
           title="Notifications"
-          leftButton={ <Icon name="bars" color="rgb(255,255,255)" size={24} /> }
-          leftButtonPress={this._handleHamburger.bind(this)}
+          leftButton={ <Icon name="chevron-left" color="rgb(255,255,255)" size={24} /> }
+          leftButtonPress={() => this.props.navigator.pop()}
         />
-      </SideMenuNav>
+      </View>
     );
   }
 }

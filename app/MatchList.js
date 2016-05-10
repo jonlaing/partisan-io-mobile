@@ -9,16 +9,12 @@ import React, {
   Text
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
-import SideMenuNav from 'react-native-side-menu';
 import ExNavigator from '@exponent/react-native-navigator';
 
 import Api from './Api';
 import Layout from './Layout';
 import Colors from './Colors';
 
-import SideMenu from './SideMenu';
-import NavBarMain from './NavBarMain';
 import MatchRow from './MatchRow';
 
 class MatchList extends Component {
@@ -45,26 +41,6 @@ class MatchList extends Component {
       isRefreshing: false
     }))
     .catch(err => console.log("error:", err));
-  }
-
-  _handleHamburger() {
-    this.refs.sidemenu.openMenu(true);
-  }
-
-  _navBarLeft() {
-    if(this.props.sideMenu === false) {
-      return <Icon name="chevron-left" color="rgb(255,255,255)" size={24} />;
-    }
-
-    return <Icon name="bars" color="rgb(255,255,255)" size={24} />;
-  }
-
-  _handleNavBarLeftPress() {
-    if(this.props.sideMenu === false) {
-      this.props.navigator.pop();
-    } else {
-      this._handleHamburger();
-    }
   }
 
   _renderRow(match) {
@@ -94,47 +70,34 @@ class MatchList extends Component {
 
   render() {
     return (
-      <SideMenuNav ref="sidemenu" menu={<SideMenu navigator={this.props.navigator} token={this.props.token} />}>
-        <View style={styles.container}>
-          {this._searchFilters()}
-          <ListView
-            scrollToTop={true}
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
-            enableEmptySections={true}
-            onEndReached={() => this.getMatches()}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.isRefreshing}
-                onRefresh={() => {
-                  this.getMatches(true);
-                  this.setState({isRefreshing: true});
-                }}
-                tintColor="rgb(191,191,191)"
-                title="Loading..."
-              />
-            }
-          />
-        </View>
-        <NavBarMain
-          token={this.props.token}
-          navigator={this.props.navigator}
-          onLogoPress={this._handleHamburger.bind(this)}
-          currentTab="matches"
+      <View style={styles.container}>
+        {this._searchFilters()}
+        <ListView
+          scrollToTop={true}
+          dataSource={this.state.dataSource}
+          renderRow={this._renderRow.bind(this)}
+          enableEmptySections={true}
+          onEndReached={() => this.getMatches()}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={() => {
+                this.getMatches(true);
+                this.setState({isRefreshing: true});
+              }}
+              tintColor="rgb(191,191,191)"
+              title="Loading..."
+            />
+          }
         />
-      </SideMenuNav>
+      </View>
     );
   }
 }
 
 MatchList.propTypes = {
   token: React.PropTypes.string.isRequired,
-  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
-  sideMenu: React.PropTypes.bool
-};
-
-MatchList.defaultProps = {
-  sideMenu: true
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
 };
 
 let styles = StyleSheet.create({
@@ -143,7 +106,6 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     backgroundColor: Colors.lightGrey,
-    paddingTop: Layout.lines(7),
     paddingHorizontal: Layout.lines(0.75)
   },
   filterContainer: {

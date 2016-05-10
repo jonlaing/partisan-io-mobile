@@ -18,6 +18,12 @@ import Colors from './Colors';
 import Avatar from './Avatar';
 
 class MatchRow extends Component {
+  constructor(props) {
+    super(props);
+
+    this.parentNav = this.props.navigator.props.parentNavigator ? this.props.navigator.props.parentNavigator : this.props.navigator;
+  }
+
   _avatar(style) {
     if(this.props.user !== undefined) {
       return <Avatar user={this.props.user} style={style}/>;
@@ -26,7 +32,7 @@ class MatchRow extends Component {
 
   render() {
     return (
-      <TouchableHighlight onPress={() => this.props.navigator.push(Router.profile(this.props.token, this.props.user.id))}>
+      <TouchableHighlight onPress={() => this.parentNav.push(Router.profile(this.props.token, this.props.user.id))}>
         <View style={styles.container}>
           {this._avatar(styles.avatar)}
           <View style={styles.stats}>

@@ -12,7 +12,6 @@ import React, {
 import EventEmitter from 'EventEmitter';
 import ExNavigator from '@exponent/react-native-navigator';
 
-import Api from './app/Api';
 import Router from './app/Router';
 
 import LoadingScreen from './app/LoadingScreen';
@@ -68,7 +67,7 @@ class Partisan extends Component {
     if(token === null || username === null) {
       return Router.welcomeScreen();
     } else {
-      return Router.feed(this.state.token);
+      return Router.mainScreen(this.state.token);
     }
   }
 
