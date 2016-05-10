@@ -8,10 +8,11 @@ import React, {
   Text
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Layout from './Layout';
 import Colors from './Colors';
+import formatter from './utils/formatter';
 
 class LikeButton extends Component {
   render() {
@@ -19,7 +20,7 @@ class LikeButton extends Component {
       <TouchableHighlight style={styles.container} underlayColor="white" onPress={this.props.onPress}>
         <View style={styles.buttonContainer}>
           <Icon name="star" color={this.props.active ? Colors.accent : Colors.grey} size={Layout.lines(1.5)} style={styles.icon} />
-          <Text style={styles.text} >Favorites ({this.props.count})</Text>
+          <Text style={[styles.text, this.props.color === 'light' ? styles.textLight : {}]} >{formatter.count(this.props.count)}</Text>
         </View>
       </TouchableHighlight>
     );
@@ -27,12 +28,14 @@ class LikeButton extends Component {
 }
 
 LikeButton.propTypes = {
+  color: React.PropTypes.oneOf(['dark', 'light']),
   onPress: React.PropTypes.func,
   active: React.PropTypes.bool,
   count: React.PropTypes.number
 };
 
 LikeButton.defaultProps = {
+  color: 'dark',
   onPress: () => {},
   active: false,
   count: 0
@@ -45,14 +48,18 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center'
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: Layout.lines(2)
   },
   icon: {
-    width: Layout.lines(1.5),
-    marginRight: Layout.lines(0.5)
+    width: Layout.lines(1.5)
   },
   text: {
-    fontSize: 12
+    fontSize: Layout.lines(0.75)
+  },
+  textLight: {
+    color: 'white'
   }
 });
 

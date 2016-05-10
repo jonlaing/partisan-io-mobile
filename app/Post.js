@@ -4,61 +4,20 @@ import React, {
   Component,
   StyleSheet,
   TouchableHighlight,
-  Image,
   View,
   Text
 } from 'react-native';
 
-import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Colors from './Colors';
 import Layout from './Layout';
 
-import Avatar from './Avatar';
-import LikeButton from './LikeButton';
+import PostHeader from './posts/PostHeader';
+import PostText from './posts/PostText';
+import PostImage from './posts/PostImage';
 
 class Post extends Component {
-  _postImage() {
-    let url = this.props.imageAttachment.image_url;
-
-    if(url.length > 0) {
-      if(!url.includes('amazonaws.com')) {
-        url = "http://localhost:4000" + url;
-      }
-
-      return (
-        <View style={styles.postImageContainer}>
-          <Image
-            source={{uri: url}}
-            style={styles.postImage} />
-        </View>
-      );
-    }
-
-    return (<View />);
-  }
-
-  _handleHeaderPress() {
-    if(this.props.onHeaderPress !== undefined) {
-      return this.props.onHeaderPress();
-    }
-
-    console.log("No onHeaderPress defined for Post");
-  }
-
-  _postBody() {
-    if(this.props.post.body.length > 0) {
-      return (
-        <View style={styles.postBody}>
-          <Text style={styles.postBodyText}>{this.props.post.body}</Text>
-        </View>
-      );
-    }
-
-    return <View />;
-  }
-
   _comments() {
     if(this.props.showComments === true) {
       return (
@@ -75,23 +34,26 @@ class Post extends Component {
   }
 
   render() {
+    if(this.props.imageAttachment.image_url === '') {
+      return (
+        <View style={styles.container}>
+          <PostHeader user={this.props.user} post={this.props.post} onPress={this.props.onHeaderPress}/>
+          <PostText text={this.props.post.body} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked}/>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
-        <TouchableHighlight onPress={this._handleHeaderPress.bind(this)} >
-          <View style={styles.postHead}>
-            <Avatar user={this.props.user} style={styles.avatar} />
-            <View style={styles.postUser}>
-              <Text style={styles.postUserText}>@{this.props.user.username}</Text>
-              <Text style={styles.postDate}>{moment(this.props.post.created_at).fromNow()}</Text>
-            </View>
-          </View>
-        </TouchableHighlight>
-        {this._postImage()}
-        {this._postBody()}
-        <View style={styles.actions}>
-          <LikeButton active={this.props.liked} count={this.props.likeCount} onPress={this.props.onLike} />
-          {this._comments()}
-        </View>
+        <PostHeader user={this.props.user} post={this.props.post} onPress={this.props.onHeaderPress}/>
+        <PostImage
+          uri={this.props.imageAttachment.image_url}
+          text={this.props.post.body}
+          likeCount={this.props.likeCount}
+          onLike={this.props.onLike}
+          liked={this.props.liked}
+          onPress={this.props.onHeaderPress}
+        />
       </View>
     );
   }
@@ -105,6 +67,7 @@ Post.propTypes = {
     body: React.PropTypes.string
   }).isRequired,
   likeCount: React.PropTypes.number,
+  liked: React.PropTypes.bool,
   commentCount: React.PropTypes.number,
   imageAttachment: React.PropTypes.shape({ image_url: React.PropTypes.string }),
   onLike: React.PropTypes.func,
@@ -114,8 +77,10 @@ Post.propTypes = {
 
 Post.defaultProps = {
   likeCount: 0,
+  liked: false,
   commentCount: 0,
   imageAttachment: { image_url: '' },
+  onHeaderPress: () => {},
   onLike: () => {},
   onComment: () => {},
   showComments: true
@@ -125,8 +90,7 @@ let styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: Layout.lines(1),
-    backgroundColor: 'white',
-    borderRadius: 2
+    backgroundColor: 'white'
   },
   postHead: {
     flex: 1,

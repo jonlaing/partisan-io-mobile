@@ -18,7 +18,7 @@ import Layout from './Layout';
 import Colors from './Colors';
 
 import SideMenu from './SideMenu';
-import NavBar from './NavBar';
+import NavBarMain from './NavBarMain';
 import MatchRow from './MatchRow';
 
 class MatchList extends Component {
@@ -116,12 +116,11 @@ class MatchList extends Component {
             }
           />
         </View>
-        <NavBar
-          title="Matches"
-          leftButton={this._navBarLeft()}
-          leftButtonPress={this._handleNavBarLeftPress.bind(this)}
-          rightButton={ <Icon name="sliders" color="rgb(255,255,255)" size={24} /> }
-          rightButtonPress={() => this.setState({showFilters: !this.state.showFilters})}
+        <NavBarMain
+          token={this.props.token}
+          navigator={this.props.navigator}
+          onLogoPress={this._handleHamburger.bind(this)}
+          currentTab="matches"
         />
       </SideMenuNav>
     );
@@ -144,7 +143,7 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     backgroundColor: Colors.lightGrey,
-    paddingTop: Layout.lines(4),
+    paddingTop: Layout.lines(7),
     paddingHorizontal: Layout.lines(0.75)
   },
   filterContainer: {

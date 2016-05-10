@@ -17,7 +17,7 @@ class FeedRow extends Component {
     let record = this.props.item.record;
 
     return (
-      <View style={{ marginTop: Layout.lines(0.75) }}>
+      <View style={{ flex: 1 }}>
         <Post
           token={this.props.token}
           post={record.post}

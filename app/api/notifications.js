@@ -11,7 +11,7 @@ module.exports = function(token) {
     },
 
     // TODO: figure out how to test this shit
-    countSocket(onMessage, onError) {
+    countSocket(onOpen, onMessage, onError) {
       // get the ticket first
       withTicket(token, (ticket) => {
         // once we get the ticket througha normal https request, open up the socket
@@ -22,6 +22,7 @@ module.exports = function(token) {
         _socket.onerror = onError;
 
         _socket.onopen = () => {
+          onOpen(_socket);
           _socket.send("whatever");
           setInterval(() => {
             _socket.send("whatever");

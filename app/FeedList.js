@@ -9,7 +9,6 @@ import React, {
   Text
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
 import SideMenuNav from 'react-native-side-menu';
 import ExNavigator from '@exponent/react-native-navigator';
 
@@ -19,16 +18,18 @@ import Colors from './Colors';
 import Layout from './Layout';
 
 import SideMenu from './SideMenu';
-import NavBar from './NavBar';
+import NavBarMain from './NavBarMain';
 import FeedRow from './FeedRow';
 import NoFriends from './NoFriends';
-import NotifBadge from './NotifBadge';
+import PostComposeButton from './PostComposeButton';
 
 var _menuOpen = false;
 
 class FeedList extends Component {
   constructor(props) {
     super(props);
+    this.postListener = null;
+
     var ds = new ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.state = {
       items: [],
@@ -43,9 +44,16 @@ class FeedList extends Component {
 
   componentDidMount() {
     this.getFeed(true);
-    this._getNotifs();
     Api.friendships(this.props.token).count().then(count => this.setState({hasFriends: count > 0})).catch(err => console.log(err));
-    this.props.navigator.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
+    this.postListener = this.props.navigator.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
+  }
+
+  componentWillUnmount() {
+    try {
+      this.postListener.remove();
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   // Conditions as to whether a feed item should be updated in the ListView
@@ -90,17 +98,6 @@ class FeedList extends Component {
     });
   }
 
-  _getNotifs() {
-    Api.notifications(this.props.token).countSocket(
-      function(res) {
-        let data = JSON.parse(res.data);
-        if(!_menuOpen && this.state.notificationCount !== data.count) {
-          this.setState({ notificationCount: data.count });
-        }
-      }.bind(this),
-      err => console.log(err)
-    );
-  }
 
   _handlePostSuccess() {
     this.getFeed(true);
@@ -117,24 +114,27 @@ class FeedList extends Component {
 
   _handleLike(postID) {
     return function() {
+      // optimistically update like
+      this._updateLike(postID);
+
       Api.posts(this.props.token).like(postID)
-      .then(res => res.json())
-      .then(data => {
-        let items = JSON.parse(JSON.stringify(this.state.items)); // stupid deep copy, there's gotta be a better way
-
-        items = items.map((item) => {
-          if(item.record.post.id === data.record_id) {
-            item.record.liked = data.liked;
-            item.record.like_count = data.like_count;
-          }
-
-          return item;
-        });
-
-        this.setState({ items: items, dataSource: this.state.dataSource.cloneWithRows(items) });
-      })
       .catch(err => console.log(err));
     };
+  }
+
+  _updateLike(postID) {
+    let items = JSON.parse(JSON.stringify(this.state.items)); // stupid deep copy, there's gotta be a better way
+
+    items = items.map((item) => {
+      if(item.record.post.id === postID) {
+        item.record.liked = !item.record.liked;
+        item.record.like_count = item.record.liked ? item.record.like_count + 1 : item.record.like_count - 1;
+      }
+
+      return item;
+    });
+
+    this.setState({ items: items, dataSource: this.state.dataSource.cloneWithRows(items) });
   }
 
   _renderRow(item) {
@@ -175,14 +175,13 @@ class FeedList extends Component {
             }
           />
         </View>
-        <NavBar
-          title="Feed"
-          leftButton={ <Icon name="bars" color="rgb(255,255,255)" size={24} /> }
-          leftButtonPress={this._handleHamburger.bind(this)}
-          rightButton={ <Icon name="pencil-square-o" color="rgb(255,255,255)" size={24} /> }
-          rightButtonPress={this._handlePost.bind(this)}
-          badgeLeft={<NotifBadge active={this.state.notificationCount > 0} />}
+        <NavBarMain
+          token={this.props.token}
+          navigator={this.props.navigator}
+          onLogoPress={this._handleHamburger.bind(this)}
+          currentTab="feed"
         />
+        <PostComposeButton onPress={this._handlePost.bind(this)} />
       </SideMenuNav>
     );
   }
@@ -210,9 +209,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    backgroundColor: Colors.lightGrey,
-    paddingTop: Layout.lines(4),
-    paddingHorizontal: Layout.lines(0.75)
+    backgroundColor: 'white',
+    paddingTop: Layout.lines(7)
   }
 });
 
