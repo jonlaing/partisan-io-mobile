@@ -61,6 +61,11 @@ class QuestionScreen extends Component {
     return (agree) => {
       let index = this.state.index + 1;
 
+      if(index <= 2) {
+        this.setState({currQuestions: [this.state.questions[index]], index: index});
+        return;
+      }
+
       if(index > _MAX_QUESTIONS + 2) {
         this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
         return;
@@ -91,11 +96,10 @@ class QuestionScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={{ height: Layout.lines(3) }}>
+        <View style={{ height: Layout.lines(4) }}>
           <Text style={styles.headerText}>Take the Quiz</Text>
         </View>
         {questions}
-        <Text style={styles.helpText}>Swipe right if you agree, swipe left if you disagree</Text>
       </View>
     );
   }
@@ -112,7 +116,8 @@ let styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: Layout.lines(2),
+    paddingHorizontal: Layout.lines(1),
+    paddingVertical: Layout.lines(2),
     backgroundColor: Colors.lightGrey
   },
   headerText: {

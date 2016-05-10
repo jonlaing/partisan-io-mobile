@@ -4,6 +4,7 @@ import React, {
   StyleSheet,
   Animated,
   PanResponder,
+  TouchableHighlight,
   View,
   Text
 } from 'react-native';
@@ -88,7 +89,17 @@ class Question extends Component {
     }).start(() => this.props.onFlick(dest > 0));
   }
 
-  _getStyle() {
+  handleArrowPress(agree = false) {
+    return () => {
+      if(!agree) {
+        this._flyOff(windowWidth / 2 - 1);
+      } else {
+        this._flyOff(windowWidth / 2 + 1);
+      }
+    };
+  }
+
+  _cardStyle() {
     return [
       styles.card,
       {
@@ -108,12 +119,50 @@ class Question extends Component {
     ];
   }
 
+  _arrowStyle(agree = false) {
+    if(!agree) {
+      return [
+        styles.disagree,
+        {
+          transform: [
+            {
+              scale: this.state.pan.x.interpolate({inputRange: [-200, 0], outputRange: [1.5, 1]})
+            }
+          ]
+        }
+      ];
+    }
+
+    return [
+      styles.agree,
+      {
+        transform: [
+          {
+            scale: this.state.pan.x.interpolate({inputRange: [0, 200], outputRange: [1, 1.5]})
+          }
+        ]
+      }
+    ];
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Animated.View style={this._getStyle()} {...this._panResponder.panHandlers} >
+        <Animated.View style={this._cardStyle()} {...this._panResponder.panHandlers} >
           <Text style={styles.cardNumber}>{this.props.index + 1} of {this.props.maxQuestions}</Text>
           <Text style={styles.questionText}>{this.props.prompt}</Text>
+        </Animated.View>
+        <Animated.View style={this._arrowStyle(false)} {...this._panResponder.panHandlers}>
+          <View style={styles.disagreeArrow}/>
+          <TouchableHighlight onPress={this.handleArrowPress(false).bind(this)}>
+            <Text style={{color: 'white'}}>Disagree</Text>
+          </TouchableHighlight>
+        </Animated.View>
+        <Animated.View style={this._arrowStyle(true)} {...this._panResponder.panHandlers}>
+          <View style={styles.agreeArrow}/>
+          <TouchableHighlight onPress={this.handleArrowPress(true).bind(this)}>
+            <Text style={{color: 'white'}}>Agree</Text>
+          </TouchableHighlight>
         </Animated.View>
       </View>
     );
@@ -135,21 +184,18 @@ Question.defaultProps = {
 let styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    marginBottom: Layout.lines(3)
   },
   card: {
     flex: 1,
     position: 'relative',
-    width: windowWidth - Layout.lines(3),
+    width: windowWidth - Layout.lines(4),
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 4,
     padding: Layout.lines(2),
-    backgroundColor: 'white',
-    shadowColor: 'black',
-    shadowRadius: 2,
-    shadowOffset: {height: 2, width: 0},
-    shadowOpacity: 0.5
+    backgroundColor: 'white'
   },
   questionText: {
     fontSize: 18,
@@ -158,7 +204,57 @@ let styles = StyleSheet.create({
   cardNumber: {
     position: 'absolute',
     top: Layout.lines(1),
-    right: Layout.lines(1)
+    right: Layout.lines(1),
+    padding: Layout.lines(0.25),
+    borderRadius: Layout.lines(0.25),
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    color: 'white'
+  },
+  disagree: {
+    position: 'absolute',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: -Layout.lines(1),
+    left: 0,
+    width: 100,
+    height: Layout.lines(2),
+    borderRadius: Layout.lines(0.17),
+    paddingRight: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2) / 2,
+    backgroundColor: Colors.action
+  },
+  disagreeArrow: {
+    position: 'absolute',
+    width: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2),
+    height: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2),
+    left: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2) / -2,
+    top: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2) / 4,
+    transform: [{ rotate: '45deg' }],
+    borderRadius: Layout.lines(0.17),
+    backgroundColor: Colors.action
+  },
+  agree: {
+    position: 'absolute',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: -Layout.lines(1),
+    right: 0,
+    width: 100,
+    height: Layout.lines(2),
+    borderRadius: Layout.lines(0.17),
+    paddingLeft: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2) / 2,
+    backgroundColor: Colors.base
+  },
+  agreeArrow: {
+    position: 'absolute',
+    width: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2),
+    height: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2),
+    right: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2) / -2,
+    top: Math.sqrt(Math.pow(Layout.lines(2), 2) / 2) / 4,
+    transform: [{ rotate: '45deg' }],
+    borderRadius: Layout.lines(0.17),
+    backgroundColor: Colors.base
   }
 });
 

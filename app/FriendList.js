@@ -22,6 +22,8 @@ class FriendList extends Component {
   constructor(props) {
     super(props);
 
+    this.parentNav = this.props.navigator.props.parentNavigator ? this.props.navigator.props.parentNavigator : this.props.navigator;
+
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = { friendships: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: false, showFilters: false };
   }
@@ -44,7 +46,7 @@ class FriendList extends Component {
     return (
       <FriendRow
         key={friendship.user.username}
-        navigator={this.props.navigator}
+        navigator={this.parentNav}
         token={this.props.token}
         user={friendship.user}
         username={friendship.user.username}
