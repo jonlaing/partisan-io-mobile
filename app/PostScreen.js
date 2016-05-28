@@ -25,17 +25,20 @@ class PostScreen extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { post: {}, user: {}, likeCount: 0, liked: false, imageAttachment: { image_url: '' } };
+    this.state = { post: {}, likeCount: 0, liked: false };
   }
 
   componentDidMount() {
     Api.posts(this.props.token).get(this.props.postID)
-    .then((data) => { console.log(data); this.setState({ post: data.post, user: data.user, imageAttachment: data.image_attachment, liked: data.liked, likeCount: data.like_count }); });
+    .then((data) => { console.log(data); this.setState({ post: data.post, likeCount: data.post.like_count, liked: data.post.liked } ); });
   }
 
   _handleLike() {
+    let liked = !this.state.liked;
+    // be optimistic
+    this.setState({likeCount: (liked ? this.state.likeCount + 1 : this.state.likeCount - 1), liked: liked});
+
     Api.posts(this.props.token).like(this.props.postID)
-    .then(data => this.setState({likeCount: data.like_count, liked: data.liked}))
     .catch(err => console.log(err));
   }
 
@@ -53,14 +56,20 @@ class PostScreen extends Component {
         </View>
         <ScrollView>
           <Post
-            post={this.state.post}
-            user={this.state.user}
-            imageAttachment={this.state.imageAttachment}
+            token={this.props.token}
+            navigator={this.props.navigator}
+            postID={this.props.postID}
+            username={this.state.post.user.username}
+            createdAt={this.state.post.created_at}
+            action={this.state.post.action}
+            body={this.state.post.body}
+            attachments={this.state.post.attachments}
             likeCount={this.state.likeCount}
             liked={this.state.liked}
-            navigator={this.props.navigator}
-            onHeaderPress={() => this.props.navigator.push(Router.profile(this.props.token, this.state.user.id))}
+            commentCount={this.state.post.child_count}
             onLike={this._handleLike.bind(this)}
+            onFlag={() => this.props.navigator.push(Router.flag('post', this.props.postID, this.props.token))}
+            onHeaderPress={() => this.props.navigator.push(Router.profile(this.props.token, this.state.post.user_id))}
             showComments={false}
           />
           <CommentList token={this.props.token} postID={this.state.post.id} ref="commentList" />
@@ -80,7 +89,7 @@ class PostScreen extends Component {
 PostScreen.propTypes = {
   token: React.PropTypes.string.isRequired,
   navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
-  postID: React.PropTypes.number.isRequired,
+  postID: React.PropTypes.string.isRequired,
   comment: React.PropTypes.bool
 };
 

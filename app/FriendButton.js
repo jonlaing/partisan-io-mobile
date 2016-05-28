@@ -14,8 +14,6 @@ import Api from './Api';
 import Layout from './Layout';
 import Colors from './Colors';
 
-const NOTFOUND = 404;
-
 class FriendButton extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +23,7 @@ class FriendButton extends Component {
 
   componentDidMount() {
     Api.friendships(this.props.token).get(this.props.userID)
-    .then(data => this.setState({friendship: data, fetched: true}))
+    .then(data => this.setState({friendship: data.friendship, fetched: true}))
     .catch(err => {
       console.log(err);
       this.setState({fetched: true});
@@ -35,7 +33,6 @@ class FriendButton extends Component {
   _handlePress() {
     if(this.state.friendship.confirmed === false && this.state.friendship.user_id === this.props.userID) {
       Api.friendships(this.props.token).confirm(this.props.userID)
-      .then(res => res.json())
       .then(data => this.setState({friendship: data}))
       .catch(err => console.log(err));
     } else {
@@ -99,7 +96,7 @@ class FriendButton extends Component {
 
 FriendButton.propTypes = {
   token: React.PropTypes.string.isRequired,
-  userID: React.PropTypes.number.isRequired
+  userID: React.PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({

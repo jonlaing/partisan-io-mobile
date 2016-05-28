@@ -34,22 +34,27 @@ export default class PostImage extends Component {
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <TouchableHighlight onPress={this.handleImagePress.bind(this)}>
-          <Image source={{uri: this.props.uri}} style={styles.image}>
-            <View style={styles.actions}>
-              <PostAction likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked} color='light' />
-            </View>
-          </Image>
-        </TouchableHighlight>
-      </View>
-    );
+    if(this.props.attachments.length === 1) {
+      return (
+        <View style={styles.container}>
+          <TouchableHighlight onPress={this.handleImagePress.bind(this)}>
+            <Image source={{uri: this.props.attachments[0].url}} style={styles.image}>
+              <View style={styles.actions}>
+                <PostAction commentCount={this.props.commentCount} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked} color='light' />
+              </View>
+            </Image>
+          </TouchableHighlight>
+        </View>
+      );
+    }
+
+    console.warn("haven't figured out mutliple images");
+    return <View />;
   }
 }
 
 PostImage.propTypes = {
-  uri: React.PropTypes.string.isRequired,
+  attachments: React.PropTypes.array.isRequired,
   likeCount: React.PropTypes.number,
   liked: React.PropTypes.bool,
   commentCount: React.PropTypes.number,
@@ -82,7 +87,9 @@ const styles = StyleSheet.create({
     padding: Layout.lines(1)
   },
   actions: {
-    width: Layout.lines(3),
+    width: Layout.lines(4),
+    marginLeft: -Layout.lines(0.5),
+    paddingLeft: Layout.lines(0.5),
     backgroundColor: 'rgba(0,0,0,0.5)'
   }
 });

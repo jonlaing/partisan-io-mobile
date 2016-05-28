@@ -7,7 +7,7 @@ var {protocols, root, headers, processJSON, withTicket} = require('./utils'); //
 module.exports = function(token) {
   return ({
     list() {
-      return fetch(`${root()}/notifications/`, { headers: headers(token) }).then(resp => processJSON(resp));
+      return fetch(`${root()}/notifications/`, { headers: headers(token) }).then(resp => processJSON(resp)).then(data => data.notifications);
     },
 
     // TODO: figure out how to test this shit
@@ -16,7 +16,7 @@ module.exports = function(token) {
       withTicket(token, (ticket) => {
         // once we get the ticket througha normal https request, open up the socket
         // using the ticket for authentication
-        var _socket = new WebSocket(`${root(protocols.ws)}/notifications/count?key=${ticket.key}`);
+        var _socket = new WebSocket(`${root(protocols.ws)}/notifications/count?key=${ticket.id}`);
 
         _socket.onmessage = onMessage;
         _socket.onerror = onError;

@@ -16,7 +16,7 @@ import Router from './Router';
 import Colors from './Colors';
 import Layout from './Layout';
 
-import FeedRow from './FeedRow';
+import Post from './Post';
 import NoFriends from './NoFriends';
 import PostComposeButton from './PostComposeButton';
 
@@ -28,7 +28,7 @@ class FeedList extends Component {
 
     var ds = new ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.state = {
-      items: [],
+      posts: [],
       dataSource: ds.cloneWithRows([]),
       page: 1,
       isRefreshing: false,
@@ -52,25 +52,25 @@ class FeedList extends Component {
     }
   }
 
-  // Conditions as to whether a feed item should be updated in the ListView
+  // Conditions as to whether a post should be updated in the ListView
   _rowHasChanged(r1, r2) {
     if(r1.id !== r2.id) {
       return true;
     }
 
-    if(r1.record.updated_at !== r2.record.updated_at) {
+    if(r1.updated_at !== r2.updated_at) {
       return true;
     }
 
-    if(r1.record.like_count !== r2.record.like_count) {
+    if(r1.like_count !== r2.like_count) {
       return true;
     }
 
-    if(r1.record.liked !== r2.record.liked) {
+    if(r1.liked !== r2.liked) {
       return true;
     }
 
-    if(r1.record.comment_count !== r2.record.comment_count) {
+    if(r1.child_count !== r2.child_count) {
       return true;
     }
 
@@ -78,13 +78,13 @@ class FeedList extends Component {
   }
 
   getFeed(refresh = false) {
-    var page = refresh ? 1 : this.state.page + 1;
+    var page = refresh ? 0 : this.state.page + 1;
 
     Api.feed(this.props.token).get(page)
-    .then(items => refresh ? items : this.state.items.concat(items) ) // either refresh the items or append them
-    .then(items => this.setState({
-      items: items,
-      dataSource: this.state.dataSource.cloneWithRows(items),
+    .then(posts => refresh ? posts : this.state.posts.concat(posts) ) // either refresh the post or append them
+    .then(posts => this.setState({
+      posts: posts,
+      dataSource: this.state.dataSource.cloneWithRows(posts),
       page: page,
       isRefreshing: false
     }))
@@ -114,28 +114,38 @@ class FeedList extends Component {
   }
 
   _updateLike(postID) {
-    let items = JSON.parse(JSON.stringify(this.state.items)); // stupid deep copy, there's gotta be a better way
+    let posts = JSON.parse(JSON.stringify(this.state.posts)); // stupid deep copy, there's gotta be a better way
 
-    items = items.map((item) => {
-      if(item.record.post.id === postID) {
-        item.record.liked = !item.record.liked;
-        item.record.like_count = item.record.liked ? item.record.like_count + 1 : item.record.like_count - 1;
+    posts = posts.map((post) => {
+      if(post.id === postID) {
+        post.liked = !post.liked;
+        post.like_count = post.liked ? post.like_count + 1 : post.like_count - 1;
       }
 
-      return item;
+      return post;
     });
 
-    this.setState({ items: items, dataSource: this.state.dataSource.cloneWithRows(items) });
+    this.setState({ posts: posts, dataSource: this.state.dataSource.cloneWithRows(posts) });
   }
 
-  _renderRow(item) {
+  _renderRow(post) {
     return (
-      <FeedRow
-        key={item.id}
+      <Post
+        key={post.id}
         token={this.props.token}
         navigator={this.parentNav}
-        item={item}
-        onLike={this._handleLike(item.record.post.id).bind(this)}
+        postID={post.id}
+        username={post.user.username}
+        createdAt={post.created_at}
+        action={post.action}
+        body={post.body}
+        attachments={post.attachments}
+        likeCount={post.like_count}
+        liked={post.liked}
+        commentCount={post.child_count}
+        onLike={this._handleLike(post.id).bind(this)}
+        onFlag={() => this.parentNav.push(Router.flag('post', post.id, this.props.token))}
+        onHeaderPress={() => this.parentNav.push(Router.postScreen(post.id, this.props.token, true))}
       />
     );
   }
@@ -170,7 +180,7 @@ class FeedList extends Component {
   }
 
   _noFeed() {
-    if(this.state.isRefreshing === false && this.state.items.length < 1 && this.state.hasFriends === true) {
+    if(this.state.isRefreshing === false && this.state.posts.length < 1 && this.state.hasFriends === true) {
       return <Text style={{padding: Layout.lines(1), textAlign: 'center', color: Colors.darkGrey}}>Nothing to show!</Text>;
     }
   }

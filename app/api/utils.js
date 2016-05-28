@@ -29,9 +29,9 @@ export function headers(token, json = true) {
 
 export function root(prot = _HTTP) {
   if(Config.env.dev()) {
-    return `${protocol(prot)}localhost:4000/api/v1`;
+    return `${protocol(prot)}localhost:4000/api/v2`;
   } else if (Config.env.prod()) {
-    return `${protocol(prot)}www.partisan.io/api/v1`;
+    return `${protocol(prot)}www.partisan.io/api/v2`;
   } else {
     throw "UNKNOWN ENVIRONMENT: CANNOT PERFORM NETWORK REQUESTS";
   }
@@ -113,7 +113,7 @@ export function urlParams(params) {
 export function withTicket(token, success, err) {
     fetch(`${root()}/socket_ticket`, { headers: headers(token) })
     .then(res => res.json())
-    .then(data => success(data))
+    .then(data => success(data.ticket))
     .catch(e => err(e));
 }
 

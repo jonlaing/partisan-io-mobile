@@ -94,7 +94,7 @@ class CommentComposer extends Component {
 
 CommentComposer.propTypes = {
   token: React.PropTypes.string.isRequired,
-  postID: React.PropTypes.number.isRequired,
+  postID: React.PropTypes.string.isRequired,
   autoFocus: React.PropTypes.bool,
   onFinish: React.PropTypes.func
 };

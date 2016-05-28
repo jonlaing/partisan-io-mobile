@@ -190,6 +190,15 @@ let Router = {
         return <Chat threadID={threadID} user={user} token={token} navigator={navigator} />;
       }
     };
+  },
+
+  flag(recordType, recordID, token) {
+    return {
+      renderScene(navigator) {
+        let Flag = require('./Flag');
+        return <Flag recordType={recordType} recordID={recordID} token={token} navigator={navigator} />;
+      }
+    };
   }
 };
 

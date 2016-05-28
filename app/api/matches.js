@@ -3,25 +3,29 @@
 'use strict';
 
 // import {root, headers, processJSON, urlParams} from './utils';
-var {root, headers, processJSON, urlParams} = require('./utils'); // ES6 importing doesn't work for some reason
+var {root, headers, processJSON} = require('./utils'); // ES6 importing doesn't work for some reason
 
 module.exports = function(token) {
   return ({
-    get(page = 1, distance = 25, gender = "", minAge = -1, maxAge = -1) {
-      let params = urlParams({
+    get(page = 1, distance = 25, gender = "", minAge = -1, maxAge = -1, lookingFor = 7) {
+      let params = JSON.stringify({
           page: page,
-          distance: distance,
+          radius: distance,
           gender: gender,
           minAge: minAge,
-          maxAge: maxAge
+          maxAge: maxAge,
+          lookingfor: lookingFor
       });
 
-      return fetch(`${root()}/matches?${params}`,
+      return fetch(`${root()}/matches`,
         {
           headers: headers(token),
-          method: 'GET'
+          method: 'POST',
+          body: params
         })
-        .then(resp => processJSON(resp));
+        .then(resp => processJSON(resp))
+        .then(resp => resp.matches)
+        .then(matches => { console.log(matches); return matches; });
     }
   });
 };

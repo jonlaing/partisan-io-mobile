@@ -8,7 +8,7 @@ import React, {
 
 class Avatar extends Component {
   render() {
-    let url = this.props.user.avatar_thumbnail_url;
+    let url = this.props.url;
 
     if(url !== undefined && url.length > 0) {
       if(!url.includes('amazonaws.com')) {

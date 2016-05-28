@@ -49,7 +49,7 @@ class QuestionScreen extends Component {
     Api.questions(this.props.token).get()
     .then(data => this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions), index: index }))
     .catch(err => {
-      if(err.response.status === 404) {
+      if(err.response.status === 404 || err.response.status === 406) {
         // need a slicker way of dealing with this
         this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
       }
@@ -66,7 +66,7 @@ class QuestionScreen extends Component {
         return;
       }
 
-      if(index > _MAX_QUESTIONS + 2) {
+      if(index >= _MAX_QUESTIONS + 2) {
         this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
         return;
       }

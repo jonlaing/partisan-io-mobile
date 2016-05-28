@@ -36,12 +36,21 @@ class NotificationScreen extends Component {
 
   _getNotifs() {
     Api.notifications(this.props.token).list()
-    .then(notifs => this.setState({ items: notifs.notifications, dataSource: this.state.dataSource.cloneWithRows(notifs.notifications)}))
+    .then(notifs => this.setState({ items: notifs, dataSource: this.state.dataSource.cloneWithRows(notifs)}))
     .catch(err => console.log(err));
   }
 
   _renderRow(notif) {
-    return <NotificationRow key={notif.notification.id} notif={notif} token={this.props.token} navigator={this.props.navigator} />;
+    console.log(notif);
+    return <NotificationRow key={notif.id}
+      userID={notif.user.id}
+      username={notif.user.username}
+      avatar={notif.user.avatar_thumbnail_url}
+      recordID={notif.record_id}
+      action={notif.action}
+      createdAt={notif.created_at}
+      token={this.props.token}
+      navigator={this.props.navigator} />;
   }
 
   render() {

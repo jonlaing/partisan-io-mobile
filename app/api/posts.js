@@ -12,7 +12,7 @@ module.exports = function(token) {
     },
 
     like(id) {
-      return fetch(`${root()}/posts/${id}/likes/`, {
+      return fetch(`${root()}/posts/${id}/like/`, {
         method: 'POST',
         headers: headers(token)
       })
@@ -24,7 +24,7 @@ module.exports = function(token) {
 
       attachments.forEach((uri) => {
         if(uri.length > 0) {
-          request.append('attachment', {
+          request.append('attachments', {
             uri: uri,
             type: 'image/jpeg',
             name: 'post.jpg'
@@ -33,6 +33,7 @@ module.exports = function(token) {
       });
 
       request.append('body', body);
+      request.append('action', 'post');
       return xhrUpload(request, `${root()}/posts/`, token);
     }
   });

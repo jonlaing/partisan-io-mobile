@@ -3,6 +3,7 @@
 import React, {
   Component,
   StyleSheet,
+  ActionSheetIOS,
   TouchableHighlight,
   View,
   Text
@@ -16,20 +17,43 @@ import Colors from '../Colors';
 
 import Avatar from '../Avatar';
 
+const ACTION_SHEET_BUTTONS = [
+  'Flag Post',
+  'Cancel'
+];
+
+const DESTRUCTIVE_INDEX = 0;
+const CANCEL_INDEX = 1;
+
 export default class PostHeader extends Component {
+  handleMorePress() {
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ACTION_SHEET_BUTTONS,
+      cancelButtonIndex: CANCEL_INDEX,
+      destructiveButtonIndex: DESTRUCTIVE_INDEX
+    },
+    (buttonIndex) => {
+      if(buttonIndex === CANCEL_INDEX) {
+        return;
+      }
+
+      this.props.onFlag("post", this.props.postID);
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <TouchableHighlight style={{flex: 1}} onPress={this.props.onPress} >
           <View style={styles.postHead}>
-            <Avatar user={this.props.user} style={styles.avatar} />
+            <Avatar url={this.props.avatar} style={styles.avatar} />
             <View style={styles.postUser}>
-              <Text style={styles.postUserText}>@{this.props.user.username}</Text>
-              <Text style={styles.postDate}>{moment(this.props.post.created_at).fromNow()}</Text>
+              <Text style={styles.postUserText}>@{this.props.username}</Text>
+              <Text style={styles.postDate}>{moment(this.props.createdAt).fromNow()}</Text>
             </View>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight>
+        <TouchableHighlight onPress={this.handleMorePress.bind(this)}>
           <Icon name="more-vert" size={32} color={Colors.grey} />
         </TouchableHighlight>
       </View>
@@ -38,17 +62,16 @@ export default class PostHeader extends Component {
 }
 
 PostHeader.propTypes = {
-  user: React.PropTypes.shape({ username: React.PropTypes.string }).isRequired,
-  post: React.PropTypes.shape({
-    id: React.PropTypes.number,
-    created_at: React.PropTypes.oneOfType([ React.PropTypes.number, React.PropTypes.string ]),
-    body: React.PropTypes.string
-  }).isRequired,
-  onPress: React.PropTypes.func
+  postID: React.PropTypes.string.isRequired,
+  username: React.PropTypes.string.isRequired,
+  createdAt: React.PropTypes.string.isRequired,
+  onPress: React.PropTypes.func,
+  onFlag: React.PropTypes.func
 };
 
 PostHeader.defaultProps = {
-  onPress: () => {}
+  onPress: () => {},
+  onFlag: () => {}
 };
 
 const styles = StyleSheet.create({

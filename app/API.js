@@ -1,4 +1,7 @@
+/*global fetch */
 'use strict';
+
+var {root, headers, processJSON} = require('./api/utils'); // ES6 importing doesn't work for some reason
 
 import auth from './api/auth';
 import feed from './api/feed';
@@ -21,5 +24,17 @@ module.exports = {
   matches: matches,
   friendships: friendships,
   notifications: notifications,
-  messages: messages
+  messages: messages,
+  flag: (recordType, recordID, reason, comment, token) => {
+    return fetch(`${root()}/flag`, {
+      headers: headers(token),
+      body: JSON.stringify({
+        record_type: recordType,
+        record_id: recordID,
+        reason: reason,
+        message: comment
+      }),
+      method: 'POST'
+    }).then(res => processJSON(res));
+  }
 };

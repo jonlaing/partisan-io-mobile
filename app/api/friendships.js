@@ -28,25 +28,19 @@ function friendships(token) {
     },
 
     request(friendID) {
-      var body = new FormData();
-      body.append('friend_id', friendID.toString());
-
       return fetch(`${root()}/friendships/`, {
         headers: headers(token, false),
         method: 'POST',
-        body: body
+        body: JSON.stringify({ friend_id: friendID })
       })
       .then(resp => processJSON(resp));
     },
 
     confirm(friendID) {
-      let body = new FormData();
-      body.append('friend_id', friendID.toString());
-
-      return fetch(`${root()}/friendships/`, {
+      return fetch(`${root()}/friendships/${friendID}`, {
         headers: headers(token, false),
         method: 'PATCH',
-        body: body
+        body: JSON.stringify({ friend_id: friendID, confirmed: true })
       })
       .then(resp => processJSON(resp));
     }

@@ -4,7 +4,6 @@ import React, {
   TouchableHighlight,
   View,
   Text,
-  Image,
   StyleSheet
 } from 'react-native';
 
@@ -12,57 +11,43 @@ import moment from 'moment';
 import ExNavigator from '@exponent/react-native-navigator';
 
 import Router from './Router';
+import Avatar from './Avatar';
 
 class NotificationRow extends Component {
-  _avatar(user) {
-    let url = user.avatar_thumbnail_url;
-    if(url.length > 0) {
-      if(!url.includes('amazonaws.com')) {
-        url = "http://localhost:4000" + url;
-      }
-
-      return (
-        <Image
-          style={styles.avatar}
-          source={{uri: url}}
-        />
-      );
-    } else {
-      return (<View style={styles.avatar}/>);
-    }
-  }
-
-  _notifText(notif) {
-    let username = notif.user.username;
-    let action = notif.notification.record_type;
-    let recordType = notif.record.record_type;
+  _notifText() {
+    let username = this.props.username;
+    let action = this.props.action;
+    let recordType = this.props.recordType;
 
     switch(action) {
         case "user_tag":
           return "@" + username + " tagged you in a " + recordType;
         case "like":
           return "@" + username + " liked your " + recordType;
-        case "friendship":
+        case "comment":
+          return `@${username} commented on your post`;
+        case "friendaccept":
           return "@" + username + " accepted your friendship";
+        case "friendrequest":
+          // return `@${username} requested to be your friend`;
         default:
-          return "Crazy notification...";
+          return "Rouge notification... ¯\\_(ツ)_/¯";
     }
   }
 
   _handlePress() {
-    let action = this.props.notif.notification.record_type;
-    let record = this.props.notif.record;
+    let action = this.props.action;
 
     switch(action) {
       case "user_tag":
       case "like":
-        if(record.record_type === "post") {
-          this.props.navigator.push(Router.postScreen(record.record_id, this.props.token));
+        if(action === "post") {
+          this.props.navigator.push(Router.postScreen(this.props.recordID, this.props.token));
         }
         break;
       case "friendship":
-              console.log(record);
-              this.props.navigator.push(Router.profile(this.props.token, record.friend_id));
+      case "friendrequest":
+              this.props.navigator.push(Router.profile(this.props.token, this.props.userID));
               break;
       default:
         break;
@@ -73,10 +58,10 @@ class NotificationRow extends Component {
     return (
       <TouchableHighlight onPress={this._handlePress.bind(this)}>
         <View style={styles.container} >
-          {this._avatar(this.props.notif.user)}
+          <Avatar url={this.props.avatar} style={styles.avatar} />
           <View style={styles.textContainer}>
-            <Text>{this._notifText(this.props.notif)}</Text>
-            <Text style={styles.time}>{moment(this.props.notif.notification.created_at).fromNow()}</Text>
+            <Text>{this._notifText()}</Text>
+            <Text style={styles.time}>{moment(this.props.createdAt).fromNow()}</Text>
           </View>
         </View>
       </TouchableHighlight>
@@ -87,7 +72,12 @@ class NotificationRow extends Component {
 NotificationRow.propTypes = {
   token: React.PropTypes.string.isRequired,
   navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
-  notif: React.PropTypes.object.isRequired
+  userID: React.PropTypes.string.isRequired,
+  username: React.PropTypes.string.isRequired,
+  avatar: React.PropTypes.string,
+  recordID: React.PropTypes.string.isRequired,
+  action: React.PropTypes.string.isRequired,
+  createdAt: React.PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({

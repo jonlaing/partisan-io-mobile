@@ -24,7 +24,7 @@ class Post extends Component {
         <TouchableHighlight style={styles.action} onPress={this.props.onComment}>
           <View style={styles.actionContainerRight}>
             <Icon name="comments-o" color={Colors.grey} size={Layout.lines(1.5)} style={styles.actionIcon} />
-            <Text style={styles.actionText} >Comment ({this.props.commentCount})</Text>
+            <Text style={styles.actionText} >Comments ({this.props.commentCount})</Text>
           </View>
         </TouchableHighlight>
       );
@@ -34,22 +34,33 @@ class Post extends Component {
   }
 
   render() {
-    if(this.props.imageAttachment.image_url === '') {
+    if(this.props.attachments == null || this.props.attachments.length < 1) {
       return (
         <View style={styles.container}>
-          <PostHeader user={this.props.user} post={this.props.post} onPress={this.props.onHeaderPress}/>
-          <PostText text={this.props.post.body} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked}/>
+          <PostHeader
+            postID={this.props.postID}
+            username={this.props.username}
+            createdAt={this.props.createdAt}
+            onPress={this.props.onHeaderPress}
+            onFlag={this.props.onFlag}/>
+          <PostText text={this.props.body} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked} commentCount={this.props.commentCount} />
         </View>
       );
     }
 
     return (
       <View style={styles.container}>
-        <PostHeader user={this.props.user} post={this.props.post} onPress={this.props.onHeaderPress}/>
+        <PostHeader
+          postID={this.props.postID}
+          username={this.props.username}
+          createdAt={this.props.createdAt}
+          onPress={this.props.onHeaderPress}
+          onFlag={this.props.onFlag}/>
         <PostImage
-          uri={this.props.imageAttachment.image_url}
-          text={this.props.post.body}
+          attachments={this.props.attachments}
+          text={this.props.body}
           likeCount={this.props.likeCount}
+          commentCount={this.props.commentCount}
           onLike={this.props.onLike}
           liked={this.props.liked}
           onPress={this.props.onHeaderPress}
@@ -60,29 +71,30 @@ class Post extends Component {
 }
 
 Post.propTypes = {
-  user: React.PropTypes.shape({ username: React.PropTypes.string }).isRequired,
-  post: React.PropTypes.shape({
-    id: React.PropTypes.number,
-    created_at: React.PropTypes.oneOfType([ React.PropTypes.number, React.PropTypes.string ]),
-    body: React.PropTypes.string
-  }).isRequired,
+  username: React.PropTypes.string.isRequired,
+  postID: React.PropTypes.string.isRequired,
+  createdAt: React.PropTypes.string.isRequired,
+  body: React.PropTypes.string,
   likeCount: React.PropTypes.number,
   liked: React.PropTypes.bool,
   commentCount: React.PropTypes.number,
-  imageAttachment: React.PropTypes.shape({ image_url: React.PropTypes.string }),
+  attachments: React.PropTypes.array,
   onLike: React.PropTypes.func,
   onComment: React.PropTypes.func,
+  onFlag: React.PropTypes.func,
   showComments: React.PropTypes.bool
 };
 
 Post.defaultProps = {
+  body: '',
   likeCount: 0,
   liked: false,
   commentCount: 0,
-  imageAttachment: { image_url: '' },
+  attachments: [],
   onHeaderPress: () => {},
   onLike: () => {},
   onComment: () => {},
+  onFlag: () => {},
   showComments: true
 };
 

@@ -7,10 +7,8 @@ import React, {
 import ExNavigator from '@exponent/react-native-navigator';
 
 import Router from './Router';
-import Layout from './Layout';
 
 import Post from './Post';
-// import CommentList from './CommentList';
 
 class FeedRow extends Component {
   render() {
@@ -30,6 +28,7 @@ class FeedRow extends Component {
           onHeaderPress={() => this.props.navigator.push(Router.postScreen(record.post.id, this.props.token)) }
           onLike={this.props.onLike}
           onComment={() => this.props.navigator.push(Router.postScreen(record.post.id, this.props.token, true)) }
+          onFlag={() => this.props.navigator.push(Router.flag("post", record.post.id, this.props.token))}
         />
       </View>
     );

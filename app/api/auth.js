@@ -19,7 +19,7 @@ module.exports = function() {
     },
 
     logout() {
-      return fetch(`${root()}/logout`, { headers: headers() });
+      return fetch(`${root()}/logout`, { headers: headers(), method: 'DELETE' });
     },
 
     signUp(user) {

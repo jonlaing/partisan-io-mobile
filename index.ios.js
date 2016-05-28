@@ -52,13 +52,16 @@ class Partisan extends Component {
           }
         });
 
-        if(tok === '' || username === '' || avatarUrl === '') {
+        if(tok === '' || username === '') {
           throw "Couldn't get token or username";
         }
 
         this.setState({token: tok, username: username, avatarUrl: avatarUrl, tokenFetched: true});
       })
-      .catch((err) => console.log('Error getting or initializing AUTH_TOKEN: ' + err));
+      .catch((err) => {
+        this.setState({tokenFetched: true});
+        console.log('Error getting or initializing AUTH_TOKEN: ' + err);
+      });
   }
 
 

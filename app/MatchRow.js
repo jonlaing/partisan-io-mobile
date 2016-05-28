@@ -56,7 +56,7 @@ MatchRow.propTypes = {
   token: React.PropTypes.string.isRequired,
   navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
   user: React.PropTypes.shape({
-    id: React.PropTypes.number,
+    id: React.PropTypes.string,
     avatar_thumbnail_url: React.PropTypes.string
   }).isRequired,
   username: React.PropTypes.string.isRequired,

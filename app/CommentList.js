@@ -35,6 +35,7 @@ class CommentList extends Component {
   }
 
   render() {
+    console.log(this.state.comments);
     if(this.state.comments.length === 0) {
       return (
         <View style={styles.container}>
@@ -43,7 +44,19 @@ class CommentList extends Component {
       );
     }
 
-    let comments = this.state.comments.map((i) => <Comment key={i.comment.id} item={i} />);
+    let comments = this.state.comments.map((c) => {
+      return (
+        <Comment key={c.id}
+          commentID={c.id}
+          avatar={c.user.avatar_thumbnail_url}
+          username={c.user.username}
+          createdAt={c.created_at}
+          body={c.body}
+          liked={c.liked}
+          likeCount={c.likeCount}
+        />
+      );
+    });
 
     return (
       <View style={styles.container}>

@@ -19,17 +19,25 @@ class Comment extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.commentHeader}>
-          <Avatar user={this.props.item.user} style={styles.avatar} />
-          <Text style={styles.userText}>@{this.props.item.user.username}</Text>
-          <Text style={styles.commentTime}>{moment(this.props.item.comment.created_at).fromNow()}</Text>
+          <Avatar url={this.props.avatar} style={styles.avatar} />
+          <Text style={styles.userText}>@{this.props.username}</Text>
+          <Text style={styles.commentTime}>{moment(this.props.createdAt).fromNow()}</Text>
         </View>
         <View style={styles.comment}>
-          <Text style={styles.commentText} >{this.props.item.comment.body}</Text>
+          <Text style={styles.commentText} >{this.props.body}</Text>
         </View>
       </View>
     );
   }
 }
+
+Comment.propTypes = {
+  commentID: React.PropTypes.string.isRequired,
+  avatar: React.PropTypes.string,
+  username: React.PropTypes.string.isRequired,
+  createdAt: React.PropTypes.string.isRequired,
+  body: React.PropTypes.string
+};
 
 let styles = StyleSheet.create({
   container: {

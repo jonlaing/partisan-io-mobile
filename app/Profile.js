@@ -26,7 +26,7 @@ class Profile extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { user: null, profile: null, match: 0 };
+    this.state = { user: null, match: 0 };
   }
 
   componentDidMount() {
@@ -35,12 +35,12 @@ class Profile extends Component {
 
   _fetchProfile() {
     Api.profile(this.props.token).get(this.props.userID)
-    .then(data => this.setState({ user: data.user, profile: data.profile, match: data.match }))
+    .then(data => this.setState({ user: data.user, match: data.match }))
     .catch(err => console.log(err));
   }
 
   render() {
-    if(this.state.user === null || this.state.profile === null) {
+    if(this.state.user === null) {
       return (
         <LoadingScreen />
       );
@@ -58,15 +58,15 @@ class Profile extends Component {
               <Text style={styles.basicDetailsText}>{Utils.gender(this.state.user.gender)}</Text>
             </View>
             <View style={styles.matchContainer}>
-              <Text style={styles.matchText}>{Utils.match(this.state.match)} Match</Text>
+              <Text style={styles.matchText}>{this.state.match}% Match</Text>
             </View>
             <View style={styles.lookingForContainer}>
               <Text style={styles.header}>LOOKING FOR:</Text>
-              <LookingFor value={this.state.profile.looking_for} />
+              <LookingFor value={this.state.user.looking_for} />
             </View>
             <View style={styles.summaryContainer}>
               <Text style={styles.header}>SUMMARY:</Text>
-              <Text style={styles.summaryText}>{this.state.profile.summary}</Text>
+              <Text style={styles.summaryText}>{this.state.user.summary}</Text>
             </View>
           </View>
         </ScrollView>
@@ -86,7 +86,7 @@ class Profile extends Component {
 Profile.propTypes = {
   token: React.PropTypes.string.isRequired,
   navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
-  userID: React.PropTypes.number.isRequired
+  userID: React.PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({

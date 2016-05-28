@@ -7,7 +7,7 @@ var {root, headers, processJSON, xhrUpload} = require('./utils'); // ES6 importi
 module.exports = function(token) {
   return ({
     get(userID) {
-      return fetch(`${root()}/profiles/${userID}`, {
+      return fetch(`${root()}/users/${userID}`, {
         headers: headers(token),
         method: 'GET'
       })
@@ -15,50 +15,39 @@ module.exports = function(token) {
     },
 
     updateBirthdate(date) {
-      let body = new FormData();
       let fDate = date.toJSON().split('T')[0]; // format it for the server
-      body.append('birthdate', fDate);
 
       return fetch(`${root()}/users/`, {
-        headers: headers(token, false),
+        headers: headers(token),
         method: 'PATCH',
-        body: body
+        body: JSON.stringify({ birthdate: fDate })
       })
       .then(resp => processJSON(resp));
     },
 
     updateGender(gender) {
-      let body = new FormData();
-      body.append('gender', gender);
-
       return fetch(`${root()}/users/`, {
-        headers: headers(token, false),
+        headers: headers(token),
         method: 'PATCH',
-        body: body
+        body: JSON.stringify({ gender: gender })
       })
       .then(resp => processJSON(resp));
     },
 
     updateSummary(summary) {
-      let body = new FormData();
-      body.append('summary', summary);
-
-      return fetch(`${root()}/profile/`, {
-        headers: headers(token, false),
+      return fetch(`${root()}/users/`, {
+        headers: headers(token),
         method: 'PATCH',
-        body: body
+        body: JSON.stringify({ summary: summary })
       })
       .then(resp => processJSON(resp));
     },
 
     updateLookingFor(val) {
-      let body = new FormData();
-      body.append('looking_for', val.toString());
-
-      return fetch(`${root()}/profile/`, {
-        headers: headers(token, false),
+      return fetch(`${root()}/users/`, {
+        headers: headers(token),
         method: 'PATCH',
-        body: body
+        body: JSON.stringify({ looking_for: val })
       })
       .then(resp => processJSON(resp));
     },

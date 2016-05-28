@@ -21,7 +21,7 @@ export default class PostText extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.actions}>
-          <PostAction likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked}/>
+          <PostAction commentCount={this.props.commentCount} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked}/>
         </View>
         <View style={styles.textContainer}>
           <Text style={this._longPost() ? styles.textLong : styles.text}>{this.props.text}</Text>
@@ -34,12 +34,14 @@ export default class PostText extends Component {
 PostText.propTypes = {
   text: React.PropTypes.string.isRequired,
   likeCount: React.PropTypes.number,
+  commentCount: React.PropTypes.number,
   liked: React.PropTypes.bool,
   onLike: React.PropTypes.func
 };
 
 PostText.defaultProps = {
   likeCount: 0,
+  commentCount: 0,
   liked: false,
   onLike: () => {}
 };

@@ -99,7 +99,7 @@ class PostComposer extends Component {
           rightButton={this._rightButton()}
           rightButtonPress={this._handlePost.bind(this)}
         />
-        <CameraRollView show={this.state.showCameraRoll} onFinish={(images) => { this.setState({ image: images[0], showCameraRoll: false }); this.refs.text.focus(); }}/>
+        <CameraRollView show={this.state.showCameraRoll} onFinish={(images) => { this.setState({ image: images[0].uri, showCameraRoll: false }); this.refs.text.focus(); }}/>
       </View>
     );
   }

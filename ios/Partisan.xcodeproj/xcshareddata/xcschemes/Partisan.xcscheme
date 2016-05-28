@@ -110,6 +110,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "Partisan"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

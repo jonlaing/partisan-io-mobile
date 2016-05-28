@@ -66,7 +66,7 @@ class AvatarFTUE extends Component {
     Api.profile(this.props.token).avatarUpload(uri)
     .then(() => console.log("success!"))
     .then(() => this.setState({uploading: false}))
-    .then(() => this.props.navigator.push(Router.feed(this.props.token)))
+    .then(() => this.props.navigator.push(Router.mainScreen(this.props.token)))
     .then(() => {
       if(cropped === true) {
         console.log("removing image from store");
@@ -136,7 +136,7 @@ class AvatarFTUE extends Component {
           {this._previewImage()}
           {this._showError()}
           {this._submitButton()}
-          <TouchableHighlight style={styles.skipButton} onPress={() => this.props.navigator.push(Router.feed(this.props.token))}>
+          <TouchableHighlight style={styles.skipButton} onPress={() => this.props.navigator.push(Router.mainScreen(this.props.token))}>
             <Text style={styles.skipButtonText}>Skip this step</Text>
           </TouchableHighlight>
         </View>
