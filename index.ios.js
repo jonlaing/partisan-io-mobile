@@ -21,7 +21,7 @@ class Partisan extends Component {
     super(props);
 
     this.eventEmitter = new EventEmitter();
-    this.state = { token: null, tokenFetched: false, username: null, avatarUrl: null, notificationCount: 0 };
+    this.state = { token: null, tokenFetched: false, user: null, notificationCount: 0 };
   }
 
   componentWillMount() {
@@ -32,31 +32,27 @@ class Partisan extends Component {
   }
 
   _getUserInfo() {
-    AsyncStorage.multiGet(['AUTH_TOKEN', 'username', 'avatarUrl'])
+    AsyncStorage.multiGet(['AUTH_TOKEN', 'user'])
       .then((arr) => {
         let tok = '';
-        let username = '';
-        let avatarUrl = '';
+        let user = null;
 
         arr.map((g) => {
           if(g[0] === 'AUTH_TOKEN') {
             tok = g[1];
           }
 
-          if(g[0] === 'username') {
-            username = g[1];
-          }
-
-          if(g[0] === 'avatarUrl') {
-            avatarUrl = g[1];
+          if(g[0] === 'user') {
+            user = JSON.parse(g[1]);
           }
         });
 
-        if(tok === '' || username === '') {
-          throw "Couldn't get token or username";
+
+        if(tok === '' || user == null) {
+          throw "Couldn't get token or user";
         }
 
-        this.setState({token: tok, username: username, avatarUrl: avatarUrl, tokenFetched: true});
+        this.setState({token: tok, user: user, tokenFetched: true});
       })
       .catch((err) => {
         this.setState({tokenFetched: true});
@@ -65,9 +61,9 @@ class Partisan extends Component {
   }
 
 
-  _initialRoute(token, username) {
+  _initialRoute(token, user) {
     // we got the token, but it came back null, so we need to render the login screen
-    if(token === null || username === null) {
+    if(token === null || user === null) {
       return Router.welcomeScreen();
     } else {
       return Router.mainScreen(this.state.token);
@@ -82,12 +78,11 @@ class Partisan extends Component {
 
     return (
       <ExNavigator
-        initialRoute={this._initialRoute(this.state.token, this.state.username)}
+        initialRoute={this._initialRoute(this.state.token, this.state.user)}
         style={{flex: 1}}
         showNavigationBar={false}
         eventEmitter={this.eventEmitter}
-        username={this.state.username}
-        avatarUrl={this.state.avatarUrl}
+        user={this.state.user}
         ref="nav"
       />
     );
