@@ -1,4 +1,3 @@
-/*global fetch */
 'use strict';
 
 import React, {
@@ -27,18 +26,12 @@ class LoginScreen extends Component {
 
   handleLogin() {
     Api.auth().login(this.state.email, this.state.pw)
-    .then(data => {console.log(data); this.handleSuccess(data.token, data.user.username, data.user.avatar_thumbnail_url); })
+    .then(data => {console.log(data); this.handleSuccess(data.token, data.user); })
     .catch(err => this.handleFail(err));
   }
 
-  handleSuccess(token, username, avatarUrl) {
-    console.log(token, username, avatarUrl == null);
-    let set = [ ['AUTH_TOKEN', token], ['username', username] ];
-    if(avatarUrl !== null && avatarUrl.length > 0) {
-      set.push(['avatarUrl', avatarUrl]);
-    }
-
-    console.log(set);
+  handleSuccess(token, user) {
+    let set = [ ['AUTH_TOKEN', token], ['user', JSON.stringify(user)] ];
 
     AsyncStorage.multiSet(set)
       .then(() => this.props.navigator.replace(Router.mainScreen(token)))

@@ -59,15 +59,15 @@ class SignUp extends Component {
     this.setState({isSubmitting: true});
 
     Api.auth().signUp(user)
-    .then(data => this._handleSuccess(data.token, data.user.username))
+    .then(data => this._handleSuccess(data.token, data.user))
     .then(() => this.setState({index: 0, isSubmitting: false}))
     .catch((err) => this._handleFail(err));
   }
 
-  _handleSuccess(token, username) {
+  _handleSuccess(token, user) {
     AsyncStorage.multiSet([
       ['AUTH_TOKEN', token],
-      ['username', username]
+      ['user', JSON.stringify(user)]
     ])
       .then(() => this.props.navigator.replace(Router.questionWelcome(token)))
       .catch((err) => console.log('Error setting AUTH_TOKEN: ' + err));

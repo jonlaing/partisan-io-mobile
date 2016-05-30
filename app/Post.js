@@ -2,6 +2,7 @@
 
 import React, {
   Component,
+  Linking,
   StyleSheet,
   TouchableHighlight,
   View,
@@ -33,6 +34,14 @@ class Post extends Component {
     return <View />;
   }
 
+  handleLink(url) {
+    if(url.match(/^http/) != null) {
+      Linking.openURL(url).catch(err => console.error('An error occurred', err));
+    } else {
+      Linking.openURL(`http://${url}`).catch(err => console.error('An error occurred', err));
+    }
+  }
+
   render() {
     if(this.props.attachments == null || this.props.attachments.length < 1) {
       return (
@@ -40,10 +49,22 @@ class Post extends Component {
           <PostHeader
             postID={this.props.postID}
             username={this.props.username}
+            avatar={this.props.avatar}
             createdAt={this.props.createdAt}
             onPress={this.props.onHeaderPress}
-            onFlag={this.props.onFlag}/>
-          <PostText text={this.props.body} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked} commentCount={this.props.commentCount} />
+            onFlag={this.props.onFlag}
+            isMine={this.props.isMine}
+          />
+          <PostText
+            text={this.props.body}
+            likeCount={this.props.likeCount}
+            onLike={this.props.onLike}
+            onComment={this.props.onComment}
+            liked={this.props.liked}
+            commentCount={this.props.commentCount}
+            onHashtagPress={this.props.onHashtagPress}
+            onUserTagPress={this.props.onUserTagPress}
+            onLinkPress={this.handleLink.bind(this)} />
         </View>
       );
     }
@@ -53,6 +74,7 @@ class Post extends Component {
         <PostHeader
           postID={this.props.postID}
           username={this.props.username}
+          avatar={this.props.avatar}
           createdAt={this.props.createdAt}
           onPress={this.props.onHeaderPress}
           onFlag={this.props.onFlag}/>
@@ -71,6 +93,7 @@ class Post extends Component {
 }
 
 Post.propTypes = {
+  isMine: React.PropTypes.bool,
   username: React.PropTypes.string.isRequired,
   postID: React.PropTypes.string.isRequired,
   createdAt: React.PropTypes.string.isRequired,
@@ -82,10 +105,14 @@ Post.propTypes = {
   onLike: React.PropTypes.func,
   onComment: React.PropTypes.func,
   onFlag: React.PropTypes.func,
+  onHashtagPress: React.PropTypes.func,
+  onUserTagPress: React.PropTypes.func,
+  onLinkPress: React.PropTypes.func,
   showComments: React.PropTypes.bool
 };
 
 Post.defaultProps = {
+  isMine: false,
   body: '',
   likeCount: 0,
   liked: false,
@@ -95,6 +122,9 @@ Post.defaultProps = {
   onLike: () => {},
   onComment: () => {},
   onFlag: () => {},
+  onHashtagPress: () => {},
+  onUserTagPress: () => {},
+  onLinkPress: () => {},
   showComments: true
 };
 

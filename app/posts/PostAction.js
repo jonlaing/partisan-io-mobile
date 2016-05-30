@@ -21,7 +21,7 @@ export default class PostAction extends Component {
     return (
       <View style={styles.container}>
         <LikeButton count={this.props.likeCount} onPress={this.props.onLike} active={this.props.liked} color={this.props.color}/>
-        <TouchableHighlight style={styles.button}>
+        <TouchableHighlight style={styles.button} onPress={this.props.onComment}>
           <View style={styles.commentContainer}>
             <Icon style={styles.commentIcon} name="question-answer" size={Layout.lines(1.25)} color={Colors.grey} />
             <Text style={[styles.text, this.props.color === 'light' ? styles.textLight : {}]}>{formatter.count(this.props.commentCount)}</Text>
@@ -37,7 +37,8 @@ PostAction.propTypes = {
   likeCount: React.PropTypes.number,
   commentCount: React.PropTypes.number,
   liked: React.PropTypes.bool,
-  onLike: React.PropTypes.func
+  onLike: React.PropTypes.func,
+  onComment: React.PropTypes.func
 };
 
 PostAction.defaultProps = {
@@ -45,7 +46,8 @@ PostAction.defaultProps = {
   likeCount: 0,
   commentCount: 0,
   liked: false,
-  onLike: () => {}
+  onLike: () => {},
+  onComment: () => {}
 };
 
 const styles = StyleSheet.create({

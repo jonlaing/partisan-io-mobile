@@ -33,11 +33,11 @@ class FriendButton extends Component {
   _handlePress() {
     if(this.state.friendship.confirmed === false && this.state.friendship.user_id === this.props.userID) {
       Api.friendships(this.props.token).confirm(this.props.userID)
-      .then(data => this.setState({friendship: data}))
+      .then(data => this.setState({friendship: data.friendship}))
       .catch(err => console.log(err));
     } else {
       Api.friendships(this.props.token).request(this.props.userID)
-      .then((data) => this.setState({friendship: data}))
+      .then((data) => { console.log(data); this.setState({friendship: data.friendship}); })
       .catch(err => console.log(err));
     }
   }

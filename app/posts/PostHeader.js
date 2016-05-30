@@ -22,22 +22,33 @@ const ACTION_SHEET_BUTTONS = [
   'Cancel'
 ];
 
+const MY_ACTION_SHEET_BUTTONS = [
+  'Delete Post',
+  'Cancel'
+];
+
 const DESTRUCTIVE_INDEX = 0;
 const CANCEL_INDEX = 1;
 
 export default class PostHeader extends Component {
   handleMorePress() {
+    let sheet = this.props.isMine ? MY_ACTION_SHEET_BUTTONS : ACTION_SHEET_BUTTONS;
     ActionSheetIOS.showActionSheetWithOptions({
-      options: ACTION_SHEET_BUTTONS,
+      options: sheet,
       cancelButtonIndex: CANCEL_INDEX,
       destructiveButtonIndex: DESTRUCTIVE_INDEX
     },
     (buttonIndex) => {
-      if(buttonIndex === CANCEL_INDEX) {
-        return;
+      switch(buttonIndex) {
+        case DESTRUCTIVE_INDEX:
+          if(this.props.isMine === false) {
+            this.props.onFlag("post", this.props.postID);
+          }
+          break;
+        case CANCEL_INDEX:
+        default:
+          return;
       }
-
-      this.props.onFlag("post", this.props.postID);
     });
   }
 
@@ -66,12 +77,14 @@ PostHeader.propTypes = {
   username: React.PropTypes.string.isRequired,
   createdAt: React.PropTypes.string.isRequired,
   onPress: React.PropTypes.func,
-  onFlag: React.PropTypes.func
+  onFlag: React.PropTypes.func,
+  isMine: React.PropTypes.bool
 };
 
 PostHeader.defaultProps = {
   onPress: () => {},
-  onFlag: () => {}
+  onFlag: () => {},
+  isMine: false
 };
 
 const styles = StyleSheet.create({

@@ -2,6 +2,7 @@
 
 import React, {
   Component,
+  Linking,
   StyleSheet,
   ListView,
   RefreshControl,
@@ -136,6 +137,7 @@ class FeedList extends Component {
         navigator={this.parentNav}
         postID={post.id}
         username={post.user.username}
+        avatar={post.user.avatar_thumbnail_url}
         createdAt={post.created_at}
         action={post.action}
         body={post.body}
@@ -144,8 +146,12 @@ class FeedList extends Component {
         liked={post.liked}
         commentCount={post.child_count}
         onLike={this._handleLike(post.id).bind(this)}
+        onComment={() => this.parentNav.push(Router.postScreen(post.id, this.props.token, true))}
         onFlag={() => this.parentNav.push(Router.flag('post', post.id, this.props.token))}
+        onHashtagPress={() => {}}
+        onUserTagPress={() => {}}
         onHeaderPress={() => this.parentNav.push(Router.postScreen(post.id, this.props.token, true))}
+        isMine={post.user_id === this.parentNav.props.user.id}
       />
     );
   }

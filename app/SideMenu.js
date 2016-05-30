@@ -27,7 +27,7 @@ class SideMenu extends Component {
   _handleLogout() {
     Api.auth().logout();
 
-    AsyncStorage.multiRemove(['AUTH_TOKEN', 'username'])
+    AsyncStorage.multiRemove(['AUTH_TOKEN', 'user'])
       .then(() => this.props.navigator.replace(Router.welcomeScreen()))
       .catch(err => console.log(err));
   }
@@ -79,8 +79,8 @@ class SideMenu extends Component {
         </View>
         <View style={styles.accountContainer}>
           <View style={styles.item}>
-            <Avatar style={styles.avatar} user={{ avatar_thumbnail_url: this.props.navigator.props.avatarUrl }} />
-            <Text style={styles.itemText}>@{this.props.navigator.props.username}</Text>
+            <Avatar style={styles.avatar} url={this.props.navigator.props.user.avatar_thumbnail_url} />
+            <Text style={styles.itemText}>@{this.props.navigator.props.user.username}</Text>
           </View>
           <TouchableHighlight onPress={this._handleLogout.bind(this)}>
             <View style={styles.item}>

@@ -9,6 +9,7 @@ import React, {
 
 import Layout from '../Layout';
 import Colors from '../Colors';
+import formatter from '../utils/formatter';
 
 import PostAction from './PostAction';
 
@@ -21,10 +22,12 @@ export default class PostText extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.actions}>
-          <PostAction commentCount={this.props.commentCount} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked}/>
+          <PostAction commentCount={this.props.commentCount} likeCount={this.props.likeCount} onLike={this.props.onLike} onComment={this.props.onComment} liked={this.props.liked}/>
         </View>
         <View style={styles.textContainer}>
-          <Text style={this._longPost() ? styles.textLong : styles.text}>{this.props.text}</Text>
+          <Text style={this._longPost() ? styles.textLong : styles.text}>
+            {formatter.post(this.props.text, this.props.onLinkPress, this.props.onHashtagPress, this.props.onUserTagPress)}
+          </Text>
         </View>
       </View>
     );
@@ -36,14 +39,22 @@ PostText.propTypes = {
   likeCount: React.PropTypes.number,
   commentCount: React.PropTypes.number,
   liked: React.PropTypes.bool,
-  onLike: React.PropTypes.func
+  onLike: React.PropTypes.func,
+  onComment: React.PropTypes.func,
+  onHashtagPress: React.PropTypes.func,
+  onUserTagPress: React.PropTypes.func,
+  onLinkPress: React.PropTypes.func
 };
 
 PostText.defaultProps = {
   likeCount: 0,
   commentCount: 0,
   liked: false,
-  onLike: () => {}
+  onLike: () => {},
+  onComment: () => {},
+  onHashtagPress: () => {},
+  onUserTagPress: () => {},
+  onLinkPress: () => {}
 };
 
 const styles = StyleSheet.create({

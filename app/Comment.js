@@ -11,6 +11,7 @@ import moment from 'moment';
 
 import Colors from './Colors';
 import Layout from './Layout';
+import formatter from './utils/formatter';
 
 import Avatar from './Avatar';
 
@@ -24,7 +25,7 @@ class Comment extends Component {
           <Text style={styles.commentTime}>{moment(this.props.createdAt).fromNow()}</Text>
         </View>
         <View style={styles.comment}>
-          <Text style={styles.commentText} >{this.props.body}</Text>
+          <Text style={styles.commentText}>{formatter.post(this.props.body)}</Text>
         </View>
       </View>
     );
