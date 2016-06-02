@@ -37,9 +37,10 @@ class Chat extends Component {
   _parseMessages(msgs) {
     return msgs.map(msg => {
       return {
+        uniqueId: msg.id,
         text: msg.body,
         name: `@${msg.user.username}`,
-        position: msg.user.username === this.props.navigator.props.username ? 'right' : 'left',
+        position: msg.user.id === this.props.navigator.props.user.id ? 'right' : 'left',
         date: msg.created_at,
         image: { uri: msg.user.avatar_thumbnail_url }
       };
@@ -52,7 +53,8 @@ class Chat extends Component {
         let data = JSON.parse(res.data);
         let msgs = this._parseMessages(data.messages);
         if(msgs.length > 0) {
-          this.refs.chat.appendMessages(msgs);
+          // this.refs.chat.appendMessages(msgs);
+          this.setState({messages: this.state.messages.concat(msgs)});
         }
       }.bind(this),
       (err) => console.log("err:", err));
@@ -72,13 +74,13 @@ class Chat extends Component {
           autoScroll={true}
           forceRenderImage={true}
           onCustomSend={this._handleSend.bind(this)}
-          styles={{ container: styles.container, bubbleRight: styles.bubbleRight }}
+          styles={{ listView: styles.container, bubbleRight: styles.bubbleRight }}
           ref="chat"
         />
         <NavBar
           title={`@${this.props.user.username}`}
           leftButton={ <Icon name="chevron-left" color="rgb(255,255,255)" size={24} /> }
-          leftButtonPress={() => this.props.navigator.pop()}
+          leftButtonPress={() => { this.props.navigator.props.eventEmitter.emit('message_finish'); this.props.navigator.pop(); }}
         />
       </View>
     );
@@ -87,8 +89,7 @@ class Chat extends Component {
 
 let styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: Layout.lines(4)
+    paddingTop: Layout.lines(5)
   },
   bubbleRight: {
     marginLeft: 70,

@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     padding: Layout.lines(0.75)
   },
   navBarTitleText: {
-    fontSize: 22,
+    fontSize: Layout.lines(1.375),
     textAlign: 'center',
     color: 'white'
   },

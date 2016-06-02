@@ -22,16 +22,19 @@ export default class NavBarMain extends Component {
     super(props);
 
     this.notifCounter = null;
-    this.state = { notificationCount: 0 };
+    this.msgCounter = null;
+    this.state = { notificationCount: 0, hasMessages: false };
   }
 
   componentDidMount() {
     this._getNotifs();
+    this._getMsgs();
   }
 
   componentWillUnmount() {
     try {
       this.notifCounter.close();
+      this.msgCounter.close();
     } catch(e) {
       console.log(e);
     }
@@ -50,12 +53,33 @@ export default class NavBarMain extends Component {
     );
   }
 
+  _getMsgs() {
+    this.msgCounter = Api.messages(this.props.token).unreadSocket(
+      function(socket) {
+        this.msgCounter = socket;
+      }.bind(this),
+      function(res) {
+        let data = JSON.parse(res.data);
+        this.setState({ hasMessages: data.unread });
+      }.bind(this),
+      err => console.log(err)
+    );
+  }
+
   _notifs() {
     if(this.state.notificationCount > 0) {
       return <Icon style={styles.icon} name="notifications" size={24} color={Colors.accent} />;
     }
 
     return <Icon style={styles.icon} name="notifications-none" size={24} color={Colors.darkGrey} />;
+  }
+
+  _msgs() {
+    if(this.state.hasMessages === true) {
+      return <Icon style={styles.icon} name="message" size={24} color={Colors.accent} />;
+    }
+
+    return <Icon style={styles.icon} name="message" size={24} color={Colors.darkGrey} />;
   }
 
   _currentTab(name) {
@@ -79,7 +103,7 @@ export default class NavBarMain extends Component {
             {this._notifs()}
           </TouchableHighlight>
           <TouchableHighlight style={styles.iconContainer} onPress={this.props.onMessagePress}>
-            <Icon style={styles.icon} name="message" size={24} color={Colors.darkGrey} />
+            {this._msgs()}
           </TouchableHighlight>
         </View>
         <View style={styles.row}>

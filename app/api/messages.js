@@ -1,4 +1,4 @@
-/*global fetch, FormData, WebSocket */
+/*global fetch, WebSocket */
 'use strict';
 
 import moment from 'moment';
@@ -9,7 +9,17 @@ var { protocols, root, headers, withTicket } = require('./utils'); // ES6 import
 module.exports = function(token) {
   return {
     threads() {
-      return fetch(`${root()}/messages/threads/`, { headers: headers(token) });
+      return fetch(`${root()}/messages/threads/`, { headers: headers(token) }).then(resp => resp.json());
+    },
+
+    createThread(friendID) {
+      return fetch(`${root()}/messages/threads`, {
+        method: 'POST',
+        headers: headers(token),
+        body: JSON.stringify({
+          user_ids: [friendID]
+        })
+      });
     },
 
     list(threadID) {
@@ -17,15 +27,15 @@ module.exports = function(token) {
     },
 
     send(threadID, text) {
-      let request = new FormData();
-      request.append("body", text);
-
       return fetch(`${root()}/messages/threads/${threadID}`, {
         headers: headers(token),
-        body: request,
+        body: JSON.stringify({
+          body: text
+        }),
         method: 'POST'
       });
     },
+
 
     socket(threadID, onMessage, onError) {
       var _socket = null;
@@ -35,7 +45,7 @@ module.exports = function(token) {
         // once we get the ticket througha normal https request, open up the socket
         // using the ticket for authentication
         if(!_socket) {
-          _socket = new WebSocket(`${root(protocols.ws)}/messages/threads/${threadID}/socket?key=${ticket.key}`);
+          _socket = new WebSocket(`${root(protocols.ws)}/messages/threads/${threadID}/subscribe?key=${ticket.id}`);
         } else {
           return;
         }
@@ -72,6 +82,26 @@ module.exports = function(token) {
         };
 
         start();
+      }, onError);
+    },
+
+    unreadSocket(onOpen, onMessage, onError) {
+      // get the ticket first
+      withTicket(token, (ticket) => {
+        // once we get the ticket througha normal https request, open up the socket
+        // using the ticket for authentication
+        var _socket = new WebSocket(`${root(protocols.ws)}/messages/unread?key=${ticket.id}`);
+
+        _socket.onmessage = onMessage;
+        _socket.onerror = onError;
+
+        _socket.onopen = () => {
+          onOpen(_socket);
+          _socket.send("whatever");
+          setInterval(() => {
+            _socket.send("whatever");
+          }, 5000);
+        };
       }, onError);
     }
   };

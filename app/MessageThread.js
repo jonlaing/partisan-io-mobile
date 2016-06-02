@@ -13,38 +13,26 @@ import ExNavigator from '@exponent/react-native-navigator';
 
 import Router from './Router';
 
+import Layout from './Layout';
 import Colors from './Colors';
 
-class MessageThread extends Component {
-  _avatar(user) {
-    let url = user.avatar_thumbnail_url;
-    if(url.length > 0) {
-      if(!url.includes('amazonaws.com')) {
-        url = "http://localhost:4000" + url;
-      }
+import Avatar from './Avatar';
 
-      return (
-        <Image
-          style={styles.avatar}
-          source={{uri: url}}
-        />
-      );
-    } else {
-      return (<View style={styles.avatar}/>);
-    }
+class MessageThread extends Component {
+  _handlePress() {
+    this.props.navigator.push(Router.chat(this.props.thread.id, this.props.user, this.props.token));
   }
 
-  _handlePress() {
-    this.props.navigator.push(Router.chat(this.props.thread.thread_user.thread_id, this.props.thread.thread_user.user, this.props.token));
+  _containerStyle() {
   }
 
   render() {
     return (
       <TouchableHighlight onPress={this._handlePress.bind(this)}>
         <View style={styles.container} >
-          {this._avatar(this.props.thread.thread_user.user)}
+          <Avatar style={styles.avatar} url={this.props.user.avatar_thumbnail_url} />
           <View style={styles.textContainer}>
-            <Text style={styles.username}>@{this.props.thread.thread_user.user.username}</Text>
+            <Text style={styles.username}>@{this.props.user.username}</Text>
             <Text>{`${this.props.thread.last_message.body.substring(0, 40)}…`}</Text>
             <Text style={styles.time}>{moment(this.props.thread.created_at).fromNow()}</Text>
           </View>
@@ -57,7 +45,8 @@ class MessageThread extends Component {
 MessageThread.propTypes = {
   token: React.PropTypes.string.isRequired,
   navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
-  thread: React.PropTypes.object.isRequired
+  thread: React.PropTypes.object.isRequired,
+  user: React.PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -66,17 +55,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     backgroundColor: 'white',
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    borderColor: 'rgb(242,242,242)',
+    padding: Layout.lines(1),
+    borderColor: Colors.lightGrey,
     borderBottomWidth: 1
   },
   avatar: {
-    width: 30,
-    height: 30,
-    marginRight: 10
+    height: Layout.lines(2),
+    width: Layout.lines(2),
+    marginRight: Layout.lines(2),
+    borderRadius: Layout.lines(1),
+    backgroundColor: Colors.lightGrey
   },
   textContainer: {
     flex: 1
@@ -85,7 +73,7 @@ const styles = StyleSheet.create({
     color: Colors.action
   },
   time: {
-    fontSize: 12,
+    fontSize: Layout.lines(0.75),
     color: Colors.grey
   }
 });
