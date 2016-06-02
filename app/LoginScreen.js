@@ -34,6 +34,7 @@ class LoginScreen extends Component {
     let set = [ ['AUTH_TOKEN', token], ['user', JSON.stringify(user)] ];
 
     AsyncStorage.multiSet(set)
+      .then(() => this.props.navigator.props.eventEmitter.emit('user-login'))
       .then(() => this.props.navigator.replace(Router.mainScreen(token)))
       .catch((err) => console.log('Error setting AUTH_TOKEN: ' + err));
   }

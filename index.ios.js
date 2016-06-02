@@ -29,6 +29,15 @@ class Partisan extends Component {
 
   componentDidMount() {
     this._getUserInfo();
+    this.userListener = this.eventEmitter.addListener('user-login', this._getUserInfo.bind(this));
+  }
+
+  componentWillUnmount() {
+    try {
+      this.userListener.remove();
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   _getUserInfo() {
