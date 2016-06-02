@@ -53,6 +53,7 @@ class Post extends Component {
             createdAt={this.props.createdAt}
             onPress={this.props.onHeaderPress}
             onFlag={this.props.onFlag}
+            onDelete={this.props.onDelete}
             isMine={this.props.isMine}
           />
           <PostText
@@ -77,7 +78,10 @@ class Post extends Component {
           avatar={this.props.avatar}
           createdAt={this.props.createdAt}
           onPress={this.props.onHeaderPress}
-          onFlag={this.props.onFlag}/>
+          onFlag={this.props.onFlag}
+          onDelete={this.props.onDelete}
+          isMine={this.props.isMine}
+        />
         <PostImage
           attachments={this.props.attachments}
           text={this.props.body}
@@ -105,6 +109,7 @@ Post.propTypes = {
   onLike: React.PropTypes.func,
   onComment: React.PropTypes.func,
   onFlag: React.PropTypes.func,
+  onDelete: React.PropTypes.func,
   onHashtagPress: React.PropTypes.func,
   onUserTagPress: React.PropTypes.func,
   onLinkPress: React.PropTypes.func,
@@ -122,6 +127,7 @@ Post.defaultProps = {
   onLike: () => {},
   onComment: () => {},
   onFlag: () => {},
+  onDelete: () => {},
   onHashtagPress: () => {},
   onUserTagPress: () => {},
   onLinkPress: () => {},

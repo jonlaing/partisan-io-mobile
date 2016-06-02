@@ -30,6 +30,7 @@ class NotificationRow extends Component {
         case "friendrequest":
           return `@${username} requested to be your friend`;
         default:
+          console.log(action);
           return "Rouge notification... ¯\\_(ツ)_/¯";
     }
   }

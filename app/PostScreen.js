@@ -42,6 +42,13 @@ class PostScreen extends Component {
     .catch(err => console.log(err));
   }
 
+  _handleDelete(id) {
+    Api.posts(this.props.token).destroy(id)
+    .then(() => this.props.navigator.pop())
+    .then(() => this.props.navigator.props.eventEmitter.emit('post-delete'))
+    .catch(err => console.log(err));
+  }
+
   render() {
     if(this.state.post.id === undefined) {
       return <View />;
@@ -69,6 +76,7 @@ class PostScreen extends Component {
             commentCount={this.state.post.child_count}
             onLike={this._handleLike.bind(this)}
             onFlag={() => this.props.navigator.push(Router.flag('post', this.props.postID, this.props.token))}
+            onDelete={this._handleDelete.bind(this)}
             onComment={() => this.refs.commentComposer.focus()}
             onHeaderPress={() => this.props.navigator.push(Router.profile(this.props.token, this.state.post.user_id))}
             showComments={false}

@@ -35,6 +35,13 @@ module.exports = function(token) {
       request.append('body', body);
       request.append('action', 'post');
       return xhrUpload(request, `${root()}/posts/`, token);
+    },
+
+    destroy(id) {
+      return fetch(`${root()}/posts/${id}`, {
+        method: 'DELETE',
+        headers: headers(token)
+      });
     }
   });
 };

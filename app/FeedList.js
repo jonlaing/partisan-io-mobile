@@ -24,7 +24,7 @@ import PostComposeButton from './PostComposeButton';
 class FeedList extends Component {
   constructor(props) {
     super(props);
-    this.postListener = null;
+    this.postSuccessListener = null;
     this.parentNav = this.props.navigator.props.parentNavigator;
 
     var ds = new ListView.DataSource({rowHasChanged: this._rowHasChanged});
@@ -42,12 +42,14 @@ class FeedList extends Component {
   componentDidMount() {
     this.getFeed(true);
     Api.friendships(this.props.token).count().then(count => this.setState({hasFriends: count > 0})).catch(err => console.log(err));
-    this.postListener = this.parentNav.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
+    this.postSuccessListener = this.parentNav.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
+    this.postDeleteListener = this.parentNav.props.eventEmitter.addListener('post-delete', this._handlePostDelete.bind(this));
   }
 
   componentWillUnmount() {
     try {
-      this.postListener.remove();
+      this.postSuccessListener.remove();
+      this.postDeleteListener.remove();
     } catch(e) {
       console.log(e);
     }
@@ -100,6 +102,10 @@ class FeedList extends Component {
     this.getFeed(true);
   }
 
+  _handlePostDelete() {
+    this.getFeed(true);
+  }
+
   _handlePost() {
     this.parentNav.push(Router.postComposer(this.props.token));
   }
@@ -112,6 +118,12 @@ class FeedList extends Component {
       Api.posts(this.props.token).like(postID)
       .catch(err => console.log(err));
     };
+  }
+
+  _handleDelete(id) {
+    Api.posts(this.props.token).destroy(id)
+    .then(() => this.props.navigator.props.eventEmitter.emit('post-delete'))
+    .catch(err => console.log(err));
   }
 
   _updateLike(postID) {
@@ -148,6 +160,7 @@ class FeedList extends Component {
         onLike={this._handleLike(post.id).bind(this)}
         onComment={() => this.parentNav.push(Router.postScreen(post.id, this.props.token, true))}
         onFlag={() => this.parentNav.push(Router.flag('post', post.id, this.props.token))}
+        onDelete={this._handleDelete.bind(this)}
         onHashtagPress={() => {}}
         onUserTagPress={() => {}}
         onHeaderPress={() => this.parentNav.push(Router.postScreen(post.id, this.props.token, true))}

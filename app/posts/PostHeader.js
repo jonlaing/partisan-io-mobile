@@ -44,6 +44,7 @@ export default class PostHeader extends Component {
           if(this.props.isMine === false) {
             this.props.onFlag("post", this.props.postID);
           }
+          this.props.onDelete(this.props.postID);
           break;
         case CANCEL_INDEX:
         default:
@@ -78,12 +79,14 @@ PostHeader.propTypes = {
   createdAt: React.PropTypes.string.isRequired,
   onPress: React.PropTypes.func,
   onFlag: React.PropTypes.func,
+  onDelete: React.PropTypes.func,
   isMine: React.PropTypes.bool
 };
 
 PostHeader.defaultProps = {
   onPress: () => {},
   onFlag: () => {},
+  onDelete: () => {},
   isMine: false
 };
 
