@@ -14,6 +14,24 @@ module.exports = function(token) {
       .then(resp => processJSON(resp));
     },
 
+    update(postalCode, birthdate, gender, lookingFor, summary) {
+      let date = new Date(birthdate);
+      let fDate = date.toJSON().split('T')[0]; // format it for the server
+
+      return fetch(`${root()}/users/`, {
+        headers: headers(token),
+        method: 'PATCH',
+        body: JSON.stringify({
+          postal_code: postalCode,
+          birthdate: fDate,
+          gender: gender,
+          looking_for: lookingFor,
+          summary: summary
+        })
+      })
+      .then(resp => processJSON(resp));
+    },
+
     updateBirthdate(date) {
       let fDate = date.toJSON().split('T')[0]; // format it for the server
 

@@ -18,7 +18,7 @@ export default class MainScreen extends Component {
     super(props);
     this._menuOpen = false;
 
-    this.state = { currentTab: 'feed' };
+    this.state = { currentTab: 'feed', showEditor: '' };
   }
 
   _handleHamburger() {
@@ -58,7 +58,13 @@ export default class MainScreen extends Component {
 
   render() {
     return (
-      <SideMenuNav ref="sidemenu" menu={ <SideMenu navigator={this.props.navigator} token={this.props.token} /> }>
+      <SideMenuNav ref="sidemenu" menu={
+        <SideMenu
+          navigator={this.props.navigator}
+          token={this.props.token}
+          onUserPress={() => this.props.navigator.push(Router.profileEdit(this.props.token, this.props.navigator.props.user))}
+        />
+      }>
         <ExNavigator
           initialRoute={Router.feed(this.props.token)}
           style={{flex: 1, paddingTop: Layout.lines(7)}}

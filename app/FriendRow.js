@@ -11,7 +11,7 @@ import React, {
 import ExNavigator from '@exponent/react-native-navigator';
 
 import Router from './Router';
-import Utils from './Utils';
+import formatter from './utils/formatter';
 import Layout from './Layout';
 import Colors from './Colors';
 
@@ -32,8 +32,8 @@ class FriendRow extends Component {
           <View style={styles.stats}>
             <Text style={styles.user}>@{this.props.username}</Text>
             <View style={styles.extraInfoContainer}>
-              <Text style={styles.extraInfo}>{Utils.age(this.props.birthdate)}</Text>
-              <Text style={styles.extraInfo}>{Utils.cityState(this.props.location)}</Text>
+              <Text style={styles.extraInfo}>{formatter.age(this.props.birthdate)}</Text>
+              <Text style={styles.extraInfo}>{formatter.cityState(this.props.location)}</Text>
             </View>
             <View style={styles.matchContainer}>
               <Text style={styles.matchLabel}>Match:</Text>

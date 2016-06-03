@@ -20,20 +20,24 @@ class LookingForWidget extends Component {
     return (this.props.value & 1 << i) !== 0;
   }
 
+  _textStyle() {
+    return [styles.itemText, {color: this.props.color === 'light' ? 'white' : 'black' }];
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.item}>
           <Icon name="torsos-all-female" color={this._isHighlighted(0) ? Colors.action : Colors.grey} size={Layout.lines(1.5)} />
-          <Text style={styles.itemText}>Friends</Text>
+          <Text style={this._textStyle()}>Friends</Text>
         </View>
         <View style={styles.item}>
           <Icon name="heart" color={this._isHighlighted(1) ? Colors.action : Colors.grey} size={Layout.lines(1.5)} />
-          <Text style={styles.itemText}>Love</Text>
+          <Text style={this._textStyle()}>Love</Text>
         </View>
         <View style={styles.item}>
           <Icon name="skull" color={this._isHighlighted(2) ? Colors.action : Colors.grey} size={Layout.lines(1.5)} />
-          <Text style={styles.itemText}>Enemies</Text>
+          <Text style={this._textStyle()}>Enemies</Text>
         </View>
       </View>
     );
@@ -41,7 +45,12 @@ class LookingForWidget extends Component {
 }
 
 LookingForWidget.propTypes = {
-  value: React.PropTypes.number.isRequired
+  value: React.PropTypes.number.isRequired,
+  color: React.PropTypes.oneOf(['light', 'dark'])
+};
+
+LookingForWidget.defaultProps = {
+  color: 'dark'
 };
 
 const styles = StyleSheet.create({

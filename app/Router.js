@@ -120,6 +120,15 @@ let Router = {
     };
   },
 
+  profileEdit(token, user) {
+    return {
+      renderScene(navigator) {
+        let ProfileEdit = require('./ProfileEdit');
+        return <ProfileEdit token={token} navigator={navigator} user={user} />;
+      }
+    };
+  },
+
   feed(token) {
     return {
       renderScene(navigator) {

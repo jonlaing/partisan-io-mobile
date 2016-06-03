@@ -11,7 +11,7 @@ import React, {
   Text
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import ExNavigator from '@exponent/react-native-navigator';
 
 import Api from './Api';
@@ -24,6 +24,12 @@ import Avatar from './Avatar';
 const window = Dimensions.get('window');
 
 class SideMenu extends Component {
+  constructor(props) {
+    super(props);
+
+    this.user = this.props.navigator.props.user;
+  }
+
   _handleLogout() {
     Api.auth().logout();
 
@@ -32,59 +38,22 @@ class SideMenu extends Component {
       .catch(err => console.log(err));
   }
 
-  _notifCount() {
-    let count = this.props.notificationCount;
-    if(count > 0) {
-      return <Text style={styles.counter}>{count}</Text>;
-    }
-
-    return <View />;
-  }
-
   render() {
     return (
       <ScrollView scrollToTop={false} style={styles.menu} >
         <View style={styles.container}>
-          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.feed(this.props.token))}>
-            <View style={styles.item}>
-              <Icon name="th-list" size={14} color="white" style={styles.itemIcon}/>
-              <Text style={styles.itemText}>Feed</Text>
+          <TouchableHighlight onPress={this.props.onUserPress}>
+            <View style={styles.user}>
+              <View style={styles.userInner}>
+                <Avatar style={styles.avatar} url={this.user.avatar_thumbnail_url} />
+                <Text style={styles.userText}>@{this.user.username}</Text>
+              </View>
+              <Text style={{color: 'white'}}>Edit Profile</Text>
             </View>
           </TouchableHighlight>
-          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.notificationScreen(this.props.token))}>
-            <View style={styles.item}>
-              <Icon name="bell" size={14} color="white" style={styles.itemIcon}/>
-              <Text style={styles.itemText}>Notifications</Text>
-              {this._notifCount()}
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.matches(this.props.token))}>
-            <View style={styles.item}>
-              <Icon name="globe" size={14} color="white" style={styles.itemIcon}/>
-              <Text style={styles.itemText}>Matches</Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.friends(this.props.token))}>
-            <View style={styles.item}>
-              <Icon name="group" size={14} color="white" style={styles.itemIcon}/>
-              <Text style={styles.itemText}>Friends</Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={() => this.props.navigator.replace(Router.messageList(this.props.token))}>
-            <View style={styles.item}>
-              <Icon name="comments" size={14} color="white" style={styles.itemIcon}/>
-              <Text style={styles.itemText}>Messages</Text>
-            </View>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.accountContainer}>
-          <View style={styles.item}>
-            <Avatar style={styles.avatar} url={this.props.navigator.props.user.avatar_thumbnail_url} />
-            <Text style={styles.itemText}>@{this.props.navigator.props.user.username}</Text>
-          </View>
           <TouchableHighlight onPress={this._handleLogout.bind(this)}>
             <View style={styles.item}>
-              <Icon name="sign-out" size={14} color="white" style={styles.itemIcon}/>
+              <Icon name="clear" size={24} color="white" style={styles.itemIcon}/>
               <Text style={styles.itemText}>Logout</Text>
             </View>
           </TouchableHighlight>
@@ -96,28 +65,33 @@ class SideMenu extends Component {
 
 SideMenu.propTypes = {
   token: React.PropTypes.string.isRequired,
-  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
+  onUserPress: React.PropTypes.func
+};
+
+SideMenu.defaultProps = {
+  onUserPress: () => {}
 };
 
 const styles = StyleSheet.create({
   menu: {
     flex: 1,
-    width: window.width,
+    width: window.width * 2 / 3,
     height: window.height,
     backgroundColor: Colors.darkGrey
   },
   container: {
-    flex: 1,
-    paddingTop: Layout.lines(4)
+    flex: 1
   },
-  accountContainer: {
+  group: {
     flex: 1,
-    paddingTop: Layout.lines(4),
-    paddingBottom: Layout.lines(4)
+    flexDirection: 'column',
+    paddingVertical: Layout.lines(1)
   },
   item: {
     flex: 1,
     flexDirection: 'row',
+    alignItems: 'center',
     paddingTop: Layout.lines(0.5),
     paddingLeft: Layout.lines(1),
     paddingRight: Layout.lines(1),
@@ -129,14 +103,34 @@ const styles = StyleSheet.create({
   },
   itemText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: Layout.lines(1),
     flex: 1
   },
+  user: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Layout.lines(1.5),
+    paddingHorizontal: Layout.lines(1),
+    backgroundColor: Colors.base
+  },
+  userInner: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Layout.lines(0.75)
+  },
   avatar: {
-    marginTop: Layout.lines(0.25),
-    marginRight: Layout.lines(0.5),
-    width: Layout.lines(1.25),
-    height: Layout.lines(1.25)
+    marginRight: Layout.lines(1),
+    width: Layout.lines(1.5),
+    height: Layout.lines(1.5),
+    borderRadius: Layout.lines(0.75)
+  },
+  userText: {
+    fontSize: Layout.lines(1.5),
+    color: 'white'
   },
   counter: {
     flex: 1,

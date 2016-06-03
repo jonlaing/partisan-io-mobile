@@ -12,7 +12,7 @@ import ExNavigator from '@exponent/react-native-navigator';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Api from './Api';
-import Utils from './Utils';
+import formatter from './utils/formatter';
 import Layout from './Layout';
 import Colors from './Colors';
 
@@ -53,9 +53,9 @@ class Profile extends Component {
             <View style={styles.navBarExtend} />
             <Avatar style={styles.avatar} url={this.state.user.avatar_thumbnail_url} />
             <View style={styles.basicDetails}>
-              <Text style={styles.basicDetailsText}>{Utils.age(this.state.user.birthdate)}</Text>
-              <Text style={styles.basicDetailsText}>{Utils.cityState(this.state.user.location)}</Text>
-              <Text style={styles.basicDetailsText}>{Utils.gender(this.state.user.gender)}</Text>
+              <Text style={styles.basicDetailsText}>{formatter.age(this.state.user.birthdate)}</Text>
+              <Text style={styles.basicDetailsText}>{formatter.cityState(this.state.user.location)}</Text>
+              <Text style={styles.basicDetailsText}>{formatter.gender(this.state.user.gender)}</Text>
             </View>
             <View style={styles.matchContainer}>
               <Text style={styles.matchText}>{this.state.match}% Match</Text>

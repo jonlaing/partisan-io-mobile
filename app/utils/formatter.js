@@ -52,6 +52,10 @@ module.exports = {
     return Math.round(m * 100) + '%';
   },
 
+  summary(s) {
+    return s.length < 1 ? "Tell us about yourself" : s;
+  },
+
   post(p, onURL = () => {}, onHashtag = () => {}, onUsertag = () => {}) {
     let result = [p];
     result = _hashtag(result, onHashtag);

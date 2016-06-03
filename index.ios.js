@@ -29,12 +29,13 @@ class Partisan extends Component {
 
   componentDidMount() {
     this._getUserInfo();
-    this.userListener = this.eventEmitter.addListener('user-login', this._getUserInfo.bind(this));
+    this.loginListener = this.eventEmitter.addListener('user-login', this._getUserInfo.bind(this));
+    this.userChangeListener = this.eventEmitter.addListener('user-change', this._reloadUser.bind(this));
   }
 
   componentWillUnmount() {
     try {
-      this.userListener.remove();
+      this.loginListener.remove();
     } catch(e) {
       console.log(e);
     }
@@ -69,6 +70,12 @@ class Partisan extends Component {
       });
   }
 
+  _reloadUser() {
+    AsyncStorage.getItem('user')
+    .then(data => JSON.parse(data))
+    .then(user => this.setState({user: user}))
+    .catch(err => console.log(err));
+  }
 
   _initialRoute(token, user) {
     // we got the token, but it came back null, so we need to render the login screen

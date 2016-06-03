@@ -107,7 +107,7 @@ LookingFor.propTypes = {
 
 LookingFor.defaultProps = {
   initialLookingFor: 0,
-  onSubmit: function() { LookingFor.props.navigator.pop(); }
+  onSubmit: () => {}
 };
 
 let styles = StyleSheet.create({
