@@ -24,17 +24,11 @@ class MatchRow extends Component {
     this.parentNav = this.props.navigator.props.parentNavigator ? this.props.navigator.props.parentNavigator : this.props.navigator;
   }
 
-  _avatar(style) {
-    if(this.props.user !== undefined) {
-      return <Avatar user={this.props.user} style={style}/>;
-    }
-  }
-
   render() {
     return (
       <TouchableHighlight onPress={() => this.parentNav.push(Router.profile(this.props.token, this.props.user.id))}>
         <View style={styles.container}>
-          {this._avatar(styles.avatar)}
+          <Avatar url={this.props.user.avatar_thumbnail_url} style={styles.avatar}/>
           <View style={styles.stats}>
             <Text style={styles.user}>@{this.props.username}</Text>
             <View style={styles.extraInfoContainer}>
@@ -73,6 +67,7 @@ let styles = StyleSheet.create({
     alignItems: 'center',
     padding: Layout.lines(1),
     marginTop: Layout.lines(1),
+    borderRadius: Layout.lines(0.25),
     backgroundColor: 'white'
   },
   stats: {
@@ -85,6 +80,7 @@ let styles = StyleSheet.create({
     height: Layout.lines(5),
     width: Layout.lines(5),
     marginRight: Layout.lines(1),
+    borderRadius: Layout.lines(2.5),
     backgroundColor: Colors.lightGrey
   },
   user: {
