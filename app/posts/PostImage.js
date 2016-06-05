@@ -40,7 +40,7 @@ export default class PostImage extends Component {
           <TouchableHighlight onPress={this.handleImagePress.bind(this)}>
             <Image source={{uri: this.props.attachments[0].url}} style={styles.image}>
               <View style={styles.actions}>
-                <PostAction commentCount={this.props.commentCount} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked} color='light' />
+                <PostAction action={this.props.action} commentCount={this.props.commentCount} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked} color='light' />
               </View>
             </Image>
           </TouchableHighlight>
@@ -54,6 +54,7 @@ export default class PostImage extends Component {
 }
 
 PostImage.propTypes = {
+  action: React.PropTypes.string.isRequired,
   attachments: React.PropTypes.array.isRequired,
   likeCount: React.PropTypes.number,
   liked: React.PropTypes.bool,

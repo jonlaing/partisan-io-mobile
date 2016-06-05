@@ -39,6 +39,26 @@ class Profile extends Component {
     .catch(err => console.log(err));
   }
 
+  _match() {
+    if(this.props.userID === this.props.navigator.props.user.id) {
+      return <View />;
+    }
+
+    return (
+      <View style={styles.matchContainer}>
+        <Text style={styles.matchText}>{this.state.match}% Match</Text>
+      </View>
+    );
+  }
+
+  _friendButton() {
+    if(this.props.userID === this.props.navigator.props.user.id) {
+      return <View />;
+    }
+
+    return <FriendButton token={this.props.token} userID={this.props.userID} />;
+  }
+
   render() {
     if(this.state.user === null) {
       return (
@@ -51,15 +71,13 @@ class Profile extends Component {
         <ScrollView style={styles.scrollView}>
           <View style={styles.container}>
             <View style={styles.navBarExtend} />
-            <Avatar style={styles.avatar} url={this.state.user.avatar_thumbnail_url} />
+            <Avatar style={styles.avatar} url={this.state.user.avatar_url} />
             <View style={styles.basicDetails}>
               <Text style={styles.basicDetailsText}>{formatter.age(this.state.user.birthdate)}</Text>
               <Text style={styles.basicDetailsText}>{formatter.cityState(this.state.user.location)}</Text>
               <Text style={styles.basicDetailsText}>{formatter.gender(this.state.user.gender)}</Text>
             </View>
-            <View style={styles.matchContainer}>
-              <Text style={styles.matchText}>{this.state.match}% Match</Text>
-            </View>
+            {this._match()}
             <View style={styles.lookingForContainer}>
               <Text style={styles.header}>LOOKING FOR:</Text>
               <LookingFor value={this.state.user.looking_for} />
@@ -71,7 +89,7 @@ class Profile extends Component {
           </View>
         </ScrollView>
         <View style={styles.friendContainer}>
-          <FriendButton token={this.props.token} userID={this.props.userID} />
+          {this._friendButton()}
         </View>
         <NavBar
           title={'@' + this.state.user.username}

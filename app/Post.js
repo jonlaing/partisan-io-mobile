@@ -17,6 +17,7 @@ import Layout from './Layout';
 import PostHeader from './posts/PostHeader';
 import PostText from './posts/PostText';
 import PostImage from './posts/PostImage';
+import PostParent from './posts/PostParent';
 
 class Post extends Component {
   _comments() {
@@ -43,6 +44,47 @@ class Post extends Component {
   }
 
   render() {
+    if(this.props.action === "comment") {
+      return (
+        <View style={styles.container}>
+          <PostHeader
+            postID={this.props.postID}
+            username={this.props.username}
+            avatar={this.props.avatar}
+            createdAt={this.props.createdAt}
+            onPress={this.props.onHeaderPress}
+            onFlag={this.props.onFlag}
+            onDelete={this.props.onDelete}
+            isMine={this.props.isMine}
+            action={this.props.action}
+          />
+          <PostText
+            text={this.props.body}
+            likeCount={this.props.likeCount}
+            onLike={this.props.onLike}
+            onComment={this.props.onComment}
+            liked={this.props.liked}
+            commentCount={this.props.commentCount}
+            onHashtagPress={this.props.onHashtagPress}
+            onUserTagPress={this.props.onUserTagPress}
+            onLinkPress={this.handleLink.bind(this)}
+            action={this.props.action}
+          />
+          <PostParent
+            username={this.props.parent.user.username}
+            avatar={this.props.parent.user.avatar_thumbnail_url}
+            postID={this.props.parent.id}
+            createdAt={this.props.parent.created_at}
+            body={this.props.parent.body}
+            attachments={this.props.parent.attachments}
+            onHashtagPress={this.props.onHashtagPress}
+            onUserTagPress={this.props.onUserTagPress}
+            onLinkPress={this.handleLink.bind(this)}
+          />
+        </View>
+      );
+    }
+
     if(this.props.attachments == null || this.props.attachments.length < 1) {
       return (
         <View style={styles.container}>
@@ -55,6 +97,7 @@ class Post extends Component {
             onFlag={this.props.onFlag}
             onDelete={this.props.onDelete}
             isMine={this.props.isMine}
+            action={this.props.action}
           />
           <PostText
             text={this.props.body}
@@ -65,7 +108,9 @@ class Post extends Component {
             commentCount={this.props.commentCount}
             onHashtagPress={this.props.onHashtagPress}
             onUserTagPress={this.props.onUserTagPress}
-            onLinkPress={this.handleLink.bind(this)} />
+            onLinkPress={this.handleLink.bind(this)}
+            action={this.props.action}
+          />
         </View>
       );
     }
@@ -81,6 +126,7 @@ class Post extends Component {
           onFlag={this.props.onFlag}
           onDelete={this.props.onDelete}
           isMine={this.props.isMine}
+          action={this.props.action}
         />
         <PostImage
           attachments={this.props.attachments}
@@ -90,6 +136,7 @@ class Post extends Component {
           onLike={this.props.onLike}
           liked={this.props.liked}
           onPress={this.props.onHeaderPress}
+          action={this.props.action}
         />
       </View>
     );
@@ -100,12 +147,14 @@ Post.propTypes = {
   isMine: React.PropTypes.bool,
   username: React.PropTypes.string.isRequired,
   postID: React.PropTypes.string.isRequired,
+  action: React.PropTypes.string.isRequired,
   createdAt: React.PropTypes.string.isRequired,
   body: React.PropTypes.string,
   likeCount: React.PropTypes.number,
   liked: React.PropTypes.bool,
   commentCount: React.PropTypes.number,
   attachments: React.PropTypes.array,
+  onHeaderPress: React.PropTypes.func,
   onLike: React.PropTypes.func,
   onComment: React.PropTypes.func,
   onFlag: React.PropTypes.func,
@@ -131,7 +180,17 @@ Post.defaultProps = {
   onHashtagPress: () => {},
   onUserTagPress: () => {},
   onLinkPress: () => {},
-  showComments: true
+  showComments: true,
+  parent: {
+    user: {
+      username: '',
+      avatar_thumbnail_url: ''
+    },
+    id: '',
+    body: '',
+    createdAt: '',
+    attachments: []
+  }
 };
 
 let styles = StyleSheet.create({

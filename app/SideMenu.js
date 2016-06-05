@@ -30,6 +30,10 @@ class SideMenu extends Component {
     this.user = this.props.navigator.props.user;
   }
 
+  componentWillUpdate(props) {
+    this.user = props.navigator.props.user;
+  }
+
   _handleLogout() {
     Api.auth().logout();
 

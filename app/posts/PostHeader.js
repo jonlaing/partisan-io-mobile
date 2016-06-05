@@ -53,6 +53,14 @@ export default class PostHeader extends Component {
     });
   }
 
+  _action() {
+    if(this.props.action === "comment") {
+      return " commented on a post";
+    }
+
+    return "";
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -60,7 +68,7 @@ export default class PostHeader extends Component {
           <View style={styles.postHead}>
             <Avatar url={this.props.avatar} style={styles.avatar} />
             <View style={styles.postUser}>
-              <Text style={styles.postUserText}>@{this.props.username}</Text>
+              <Text><Text style={styles.postUserText}>@{this.props.username}</Text>{this._action()}</Text>
               <Text style={styles.postDate}>{moment(this.props.createdAt).fromNow()}</Text>
             </View>
           </View>
@@ -75,6 +83,7 @@ export default class PostHeader extends Component {
 
 PostHeader.propTypes = {
   postID: React.PropTypes.string.isRequired,
+  action: React.PropTypes.string.isRequired,
   username: React.PropTypes.string.isRequired,
   createdAt: React.PropTypes.string.isRequired,
   onPress: React.PropTypes.func,

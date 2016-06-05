@@ -18,14 +18,29 @@ export default class PostText extends Component {
     return this.props.text.length > 140;
   }
 
+  _actions() {
+    if(this.props.parent === true) {
+      return <View />;
+    }
+
+    return (
+      <View style={styles.actions}>
+        <PostAction
+          action={this.props.action}
+          commentCount={this.props.commentCount}
+          likeCount={this.props.likeCount}
+          onLike={this.props.onLike}
+          onComment={this.props.onComment} liked={this.props.liked}/>
+      </View>
+    );
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.actions}>
-          <PostAction commentCount={this.props.commentCount} likeCount={this.props.likeCount} onLike={this.props.onLike} onComment={this.props.onComment} liked={this.props.liked}/>
-        </View>
+        {this._actions()}
         <View style={styles.textContainer}>
-          <Text style={this._longPost() ? styles.textLong : styles.text}>
+          <Text style={this._longPost() || this.props.parent ? styles.textLong : styles.text}>
             {formatter.post(this.props.text, this.props.onLinkPress, this.props.onHashtagPress, this.props.onUserTagPress)}
           </Text>
         </View>
@@ -35,6 +50,7 @@ export default class PostText extends Component {
 }
 
 PostText.propTypes = {
+  parent: React.PropTypes.bool,
   text: React.PropTypes.string.isRequired,
   likeCount: React.PropTypes.number,
   commentCount: React.PropTypes.number,
@@ -47,6 +63,7 @@ PostText.propTypes = {
 };
 
 PostText.defaultProps = {
+  parent: false,
   likeCount: 0,
   commentCount: 0,
   liked: false,
@@ -63,16 +80,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   actions: {
-    width: Layout.lines(3)
+    width: Layout.lines(3),
+    marginRight: Layout.lines(1),
+    borderRightWidth: 1,
+    borderRightColor: Colors.grey
   },
   textContainer: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    borderLeftWidth: 1,
-    borderLeftColor: Colors.grey,
-    paddingLeft: Layout.lines(1)
+    alignItems: 'stretch'
   },
   text: {
     fontSize: Layout.lines(1),

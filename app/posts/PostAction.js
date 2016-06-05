@@ -17,16 +17,26 @@ import formatter from '../utils/formatter';
 import LikeButton from '../LikeButton';
 
 export default class PostAction extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <LikeButton count={this.props.likeCount} onPress={this.props.onLike} active={this.props.liked} color={this.props.color}/>
+  _comment() {
+    if(this.props.action === "post") {
+      return (
         <TouchableHighlight style={styles.button} onPress={this.props.onComment}>
           <View style={styles.commentContainer}>
             <Icon style={styles.commentIcon} name="question-answer" size={Layout.lines(1.25)} color={Colors.grey} />
             <Text style={[styles.text, this.props.color === 'light' ? styles.textLight : {}]}>{formatter.count(this.props.commentCount)}</Text>
           </View>
         </TouchableHighlight>
+      );
+    }
+
+    return <View />;
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <LikeButton count={this.props.likeCount} onPress={this.props.onLike} active={this.props.liked} color={this.props.color}/>
+        {this._comment()}
       </View>
     );
   }

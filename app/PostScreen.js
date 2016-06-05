@@ -67,6 +67,7 @@ class PostScreen extends Component {
             navigator={this.props.navigator}
             postID={this.props.postID}
             username={this.state.post.user.username}
+            avatar={this.state.post.user.avatar_thumbnail_url}
             createdAt={this.state.post.created_at}
             action={this.state.post.action}
             body={this.state.post.body}

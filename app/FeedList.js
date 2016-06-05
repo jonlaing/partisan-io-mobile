@@ -142,6 +142,35 @@ class FeedList extends Component {
   }
 
   _renderRow(post) {
+    if(post.parent != null) {
+      return (
+        <Post
+          key={post.id}
+          token={this.props.token}
+          navigator={this.parentNav}
+          postID={post.id}
+          username={post.user.username}
+          avatar={post.user.avatar_thumbnail_url}
+          createdAt={post.created_at}
+          action={post.action}
+          body={post.body}
+          attachments={post.attachments}
+          likeCount={post.like_count}
+          liked={post.liked}
+          commentCount={post.child_count}
+          onLike={this._handleLike(post.id).bind(this)}
+          onComment={() => this.parentNav.push(Router.postScreen(post.id, this.props.token, true))}
+          onFlag={() => this.parentNav.push(Router.flag('post', post.id, this.props.token))}
+          onDelete={this._handleDelete.bind(this)}
+          onHashtagPress={() => {}}
+          onUserTagPress={() => {}}
+          onHeaderPress={() => this.parentNav.push(Router.postScreen(post.parent.id, this.props.token, true))}
+          isMine={post.user_id === this.parentNav.props.user.id}
+          parent={post.parent}
+        />
+      );
+    }
+
     return (
       <Post
         key={post.id}
