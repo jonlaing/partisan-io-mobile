@@ -4,12 +4,9 @@ import React, {
   Component,
   Linking,
   StyleSheet,
-  TouchableHighlight,
   View,
   Text
 } from 'react-native';
-
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Colors from './Colors';
 import Layout from './Layout';
@@ -17,24 +14,10 @@ import Layout from './Layout';
 import PostHeader from './posts/PostHeader';
 import PostText from './posts/PostText';
 import PostImage from './posts/PostImage';
-import PostParent from './posts/PostParent';
+
+import Comment from './Comment';
 
 class Post extends Component {
-  _comments() {
-    if(this.props.showComments === true) {
-      return (
-        <TouchableHighlight style={styles.action} onPress={this.props.onComment}>
-          <View style={styles.actionContainerRight}>
-            <Icon name="comments-o" color={Colors.grey} size={Layout.lines(1.5)} style={styles.actionIcon} />
-            <Text style={styles.actionText} >Comments ({this.props.commentCount})</Text>
-          </View>
-        </TouchableHighlight>
-      );
-    }
-
-    return <View />;
-  }
-
   handleLink(url) {
     if(url.match(/^http/) != null) {
       Linking.openURL(url).catch(err => console.error('An error occurred', err));
@@ -47,39 +30,72 @@ class Post extends Component {
     if(this.props.action === "comment") {
       return (
         <View style={styles.container}>
+          <View style={styles.action}>
+            <Text>@{this.props.username} commented on...</Text>
+          </View>
           <PostHeader
-            postID={this.props.postID}
-            username={this.props.username}
-            avatar={this.props.avatar}
-            createdAt={this.props.createdAt}
+            postID={this.props.parent.id}
+            username={this.props.parent.user.username}
+            avatar={this.props.parent.user.avatar_thumbnail_url}
+            createdAt={this.props.parent.created_at}
             onPress={this.props.onHeaderPress}
             onFlag={this.props.onFlag}
             onDelete={this.props.onDelete}
-            isMine={this.props.isMine}
-            action={this.props.action}
+            isMine={false}
+            action={this.props.parent.action}
           />
           <PostText
-            text={this.props.body}
-            likeCount={this.props.likeCount}
+            text={this.props.parent.body}
+            likeCount={this.props.parent.like_count}
             onLike={this.props.onLike}
             onComment={this.props.onComment}
-            liked={this.props.liked}
-            commentCount={this.props.commentCount}
+            liked={this.props.parent.liked}
+            commentCount={this.props.parent.child_count}
             onHashtagPress={this.props.onHashtagPress}
             onUserTagPress={this.props.onUserTagPress}
             onLinkPress={this.handleLink.bind(this)}
-            action={this.props.action}
+            action={this.props.parent.action}
           />
-          <PostParent
+          <Comment
+            commentID={this.props.postID}
+            avatar={this.props.avatar}
+            username={this.props.username}
+            createdAt={this.props.createdAt}
+            body={this.props.body}
+            style={{backgroundColor: Colors.lightGrey, marginHorizontal: Layout.lines(-1)}}
+          />
+        </View>
+      );
+    }
+
+    if(this.props.action === "like") {
+      return (
+        <View style={styles.container}>
+          <View style={styles.action}>
+            <Text>@{this.props.username} liked...</Text>
+          </View>
+          <PostHeader
+            postID={this.props.parent.id}
             username={this.props.parent.user.username}
             avatar={this.props.parent.user.avatar_thumbnail_url}
-            postID={this.props.parent.id}
             createdAt={this.props.parent.created_at}
-            body={this.props.parent.body}
-            attachments={this.props.parent.attachments}
+            onPress={this.props.onHeaderPress}
+            onFlag={this.props.onFlag}
+            onDelete={this.props.onDelete}
+            isMine={false}
+            action={this.props.parent.action}
+          />
+          <PostText
+            text={this.props.parent.body}
+            likeCount={this.props.parent.like_count}
+            onLike={this.props.onLike}
+            onComment={this.props.onComment}
+            liked={this.props.parent.liked}
+            commentCount={this.props.parent.child_count}
             onHashtagPress={this.props.onHashtagPress}
             onUserTagPress={this.props.onUserTagPress}
             onLinkPress={this.handleLink.bind(this)}
+            action={this.props.parent.action}
           />
         </View>
       );
@@ -242,28 +258,9 @@ let styles = StyleSheet.create({
   postImage: {
     flex: 1
   },
-  actions: {
-    flex: 1,
-    marginTop: Layout.lines(1),
-    paddingTop: Layout.lines(1),
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
   action: {
-    flex: 1
-  },
-  actionContainerRight: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center'
-  },
-  actionIcon: {
-    width: Layout.lines(1.5),
-    marginRight: Layout.lines(0.5)
-  },
-  actionText: {
-    fontSize: 12
+    paddingBottom: Layout.lines(0.5)
   }
 });
 
