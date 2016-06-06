@@ -118,9 +118,9 @@ export default class NavBarMain extends Component {
             <Text>Matches</Text>
           </TouchableHighlight>
           <TouchableHighlight
-            onPress={() => this.props.onTabPress('friends')}
-            style={[styles.tab, this._currentTab('friends') ? styles.tabSelected : {}]}>
-            <Text>Friends</Text>
+            onPress={() => this.props.onTabPress('events')}
+            style={[styles.tab, this._currentTab('events') ? styles.tabSelected : {}]}>
+            <Text>Events</Text>
           </TouchableHighlight>
         </View>
       </View>
@@ -134,7 +134,7 @@ NavBarMain.propTypes = {
   onNotificationPress: React.PropTypes.func,
   onMessagesPress: React.PropTypes.func,
   onTabPress: React.PropTypes.func,
-  currentTab: React.PropTypes.oneOf(['none', 'feed', 'matches', 'friends'])
+  currentTab: React.PropTypes.oneOf(['none', 'feed', 'matches', 'events'])
 };
 
 NavBarMain.defaultProps = {

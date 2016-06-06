@@ -2,6 +2,7 @@
 
 import React, {
   Component,
+  Dimensions,
   StyleSheet,
   View
 } from 'react-native';
@@ -26,10 +27,11 @@ class Chat extends Component {
     this._openSocket();
   }
 
-  _getMessages() {
-    Api.messages(this.props.token).list(this.props.threadID)
+  _getMessages(stamp = -1) {
+    Api.messages(this.props.token).list(this.props.threadID, stamp)
     .then(res => res.json())
     .then(data => this._parseMessages(data.messages))
+    .then(msgs => stamp === -1 ? msgs : this.state.messages.concat(msgs))
     .then(msgs => this.setState({messages: msgs}))
     .catch(err => console.log(err));
   }
@@ -51,10 +53,10 @@ class Chat extends Component {
     Api.messages(this.props.token).socket(this.props.threadID,
       function (res) {
         let data = JSON.parse(res.data);
-        let msgs = this._parseMessages(data.messages);
-        if(msgs.length > 0) {
-          // this.refs.chat.appendMessages(msgs);
-          this.setState({messages: this.state.messages.concat(msgs)});
+        let msgs = data.messages;
+        let stamp = data.stamp;
+        if(msgs > 0) {
+          this._getMessages(stamp);
         }
       }.bind(this),
       (err) => console.log("err:", err));
@@ -72,7 +74,6 @@ class Chat extends Component {
         <Messenger
           messages={this.state.messages}
           autoScroll={true}
-          forceRenderImage={true}
           onCustomSend={this._handleSend.bind(this)}
           styles={{ listView: styles.container, bubbleRight: styles.bubbleRight }}
           ref="chat"
@@ -89,7 +90,7 @@ class Chat extends Component {
 
 let styles = StyleSheet.create({
   container: {
-    paddingTop: Layout.lines(5)
+    marginTop: Layout.lines(4)
   },
   bubbleRight: {
     marginLeft: 70,

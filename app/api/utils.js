@@ -1,6 +1,8 @@
 /*global fetch, XMLHttpRequest */
 import Config from '../Config';
 
+const _APP_TOKEN = 'c47675bb-3a76-49ae-977b-694ab87add88';
+
 const _HTTP = 0;
 const _SOCKET = 1;
 
@@ -17,12 +19,14 @@ export function headers(token, json = true) {
     return {
       'Accept': 'application/json',
       'Content-Type': json ? 'application/json' : 'application/x-www-form-urlencoded; charset=UTF-8',
+      'X-App-Token': _APP_TOKEN,
       'X-Auth-Token': token
     };
   } else {
     return {
       'Accept': 'application/json',
-      'Content-Type': json ? 'application/json' : 'application/x-www-form-urlencoded; charset=UTF-8'
+      'Content-Type': json ? 'application/json' : 'application/x-www-form-urlencoded; charset=UTF-8',
+      'X-App-Token': _APP_TOKEN
     };
   }
 }

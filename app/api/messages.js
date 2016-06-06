@@ -22,7 +22,11 @@ module.exports = function(token) {
       });
     },
 
-    list(threadID) {
+    list(threadID, stamp = -1) {
+      if(stamp !== -1) {
+        return fetch(`${root()}/messages/threads/${threadID}/new?timestamp=${stamp}`, { headers: headers(token) });
+      }
+
       return fetch(`${root()}/messages/threads/${threadID}`, { headers: headers(token) });
     },
 
