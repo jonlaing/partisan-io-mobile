@@ -71,7 +71,7 @@ class Profile extends Component {
         <ScrollView style={styles.scrollView}>
           <View style={styles.container}>
             <View style={styles.navBarExtend} />
-            <Avatar style={styles.avatar} url={this.state.user.avatar_url} />
+            <Avatar style={styles.avatar} url={this.state.user.avatar_url} lightbox={true} navigator={this.props.navigator} />
             <View style={styles.basicDetails}>
               <Text style={styles.basicDetailsText}>{formatter.age(this.state.user.birthdate)}</Text>
               <Text style={styles.basicDetailsText}>{formatter.cityState(this.state.user.location)}</Text>

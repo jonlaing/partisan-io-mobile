@@ -48,28 +48,26 @@ const styles = StyleSheet.create({
   noFriendsContainer: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'space-around',
-    marginVertical: Layout.lines(1),
+    justifyContent: 'flex-start',
     padding: Layout.lines(1),
-    backgroundColor: 'white',
-    height: Layout.lines(24)
+    backgroundColor: 'white'
   },
   noFriendsHeader: {
     flex: 1,
     textAlign: 'center',
     fontSize: Layout.lines(1.25),
     color: Colors.darkGrey,
-    paddingBottom: Layout.lines(1)
+    marginBottom: Layout.lines(1)
   },
   noFriendsFrown: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: Layout.lines(1)
+    marginVertical: Layout.lines(1)
   },
   noFriendsParagraph: {
     flex: 3,
-    paddingVertical: Layout.lines(1),
+    marginVertical: Layout.lines(1),
     lineHeight: Layout.lines(1.5)
   },
   noFriendsButton: {
@@ -77,7 +75,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: Layout.lines(1),
-    marginVertical: Layout.lines(1),
+    marginTop: Layout.lines(1),
+    marginBottom: Layout.lines(5),
     borderWidth: 1,
     borderColor: Colors.action,
     borderRadius: Layout.lines(0.5)

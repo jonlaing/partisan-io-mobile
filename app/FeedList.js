@@ -198,12 +198,9 @@ class FeedList extends Component {
     );
   }
 
-
-  render() {
-    return (
-      <View style={styles.container}>
-        {this._noFriends()}
-        {this._noFeed()}
+  _feed() {
+    if(this.state.hasFriends !== false) {
+      return (
         <ListView
           scrollToTop={true}
           dataSource={this.state.dataSource}
@@ -222,6 +219,19 @@ class FeedList extends Component {
             />
           }
         />
+      );
+    }
+
+    return <View />;
+  }
+
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {this._noFriends()}
+        {this._noFeed()}
+        {this._feed()}
         <PostComposeButton onPress={this._handlePost.bind(this)} />
       </View>
     );
@@ -249,8 +259,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    alignItems: 'stretch',
-    backgroundColor: 'white'
+    alignItems: 'stretch'
   }
 });
 
