@@ -99,6 +99,7 @@ export function xhrUpload(formData, url, token, method = 'POST') {
 
     xhr.open(method, url);
     xhr.setRequestHeader( 'X-Auth-Token', token);
+    xhr.setRequestHeader( 'X-App-Token', _APP_TOKEN);
     xhr.send(formData);
   });
 }

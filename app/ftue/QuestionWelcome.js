@@ -8,9 +8,6 @@ import React, {
   Text
 } from 'react-native';
 
-import ExNavigator from '@exponent/react-native-navigator';
-
-import Router from '../Router';
 import Layout from '../Layout';
 import Colors from '../Colors';
 
@@ -26,7 +23,7 @@ class QuestionWelcome extends Component {
             You can either "agree" by swiping RIGHT, or "disagree" by swiping LEFT.
           </Text>
         </View>
-        <TouchableHighlight style={styles.getStarted} onPress={() => { this.props.navigator.push(Router.questionScreen(this.props.token)); }}>
+        <TouchableHighlight style={styles.getStarted} onPress={this.props.onComplete}>
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>Get Started!</Text>
           </View>
@@ -38,7 +35,7 @@ class QuestionWelcome extends Component {
 
 QuestionWelcome.propTypes = {
   token: React.PropTypes.string.isRequired,
-  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+  onComplete: React.PropTypes.func.isRequired
 };
 
 let styles = StyleSheet.create({

@@ -75,7 +75,7 @@ class Chat extends Component {
           messages={this.state.messages}
           autoScroll={true}
           onCustomSend={this._handleSend.bind(this)}
-          styles={{ listView: styles.container, bubbleRight: styles.bubbleRight }}
+          styles={{ listView: styles.container, bubbleRight: styles.bubbleRight, sendButton: styles.sendButton, sendButtonDisabled: styles.sendButtonDisabled }}
           ref="chat"
         />
         <NavBar
@@ -96,6 +96,14 @@ let styles = StyleSheet.create({
     marginLeft: 70,
     alignSelf: 'flex-end',
     backgroundColor: Colors.base
+  },
+  sendButton: {
+    color: Colors.action,
+    marginTop: 11,
+    marginLeft: 10
+  },
+  sendButtonDisabled: {
+    color: Colors.grey
   }
 });
 

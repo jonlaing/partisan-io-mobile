@@ -21,7 +21,6 @@ import moment from 'moment';
 import Api from './Api';
 import Layout from './Layout';
 import Colors from './Colors';
-import formatter from './utils/formatter';
 
 import NavBar from './NavBar';
 import Avatar from './Avatar';
@@ -114,6 +113,11 @@ export default class ProfileEdit extends Component {
   }
 
   render() {
+    let birthdate = this.state.birthdate;
+    if(moment(birthdate).isBefore('1900-12-31')) {
+      birthdate = new Date();
+    }
+
     return (
       <View style={{ flex: 1, position: 'relative'}}>
         <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -157,7 +161,7 @@ export default class ProfileEdit extends Component {
                     <TextInput
                       style={styles.basicInput}
                       editable={false}
-                      value={moment(this.state.birthdate).format("MMMM Do YYYY")}
+                      value={moment(birthdate).format("MMMM Do YYYY")}
                     />
                   </View>
                 </TouchableHighlight>
@@ -175,7 +179,8 @@ export default class ProfileEdit extends Component {
                   onFocus={this._handleSummaryFocus.bind(this)}
                   style={[styles.basicInput, {height: 200}]}
                   onChangeText={val => this.setState({summary: val})}
-                  value={formatter.summary(this.state.summary)}
+                  value={this.state.summary}
+                  placeholder="Tell us about yourself"
                   multiline={true}
                 />
               </View>
@@ -202,7 +207,7 @@ export default class ProfileEdit extends Component {
           <DatePickerIOS
             style={{flex: 1}}
             onDateChange={(date) => this.setState({birthdate: date, showBirthdate: false})}
-            date={this.state.birthdate}
+            date={birthdate}
             maximumDate={new Date()}
             mode="date"
           />

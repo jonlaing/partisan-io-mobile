@@ -43,6 +43,10 @@ class SideMenu extends Component {
   }
 
   render() {
+    if(this.user == null) {
+      return <View />;
+    }
+
     return (
       <ScrollView scrollToTop={false} style={styles.menu} >
         <View style={styles.container}>

@@ -2,15 +2,14 @@
 
 import React, {
   Component,
-  Image,
-  View
+  Image
 } from 'react-native';
 
 class Avatar extends Component {
   render() {
     let url = this.props.url;
 
-    if(url !== undefined && url.length > 0) {
+    if(url != null && url.length > 0) {
       if(!url.includes('amazonaws.com')) {
         url = "http://localhost:4000" + url;
       }
@@ -23,7 +22,12 @@ class Avatar extends Component {
       );
     }
 
-    return (<View style={this.props.style} />);
+    return (
+      <Image
+        source={require('./images/defaultAvatar.png')}
+        style={this.props.style}
+      />
+    );
   }
 }
 

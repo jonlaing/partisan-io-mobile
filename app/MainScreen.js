@@ -21,6 +21,12 @@ export default class MainScreen extends Component {
     this.state = { currentTab: 'feed', showEditor: '' };
   }
 
+  componentDidMount() {
+    if(this.props.openSideMenu) {
+      this._handleHamburger();
+    }
+  }
+
   _handleHamburger() {
     this._menuOpen = !this._menuOpen;
     this.refs.sidemenu.openMenu(true);
@@ -88,7 +94,12 @@ export default class MainScreen extends Component {
 
 MainScreen.propTypes = {
   token: React.PropTypes.string.isRequired,
-  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
+  openSideMenu: React.PropTypes.bool
+};
+
+MainScreen.defaultProps = {
+  openSideMenu: false
 };
 
 module.exports = MainScreen;

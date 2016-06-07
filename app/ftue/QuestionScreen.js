@@ -7,10 +7,7 @@ import React, {
   Text
 } from 'react-native';
 
-import ExNavigator from '@exponent/react-native-navigator';
-
 import Api from '../Api';
-import Router from '../Router';
 import Colors from '../Colors';
 import Layout from '../Layout';
 
@@ -51,7 +48,7 @@ class QuestionScreen extends Component {
     .catch(err => {
       if(err.response.status === 404 || err.response.status === 406) {
         // need a slicker way of dealing with this
-        this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
+        this.props.onComplete();
       }
       console.log(err.response);
     });
@@ -67,7 +64,7 @@ class QuestionScreen extends Component {
       }
 
       if(index >= _MAX_QUESTIONS + 2) {
-        this.props.navigator.push(Router.profileFTUEWelcome(this.props.token));
+        this.props.onComplete();
         return;
       }
 
@@ -107,7 +104,7 @@ class QuestionScreen extends Component {
 
 QuestionScreen.propTypes = {
   token: React.PropTypes.string.isRequired,
-  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+  onComplete: React.PropTypes.func.isRequired
 };
 
 let styles = StyleSheet.create({
