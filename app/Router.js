@@ -102,6 +102,15 @@ let Router = {
     };
   },
 
+  events(token) {
+    return {
+      renderScene(navigator) {
+        let EventList = require('./EventList');
+        return <EventList token={token} navigator={navigator} />;
+      }
+    };
+  },
+
   friends(token) {
     return {
       renderScene(navigator) {
@@ -111,11 +120,47 @@ let Router = {
     };
   },
 
-  postComposer(token) {
+  eventComposer(token, eventID = '') {
+    return {
+      renderScene(navigator) {
+        let EventComposer = require('./EventComposer');
+        return <EventComposer token={token} navigator={navigator} eventID={eventID} />;
+      }
+    };
+  },
+
+  eventScreen(id, token) {
+    return {
+      renderScene(navigator) {
+        let EventScreen = require('./EventScreen');
+        return <EventScreen eventID={id} token={token} navigator={navigator} />;
+      }
+    };
+  },
+
+  eventHosts(id, hosts, token) {
+    return {
+      renderScene(navigator) {
+        let EventHosts = require('./EventHosts');
+        return <EventHosts eventID={id} hosts={hosts} token={token} navigator={navigator} />;
+      }
+    };
+  },
+
+  eventSubscriptions(token) {
+    return {
+      renderScene(navigator) {
+        let EventSubscriptionsScreen = require('./EventSubscriptionsScreen');
+        return <EventSubscriptionsScreen token={token} navigator={navigator} />;
+      }
+    };
+  },
+
+  postComposer(token, parentType = '', parentID = '') {
     return {
       renderScene(navigator) {
         let PostComposer = require('./PostComposer');
-        return <PostComposer token={token} navigator={navigator} />;
+        return <PostComposer token={token} navigator={navigator} parentType={parentType} parentID={parentID} />;
       }
     };
   },

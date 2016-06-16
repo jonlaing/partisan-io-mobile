@@ -19,7 +19,7 @@ import Colors from './Colors';
 import NavBar from './NavBar';
 import MessageThread from './MessageThread';
 import ActionButton from './ActionButton';
-import MessageFriendList from './MessageFriendList';
+import FriendPicker from './FriendPicker';
 
 class MessageList extends Component {
   constructor(props) {
@@ -61,8 +61,8 @@ class MessageList extends Component {
     this.setState({showFriends: true});
   }
 
-  _handleFriendSelect(friendID) {
-    Api.messages(this.props.token).createThread(friendID)
+  _handleFriendSelect(friend) {
+    Api.messages(this.props.token).createThread(friend.id)
     .then(data => console.log(data))
     .then(() => this.setState({showFriends: false}))
     .then(() => this._getThreads())
@@ -101,7 +101,7 @@ class MessageList extends Component {
           leftButtonPress={() => this.props.navigator.pop()}
         />
         <ActionButton icon="add" onPress={this._handleCreate.bind(this)} />
-        <MessageFriendList token={this.props.token} show={this.state.showFriends} onClose={() => this.setState({showFriends: false})} onSelect={this._handleFriendSelect.bind(this)} />
+        <FriendPicker token={this.props.token} show={this.state.showFriends} onClose={() => this.setState({showFriends: false})} onSelect={this._handleFriendSelect.bind(this)} />
       </View>
     );
   }

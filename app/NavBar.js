@@ -12,21 +12,29 @@ import Layout from './Layout';
 import Colors from './Colors';
 
 class NavBar extends Component {
+  _style() {
+    if(this.props.transparent === true) {
+      return [styles.navBar, {backgroundColor: 'rgba(0,0,0,0.25)'}];
+    }
+
+    return styles.navBar;
+  }
   render() {
     return (
-      <View style={styles.navBar}>
-        <TouchableHighlight style={styles.navBarLeft} onPress={this.props.leftButtonPress}>
-          {this.props.leftButton}
-        </TouchableHighlight>
+      <View style={this._style()}>
         <View style={styles.navBarTitle}>
           <Text style={styles.navBarTitleText}>{this.props.title}</Text>
         </View>
-        <TouchableHighlight style={styles.navBarRight} onPress={this.props.rightButtonPress}>
-          {this.props.rightButton}
+        <TouchableHighlight style={styles.navBarLeft} onPress={this.props.leftButtonPress}>
+          <View style={styles.navBarActionInner}>
+            {this.props.leftButton}
+          </View>
         </TouchableHighlight>
-        <View style={styles.badgeLeft}>
-          {this.props.badgeLeft}
-        </View>
+        <TouchableHighlight style={styles.navBarRight} onPress={this.props.rightButtonPress}>
+          <View style={styles.navBarActionInner}>
+            {this.props.rightButton}
+          </View>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -38,14 +46,15 @@ NavBar.propTypes = {
   leftButtonPress: React.PropTypes.func,
   rightButton: React.PropTypes.element,
   rightButtonPress: React.PropTypes.func,
-  badgeLeft: React.PropTypes.element
+  transparent: React.PropTypes.bool
 };
 
 NavBar.defaultProps = {
   leftButton: (<View />),
   leftButtonPress: () => {},
   rightButton: (<View />),
-  rightButtonPress: () => {}
+  rightButtonPress: () => {},
+  transparent: false
 };
 
 const styles = StyleSheet.create({
@@ -71,15 +80,22 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   navBarLeft: {
-    padding: Layout.lines(0.75)
+    position: 'absolute',
+    left: Layout.lines(0.75),
+    top: Layout.lines(1),
+    bottom: 0
   },
   navBarRight: {
-    padding: Layout.lines(0.75)
-  },
-  badgeLeft: {
     position: 'absolute',
-    top: Layout.lines(1.5),
-    left: Layout.lines(0.25)
+    right: Layout.lines(0.75),
+    top: Layout.lines(1),
+    bottom: 0
+  },
+  navBarActionInner: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'stretch'
   }
 });
 

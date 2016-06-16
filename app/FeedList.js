@@ -2,7 +2,6 @@
 
 import React, {
   Component,
-  Linking,
   StyleSheet,
   ListView,
   RefreshControl,
@@ -25,7 +24,7 @@ class FeedList extends Component {
   constructor(props) {
     super(props);
     this.postSuccessListener = null;
-    this.parentNav = this.props.navigator.props.parentNavigator;
+    this.parentNav = this.props.navigator.props.parentNavigator || this.props.navigator;
 
     var ds = new ListView.DataSource({rowHasChanged: this._rowHasChanged});
     this.state = {
@@ -77,14 +76,28 @@ class FeedList extends Component {
       return true;
     }
 
+    if(r1.parent !== r2.parent) {
+      return true;
+    }
+
     return false;
   }
 
   getFeed(refresh = false) {
     var page = refresh ? 0 : this.state.page + 1;
+    let api = () => Api.feed(this.props.token).get(page);
 
-    Api.feed(this.props.token).get(page)
-    .then(posts => refresh ? posts : this.state.posts.concat(posts) ) // either refresh the post or append them
+    if(this._hasParent()) {
+      switch(this.props.parentType) {
+              case 'event':
+                      api = () => Api.events(this.props.token).posts(this.props.parentID, page);
+                      break;
+              default:
+                      throw "Unkown parent type";
+      }
+    }
+
+    api().then(posts => refresh ? posts : this.state.posts.concat(posts) ) // either refresh the post or append them
     .then(posts => this.setState({
       posts: posts,
       dataSource: this.state.dataSource.cloneWithRows(posts),
@@ -107,15 +120,23 @@ class FeedList extends Component {
   }
 
   _handlePost() {
-    this.parentNav.push(Router.postComposer(this.props.token));
+    this.parentNav.push(Router.postComposer(this.props.token, this.props.parentType, this.props.parentID));
   }
 
-  _handleLike(postID) {
+  _handleLike(post) {
     return function() {
-      // optimistically update like
-      this._updateLike(postID);
+      let id = '';
 
-      Api.posts(this.props.token).like(postID)
+      if(this._hasParent() || post.parent_type === '') {
+        id = post.id;
+      } else {
+        id = post.parent_id.String;
+      }
+
+      // optimistically update like
+      this._updateLike(post);
+
+      Api.posts(this.props.token).like(id)
       .catch(err => console.log(err));
     };
   }
@@ -126,13 +147,19 @@ class FeedList extends Component {
     .catch(err => console.log(err));
   }
 
-  _updateLike(postID) {
+  _updateLike(p) {
     let posts = JSON.parse(JSON.stringify(this.state.posts)); // stupid deep copy, there's gotta be a better way
+    let hasParent = p.parent_id.Valid && p.parent_type === "post";
 
     posts = posts.map((post) => {
-      if(post.id === postID) {
-        post.liked = !post.liked;
-        post.like_count = post.liked ? post.like_count + 1 : post.like_count - 1;
+      if(post.id === p.id) {
+        if(hasParent === true) {
+          post.parent.liked = !post.parent.liked;
+          post.parent.like_count = post.parent.liked ? post.parent.like_count + 1 : post.parent.like_count - 1;
+        } else {
+          post.liked = !post.liked;
+          post.like_count = post.liked ? post.like_count + 1 : post.like_count - 1;
+        }
       }
 
       return post;
@@ -158,7 +185,7 @@ class FeedList extends Component {
           likeCount={post.like_count}
           liked={post.liked}
           commentCount={post.child_count}
-          onLike={this._handleLike(post.id).bind(this)}
+          onLike={this._handleLike(post).bind(this)}
           onComment={() => this.parentNav.push(Router.postScreen(post.id, this.props.token, true))}
           onFlag={() => this.parentNav.push(Router.flag('post', post.id, this.props.token))}
           onDelete={this._handleDelete.bind(this)}
@@ -186,7 +213,7 @@ class FeedList extends Component {
         likeCount={post.like_count}
         liked={post.liked}
         commentCount={post.child_count}
-        onLike={this._handleLike(post.id).bind(this)}
+        onLike={this._handleLike(post).bind(this)}
         onComment={() => this.parentNav.push(Router.postScreen(post.id, this.props.token, true))}
         onFlag={() => this.parentNav.push(Router.flag('post', post.id, this.props.token))}
         onDelete={this._handleDelete.bind(this)}
@@ -203,6 +230,8 @@ class FeedList extends Component {
       return (
         <ListView
           scrollToTop={true}
+          onScroll={this.props.onScroll}
+          scrollEventThrottle={500}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)}
           enableEmptySections={true}
@@ -225,6 +254,9 @@ class FeedList extends Component {
     return <View />;
   }
 
+  _postButton() {
+    return <PostComposeButton onPress={this._handlePost.bind(this)} />;
+  }
 
   render() {
     return (
@@ -232,7 +264,7 @@ class FeedList extends Component {
         {this._noFriends()}
         {this._noFeed()}
         {this._feed()}
-        <PostComposeButton onPress={this._handlePost.bind(this)} />
+        {this._postButton()}
       </View>
     );
   }
@@ -244,15 +276,28 @@ class FeedList extends Component {
   }
 
   _noFriends() {
-    if(this.state.hasFriends === false) {
+    if(!this._hasParent() && this.state.hasFriends === false) {
       return <NoFriends token={this.props.token} navigator={this.props.navigator} />;
     }
+  }
+
+  _hasParent() {
+    return this.props.parentType !== '' && this.props.parentID !== '';
   }
 }
 
 FeedList.propTypes = {
   token: React.PropTypes.string.isRequired,
-  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
+  parentType: React.PropTypes.string,
+  parentID: React.PropTypes.string,
+  onScroll: React.PropTypes.func
+};
+
+FeedList.defaultProps = {
+  parentType: '',
+  parentID: '',
+  onScroll: () => {}
 };
 
 const styles = StyleSheet.create({

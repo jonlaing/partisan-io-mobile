@@ -35,17 +35,28 @@ class PostComposer extends Component {
   }
 
   _handlePost() {
+    let api = () => Api.posts(this.props.token).create(this.state.value, [this.state.image]);
+
+    if(this._hasParent()) {
+      switch(this.props.parentType) {
+              case "event":
+                      api = () => Api.events(this.props.token).post(this.props.parentID, this.state.value, [this.state.image]);
+                      break;
+              default:
+                      throw "Unknown parent type";
+      }
+    }
+
     if(this.state.isSubmitting !== true && (this.state.value.length > 0 || this.state.image.length > 0)) {
       this.setState({isSubmitting: true});
 
-      Api.posts(this.props.token).create(this.state.value, [this.state.image])
-      .then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
+      api().then(() => this.props.navigator.props.eventEmitter.emit('post-success'))
       .then(() => this.props.navigator.pop())
       .then(() => this.setState({ isSubmitting: false }) )
       .catch(err => {
         let message;
 
-        if(err === undefined) {
+        if(err == null) {
           message = "An unknown error has occured.";
         } else {
           message = `An error has occurred:\n\n${err}`;
@@ -67,7 +78,7 @@ class PostComposer extends Component {
   _rightButton() {
     let style = this.state.value.length < 1 || this.state.isSubmitting ? [styles.navBarRightText, {color: Colors.baseLight}] : styles.navBarRightText;
     return (
-      <View style={{flex: 1, flexDirection: 'row'}}>
+      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center' }}>
         <ActivityIndicatorIOS animating={this.state.isSubmitting} color='white' size="small" />
         <Text style={style}>Post</Text>
       </View>
@@ -144,27 +155,25 @@ class PostComposer extends Component {
       }
     });
   }
+
+  _hasParent() {
+    return this.parentType !== '' && this.parentID !== '';
+  }
 }
 
 PostComposer.propTypes = {
   token: React.PropTypes.string.isRequired,
-  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired
+  navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
+  parentType: React.PropTypes.string,
+  parentID: React.PropTypes.string
+};
+
+PostComposer.defaultProps = {
+  parentType: '',
+  parentID: ''
 };
 
 const styles = StyleSheet.create({
-  navBar: {
-    height: Layout.lines(4),
-    padding: Layout.lines(0.75),
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0, // to offset the padding of the container
-    backgroundColor: Colors.base,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end'
-  },
   navBarLeftText: {
     fontSize: 16,
     color: 'white'

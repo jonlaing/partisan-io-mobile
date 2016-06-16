@@ -54,7 +54,7 @@ export default class MessageFriendList extends Component {
 
   _renderRow(friendship) {
     return (
-      <TouchableHighlight style={styles.rowContainer} onPress={() => this.props.onSelect(friendship.user.id)}>
+      <TouchableHighlight style={styles.rowContainer} onPress={() => this.props.onSelect(friendship.user)}>
         <View style={styles.row}>
           <Avatar style={styles.avatar} url={friendship.user.avatar_thumbnail_url} />
           <Text style={styles.username}>{friendship.user.username}</Text>

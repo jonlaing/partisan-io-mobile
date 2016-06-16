@@ -10,6 +10,7 @@ import comments from './api/comments';
 import questions from './api/questions';
 import profile from './api/profile';
 import matches from './api/matches';
+import events from './api/events';
 import friendships from './api/friendships';
 import notifications from './api/notifications';
 import messages from './api/messages';
@@ -22,6 +23,7 @@ module.exports = {
   questions: questions,
   profile: profile,
   matches: matches,
+  events: events,
   friendships: friendships,
   notifications: notifications,
   messages: messages,

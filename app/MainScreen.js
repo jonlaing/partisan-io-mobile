@@ -52,8 +52,8 @@ export default class MainScreen extends Component {
             case 'matches':
                     this.refs.nav.replace(Router.matches(this.props.token));
                     break;
-            case 'friends':
-                    this.refs.nav.replace(Router.friends(this.props.token));
+            case 'events':
+                    this.refs.nav.replace(Router.events(this.props.token));
                     break;
             default:
                     console.log("unknown tab");
