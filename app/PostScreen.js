@@ -83,7 +83,7 @@ class PostScreen extends Component {
             showComments={false}
             isMine={this.state.post.user_id === this.props.navigator.props.user.id}
           />
-          <CommentList token={this.props.token} postID={this.state.post.id} ref="commentList" />
+          <CommentList token={this.props.token} navigator={this.props.navigator} postID={this.state.post.id} ref="commentList" />
         </ScrollView>
         <CommentComposer
           token={this.props.token}

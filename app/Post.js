@@ -63,6 +63,9 @@ class Post extends Component {
             createdAt={this.props.createdAt}
             body={this.props.body}
             style={{backgroundColor: Colors.lightGrey, marginHorizontal: Layout.lines(-1)}}
+            onHeaderPress={this.props.onHeaderPress}
+            onPress={this.props.onHeaderPress}
+            showLike={false}
           />
         </View>
       );

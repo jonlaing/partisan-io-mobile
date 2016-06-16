@@ -43,8 +43,9 @@ export default class PostHeader extends Component {
         case DESTRUCTIVE_INDEX:
           if(this.props.isMine === false) {
             this.props.onFlag("post", this.props.postID);
+          } else {
+            this.props.onDelete(this.props.postID);
           }
-          this.props.onDelete(this.props.postID);
           break;
         case CANCEL_INDEX:
         default:

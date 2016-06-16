@@ -191,7 +191,7 @@ class FeedList extends Component {
           onDelete={this._handleDelete.bind(this)}
           onHashtagPress={() => {}}
           onUserTagPress={() => {}}
-          onHeaderPress={() => this.parentNav.push(Router.postScreen(post.parent.id, this.props.token, true))}
+          onHeaderPress={() => this.parentNav.push(Router.postScreen(post.parent.id, this.props.token, false))}
           isMine={post.user_id === this.parentNav.props.user.id}
           parent={post.parent}
         />
