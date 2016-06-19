@@ -6,11 +6,13 @@
 import React, {
   AppRegistry,
   Component,
+  Linking,
   AsyncStorage
 } from 'react-native';
 
 import EventEmitter from 'EventEmitter';
 import ExNavigator from '@exponent/react-native-navigator';
+import qs from 'qs';
 
 import Router from './app/Router';
 
@@ -21,7 +23,7 @@ class Partisan extends Component {
     super(props);
 
     this.eventEmitter = new EventEmitter();
-    this.state = { token: null, tokenFetched: false, user: null, notificationCount: 0 };
+    this.state = { token: null, tokenFetched: false, user: null, notificationCount: 0, initialRoute: null };
   }
 
   componentWillMount() {
@@ -31,13 +33,54 @@ class Partisan extends Component {
     this._getUserInfo();
     this.loginListener = this.eventEmitter.addListener('user-login', this._getUserInfo.bind(this));
     this.userChangeListener = this.eventEmitter.addListener('user-change', this._reloadUser.bind(this));
+
+    Linking.getInitialURL()
+    .then((url) => {
+      if(url) {
+        this._processURL({url});
+      }
+    })
+    .catch(err => console.log("error getting initial url:", err));
+
+    Linking.addEventListener('url', this._processURL.bind(this));
   }
 
   componentWillUnmount() {
+    Linking.removeEventListener('url', this._processURL.bind(this));
     try {
       this.loginListener.remove();
+      this.userChangeListener.remove();
     } catch(e) {
       console.log(e);
+    }
+  }
+
+  _processURL(e) {
+    let url = e.url.replace('partisanio://', '').split('?');
+    let path = url[0];
+    let params = url[1] ? qs.parse(url[1]) : {};
+
+    switch(path) {
+            case "post":
+                    if(this.state.token != null) {
+                      this.refs.nav.push(Router.postScreen(params.postID, this.state.token));
+                    }
+                    break;
+            case "user":
+                    if(this.state.token != null) {
+                      this.refs.nav.push(Router.profile(this.state.token, params.user_id));
+                    }
+                    break;
+            case "event":
+                    if(this.state.token != null) {
+                      this.refs.nav.push(Router.eventScreen(params.event_id, this.state.token));
+                    }
+                    break;
+            case "password_reset":
+                    this.refs.nav.push(Router.passwordReset(params.reset_id));
+                    break;
+            default:
+                    break;
     }
   }
 

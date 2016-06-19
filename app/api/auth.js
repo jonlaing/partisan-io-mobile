@@ -35,6 +35,27 @@ module.exports = function() {
         })
       })
       .then(resp => processJSON(resp));
+    },
+
+    forgotPW(email) {
+      return fetch(`${root()}/password_reset`, {
+        method: 'POST',
+        headers: headers(),
+        body: JSON.stringify({ email: email })
+      })
+      .then(resp => processJSON(resp));
+    },
+
+    resetPW(resetID, email, pw, pwC) {
+      return fetch(`${root()}/password_reset/${resetID}`, {
+        method: 'PATCH',
+        headers: headers(),
+        body: JSON.stringify({
+          email: email,
+          password: pw,
+          password_confirm: pwC
+        })
+      });
     }
   });
 };

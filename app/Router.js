@@ -39,6 +39,15 @@ let Router = {
     };
   },
 
+  passwordReset(resetID) {
+    return {
+      renderScene(navigator) {
+        let PasswordReset = require('./PasswordReset');
+        return <PasswordReset navigator={navigator} resetID={resetID} />;
+      }
+    };
+  },
+
   questionWelcome(token) {
     return {
       renderScene(navigator) {

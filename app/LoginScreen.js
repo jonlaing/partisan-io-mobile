@@ -4,6 +4,8 @@ import React, {
   AsyncStorage,
   StyleSheet,
   Component,
+  Modal,
+  Alert,
   TouchableHighlight,
   View,
   TextInput,
@@ -21,13 +23,23 @@ class LoginScreen extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { email: "", pw: "", error: ""};
+    this.state = { email: "", pw: "", error: "", forgot: false};
   }
 
   handleLogin() {
     Api.auth().login(this.state.email, this.state.pw)
     .then(data => {console.log(data); this.handleSuccess(data.token, data.user); })
     .catch(err => this.handleFail(err));
+  }
+
+  handleForgot() {
+    Api.auth().forgotPW(this.state.email)
+    .then(data => Alert.alert(
+      'Email sent',
+      `An email has been sent to ${data.email} with instructions on resetting your password.`,
+      [{text: 'OK', onPress: () => this.props.navigator.pop()}]))
+    .then(() => this.setState({forgot: false}))
+    .catch(err => console.log("err:", err));
   }
 
   handleSuccess(token, user) {
@@ -88,6 +100,44 @@ class LoginScreen extends Component {
             <Text style={styles.signUpText}>Sign up</Text>
           </TouchableHighlight>
         </View>
+        <View style={styles.hr} />
+        <View style={{flex: 1}}>
+          <TouchableHighlight onPress={() => this.setState({forgot: true})}>
+            <Text style={{textAlign: 'center'}}>Forgot your password?</Text>
+          </TouchableHighlight>
+        </View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.forgot}
+          >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modal}>
+              <Text style={styles.header}>Forgot password</Text>
+              <Text style={{marginVertical: Layout.lines(1)}}>
+                To reset your password, enter your email address below. We'll then send you an email with a one-time token to reset your password.
+              </Text>
+              <TextInput
+                style={[styles.input, {marginVertical: Layout.lines(1)}]}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                onChangeText={(val) => this.setState({email: val})}
+                placeholder="you@email.com"
+                value={this.state.email}
+              />
+              <View style={styles.actionContainer}>
+                <TouchableHighlight style={styles.submitButton} underlayColor={Colors.actionHighlight2} onPress={this.handleForgot.bind(this)}>
+                  <Text style={styles.submitText}>Reset Password</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.signUpButton} underlayColor="white" onPress={() => this.setState({forgot: false})}>
+                  <Text style={styles.signUpText}>Cancel</Text>
+                </TouchableHighlight>
+              </View>
+            </View>
+            <KeyboardSpacer />
+          </View>
+        </Modal>
         <KeyboardSpacer />
       </View>
     );
@@ -173,6 +223,22 @@ var styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 14
+  },
+  hr: {
+    marginBottom: Layout.lines(1),
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.grey
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: Layout.lines(1),
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  },
+  modal: {
+    padding: Layout.lines(1),
+    backgroundColor: 'white',
+    borderRadius: Layout.lines(0.25)
   }
 });
 

@@ -736,6 +736,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/node_modules/react-native/Libraries/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/**",
 				);
 				INFOPLIST_FILE = Partisan/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -759,6 +760,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/node_modules/react-native/Libraries/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/**",
 				);
 				INFOPLIST_FILE = Partisan/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
