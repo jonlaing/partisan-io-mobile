@@ -13,7 +13,7 @@ import React, {
   Text
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import ExNavigator from '@exponent/react-native-navigator';
 
@@ -43,6 +43,7 @@ class PostComposer extends Component {
                       api = () => Api.events(this.props.token).post(this.props.parentID, this.state.value, [this.state.image]);
                       break;
               default:
+                      console.log(this.props.parentType);
                       throw "Unknown parent type";
       }
     }
@@ -126,7 +127,7 @@ class PostComposer extends Component {
 
     return (
       <TouchableHighlight style={styles.camera} onPress={() => { this.refs.text.blur(); this.setState({ showCameraRoll: true }); }}>
-        <Icon name="camera-retro" color={Colors.darkGrey} size={24} />
+        <Icon name="add-a-photo" color={Colors.darkGrey} size={24} />
       </TouchableHighlight>
     );
   }
@@ -157,7 +158,7 @@ class PostComposer extends Component {
   }
 
   _hasParent() {
-    return this.parentType !== '' && this.parentID !== '';
+    return this.props.parentType !== '' && this.props.parentID !== '';
   }
 }
 

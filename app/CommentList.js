@@ -131,11 +131,14 @@ class CommentList extends Component {
           username={c.user.username}
           createdAt={c.created_at}
           body={c.body}
+          attachments={c.attachments}
           liked={c.liked}
           likeCount={c.like_count}
           onLike={this._handleLike(c.id).bind(this)}
           onHeaderPress={() => this.props.navigator.push(Router.profile(this.props.token, c.user_id))}
+          onUserTagPress={username => this.props.navigator.push(Router.profile(this.props.token, username))}
           onPress={this._handleMorePress(c.id, isMine).bind(this)}
+          navigator={this.props.navigator}
         />
       );
     });

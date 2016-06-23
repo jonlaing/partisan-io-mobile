@@ -22,10 +22,10 @@ module.exports = function(token) {
     create(postID, body, attachments = []) {
       let request = new FormData();
 
-      attachments.forEach((uri) => {
-        if(uri.length > 0) {
+      attachments.forEach((photo) => {
+        if(photo.uri.length > 0) {
           request.append('attachments', {
-            uri: uri,
+            uri: photo.uri,
             type: 'image/jpeg',
             name: 'post.jpg'
           });

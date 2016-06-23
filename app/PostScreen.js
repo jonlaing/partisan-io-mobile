@@ -20,17 +20,24 @@ import Layout from './Layout';
 import Post from './Post';
 import CommentList from './CommentList';
 import CommentComposer from './CommentComposer';
+import CameraRollView from './CameraRollView';
 
 class PostScreen extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { post: {}, likeCount: 0, liked: false };
+    this.state = { post: {}, likeCount: 0, liked: false, showCameraRoll: false };
   }
 
   componentDidMount() {
     Api.posts(this.props.token).get(this.props.postID)
-    .then((data) => { console.log(data); this.setState({ post: data.post, likeCount: data.post.like_count, liked: data.post.liked } ); });
+    .then((data) => {
+      if(data.post.parent != null) {
+        this.props.navigator.replace(Router.postScreen(data.post.parent.id, this.props.token));
+        return;
+      }
+      this.setState({ post: data.post, likeCount: data.post.like_count, liked: data.post.liked } );
+    });
   }
 
   _handleLike() {
@@ -66,6 +73,7 @@ class PostScreen extends Component {
             token={this.props.token}
             navigator={this.props.navigator}
             postID={this.props.postID}
+            parent={this.state.post.parent}
             username={this.state.post.user.username}
             avatar={this.state.post.user.avatar_thumbnail_url}
             createdAt={this.state.post.created_at}
@@ -79,6 +87,7 @@ class PostScreen extends Component {
             onFlag={() => this.props.navigator.push(Router.flag('post', this.props.postID, this.props.token))}
             onDelete={this._handleDelete.bind(this)}
             onComment={() => this.refs.commentComposer.focus()}
+            onUserTagPress={username => this.props.navigator.push(Router.profile(this.props.token, username))}
             onHeaderPress={() => this.props.navigator.push(Router.profile(this.props.token, this.state.post.user_id))}
             showComments={false}
             isMine={this.state.post.user_id === this.props.navigator.props.user.id}
@@ -90,8 +99,10 @@ class PostScreen extends Component {
           postID={this.state.post.id}
           autoFocus={this.props.comment}
           onFinish={() => this.refs.commentList.refresh() }
+          onCameraPress={() => this.setState({showCameraRoll: true})}
           ref="commentComposer"/>
         <KeyboardSpacer />
+        <CameraRollView show={this.state.showCameraRoll} onFinish={(images) => {this.setState({showCameraRoll: false}); this.refs.commentComposer.addPhotos(images); }}/>
       </View>
     );
   }

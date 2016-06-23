@@ -15,7 +15,7 @@ export let protocols = { http: _HTTP, ws: _SOCKET };
 export let ok = (status) => status >= 200 && status < 300;
 
 export function headers(token, json = true) {
-  if(token !== undefined) {
+  if(token != null) {
     return {
       'Accept': 'application/json',
       'Content-Type': json ? 'application/json' : 'application/x-www-form-urlencoded; charset=UTF-8',

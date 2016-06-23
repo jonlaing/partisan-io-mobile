@@ -20,18 +20,20 @@ class NotificationRow extends Component {
 
     switch(action) {
         case "user_tag":
-          return "@" + username + " tagged you in a thing";
+                return "@" + username + " tagged you in a thing";
         case "like":
-          return "@" + username + " liked your thing";
+                return "@" + username + " liked your thing";
         case "comment":
-          return `@${username} commented on your post`;
+                return `@${username} commented on your post`;
         case "friendaccept":
-          return "@" + username + " accepted your friendship";
+                return "@" + username + " accepted your friendship";
         case "friendrequest":
-          return `@${username} requested to be your friend`;
+                return `@${username} requested to be your friend`;
+        case "usertag":
+                return `@${username} tagged you in a thing`;
         default:
-          console.log(action);
-          return "Rouge notification... ¯\\_(ツ)_/¯";
+                console.log(action);
+                return "Rouge notification... ¯\\_(ツ)_/¯";
     }
   }
 
@@ -39,11 +41,10 @@ class NotificationRow extends Component {
     let action = this.props.action;
 
     switch(action) {
-      case "user_tag":
+      case "usertag":
+      case "comment":
       case "like":
-        if(action === "post") {
-          this.props.navigator.push(Router.postScreen(this.props.recordID, this.props.token));
-        }
+        this.props.navigator.push(Router.postScreen(this.props.recordID, this.props.token));
         break;
       case "friendship":
       case "friendaccept":

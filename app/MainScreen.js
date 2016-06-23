@@ -62,6 +62,10 @@ export default class MainScreen extends Component {
     this.setState({currentTab: tab});
   }
 
+  _handleBadge(notifCount, msgCount) {
+    this.props.navigator.props.eventEmitter.emit('badge-change', notifCount + msgCount);
+  }
+
   render() {
     return (
       <SideMenuNav ref="sidemenu" menu={
@@ -85,6 +89,7 @@ export default class MainScreen extends Component {
           onNotificationPress={this._handleNotifPress.bind(this)}
           onMessagePress={this._handleMessagePress.bind(this)}
           onTabPress={this._handleTabPress.bind(this)}
+          onBadge={this._handleBadge.bind(this)}
           currentTab={this.state.currentTab}
         />
       </SideMenuNav>

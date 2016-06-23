@@ -6,13 +6,15 @@ var {root, headers, processJSON} = require('./utils'); // ES6 importing doesn't 
 
 module.exports = function() {
   return ({
-    login(email, pw) {
+    login(email, pw, deviceToken) {
+      console.log(deviceToken);
       return fetch(`${root()}/login`, {
         method: 'POST',
         headers: headers(),
         body: JSON.stringify({
           email: email,
-          password: pw
+          password: pw,
+          device_token: deviceToken
         })
       })
       .then(resp => processJSON(resp));
@@ -22,7 +24,7 @@ module.exports = function() {
       return fetch(`${root()}/logout`, { headers: headers(), method: 'DELETE' });
     },
 
-    signUp(user) {
+    signUp(user, deviceToken) {
       return fetch(`${root()}/users`, {
         method: 'POST',
         headers: headers(),
@@ -31,7 +33,8 @@ module.exports = function() {
           username: user.username,
           postal_code: user.postalCode,
           password: user.password,
-          password_confirm: user.passwordConfirm
+          password_confirm: user.passwordConfirm,
+          device_token: deviceToken
         })
       })
       .then(resp => processJSON(resp));

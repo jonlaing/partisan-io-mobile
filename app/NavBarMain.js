@@ -23,7 +23,7 @@ export default class NavBarMain extends Component {
 
     this.notifCounter = null;
     this.msgCounter = null;
-    this.state = { notificationCount: 0, hasMessages: false };
+    this.state = { notificationCount: 0, messageCount: 0, hasMessages: false };
   }
 
   componentDidMount() {
@@ -47,7 +47,9 @@ export default class NavBarMain extends Component {
       }.bind(this),
       function(res) {
         let data = JSON.parse(res.data);
+
         this.setState({ notificationCount: data.count });
+        this.props.onBadge(data.count, this.state.messageCount);
       }.bind(this),
       err => console.log(err)
     );
@@ -61,6 +63,7 @@ export default class NavBarMain extends Component {
       function(res) {
         let data = JSON.parse(res.data);
         this.setState({ hasMessages: data.unread });
+        this.props.onBadge(this.state.notificationCount, 0);
       }.bind(this),
       err => console.log(err)
     );
@@ -134,6 +137,7 @@ NavBarMain.propTypes = {
   onNotificationPress: React.PropTypes.func,
   onMessagesPress: React.PropTypes.func,
   onTabPress: React.PropTypes.func,
+  onBadge: React.PropTypes.func,
   currentTab: React.PropTypes.oneOf(['none', 'feed', 'matches', 'events'])
 };
 
@@ -142,6 +146,7 @@ NavBarMain.defaultProps = {
   onLogoPress: () => {},
   onNotificationPress: () => {},
   onMesagePress: () => {},
+  onBadge: () => {},
   onTabPress: () => {}
 };
 

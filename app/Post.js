@@ -64,6 +64,8 @@ class Post extends Component {
             body={this.props.body}
             style={{backgroundColor: Colors.lightGrey, marginHorizontal: Layout.lines(-1)}}
             onHeaderPress={this.props.onHeaderPress}
+            onUserTagPress={this.props.onUserTagPress}
+            onHashTagPress={this.props.onHashTagPress}
             onPress={this.props.onHeaderPress}
             showLike={false}
           />
@@ -181,7 +183,8 @@ Post.propTypes = {
   onHashtagPress: React.PropTypes.func,
   onUserTagPress: React.PropTypes.func,
   onLinkPress: React.PropTypes.func,
-  showComments: React.PropTypes.bool
+  showComments: React.PropTypes.bool,
+  parent: React.PropTypes.object
 };
 
 Post.defaultProps = {

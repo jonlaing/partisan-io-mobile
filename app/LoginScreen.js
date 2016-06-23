@@ -27,7 +27,7 @@ class LoginScreen extends Component {
   }
 
   handleLogin() {
-    Api.auth().login(this.state.email, this.state.pw)
+    Api.auth().login(this.state.email, this.state.pw, this.props.navigator.props.deviceToken)
     .then(data => {console.log(data); this.handleSuccess(data.token, data.user); })
     .catch(err => this.handleFail(err));
   }

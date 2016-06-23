@@ -58,7 +58,7 @@ class SignUp extends Component {
 
     this.setState({isSubmitting: true});
 
-    Api.auth().signUp(user)
+    Api.auth().signUp(user, this.props.navigator.props.deviceToken)
     .then(data => this._handleSuccess(data.token, data.user))
     .then(() => this.setState({index: 0, isSubmitting: false}))
     .catch((err) => this._handleFail(err));

@@ -190,7 +190,7 @@ class FeedList extends Component {
           onFlag={() => this.parentNav.push(Router.flag('post', post.id, this.props.token))}
           onDelete={this._handleDelete.bind(this)}
           onHashtagPress={() => {}}
-          onUserTagPress={() => {}}
+          onUserTagPress={username => this.parentNav.push(Router.profile(this.props.token, username))}
           onHeaderPress={() => this.parentNav.push(Router.postScreen(post.parent.id, this.props.token, false))}
           isMine={post.user_id === this.parentNav.props.user.id}
           parent={post.parent}
@@ -218,7 +218,7 @@ class FeedList extends Component {
         onFlag={() => this.parentNav.push(Router.flag('post', post.id, this.props.token))}
         onDelete={this._handleDelete.bind(this)}
         onHashtagPress={() => {}}
-        onUserTagPress={() => {}}
+        onUserTagPress={username => this.parentNav.push(Router.profile(this.props.token, username))}
         onHeaderPress={() => this.parentNav.push(Router.postScreen(post.id, this.props.token, true))}
         isMine={post.user_id === this.parentNav.props.user.id}
       />

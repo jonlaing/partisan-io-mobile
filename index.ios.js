@@ -7,6 +7,7 @@ import React, {
   AppRegistry,
   Component,
   Linking,
+  PushNotificationIOS,
   AsyncStorage
 } from 'react-native';
 
@@ -23,7 +24,7 @@ class Partisan extends Component {
     super(props);
 
     this.eventEmitter = new EventEmitter();
-    this.state = { token: null, tokenFetched: false, user: null, notificationCount: 0, initialRoute: null };
+    this.state = { token: null, tokenFetched: false, deviceToken: "", user: null, badgeCount: 0, initialRoute: null };
   }
 
   componentWillMount() {
@@ -33,6 +34,9 @@ class Partisan extends Component {
     this._getUserInfo();
     this.loginListener = this.eventEmitter.addListener('user-login', this._getUserInfo.bind(this));
     this.userChangeListener = this.eventEmitter.addListener('user-change', this._reloadUser.bind(this));
+    this.badgeChangeListener = this.eventEmitter.addListener('badge-change', number => number !== this.state.badgeCount ? this.setState({badgeCount: number}) : {});
+
+    this._setupPushNotifs();
 
     Linking.getInitialURL()
     .then((url) => {
@@ -50,9 +54,24 @@ class Partisan extends Component {
     try {
       this.loginListener.remove();
       this.userChangeListener.remove();
+      this.badgeChangeListener.remove();
     } catch(e) {
       console.log(e);
     }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if(this.state.badgeCount !== nextState.badgeCount) {
+      PushNotificationIOS.setApplicationIconBadgeNumber(nextState.badgeCount);
+    }
+  }
+
+  _setupPushNotifs() {
+    PushNotificationIOS.requestPermissions();
+    PushNotificationIOS.addEventListener('register', function(token){
+      console.log("got device token:", token);
+      this.setState({deviceToken: token});
+    });
   }
 
   _processURL(e) {
@@ -142,6 +161,7 @@ class Partisan extends Component {
         showNavigationBar={false}
         eventEmitter={this.eventEmitter}
         user={this.state.user}
+        deviceToken={this.state.deviceToken}
         ref="nav"
       />
     );
