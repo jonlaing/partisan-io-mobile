@@ -54,6 +54,7 @@ class Avatar extends Component {
               borderRadius: 0}}} >
             <Image
               style={this.props.style}
+              resizeMode="cover"
               source={{uri: url}}
             />
           </Lightbox>
@@ -63,6 +64,7 @@ class Avatar extends Component {
       return (
         <Image
           source={{uri: url}}
+          resizeMode="cover"
           style={this.props.style}
         />
       );

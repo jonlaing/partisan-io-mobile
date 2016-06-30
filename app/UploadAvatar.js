@@ -20,11 +20,16 @@ import Colors from './Colors';
 
 import CameraRollView from './CameraRollView';
 
-const _cropData = {
-  offset: { x: 0, y: 0 },
-  size: { width: 1500, height: 1500 }, // max size on server. most images coming from camera roll are bigger than that
-  displaySize: { width: 1500, height: 1500 }, // max size on server. most images coming from camera roll are bigger than that
-  resizeMode: 'contain'
+let _cropData = (width, height) => {
+  let x = width > height ? (width - height) / 2 : 0;
+  let y = height > width ? (height - width) / 2 : 0;
+
+  return {
+    offset: { x: x, y: y },
+    size: { width: width > height ? height : width, height: width > height ? height : width }, // make it a square
+    displaySize: { width: 1500, height: 1500 }, // max size on server. most images coming from camera roll are bigger than that
+    resizeMode: 'cover'
+  };
 };
 
 
@@ -49,7 +54,7 @@ class UploadAvatar extends Component {
     if(this.state.photo.width > 1500 || this.state.photo.height > 1500) {
       ImageEditor.cropImage(
         this.state.photo.uri,
-        _cropData,
+        _cropData(this.state.photo.width, this.state.photo.height),
         (uri) => this._uploadPhoto(uri, true),
         (err) => this._handleError(err)
       );
@@ -60,6 +65,7 @@ class UploadAvatar extends Component {
   }
 
   _uploadPhoto(uri, cropped = false) {
+    this.setState({photo: {uri: uri}});
     Api.profile(this.props.token).avatarUpload(uri)
     .then(data => JSON.parse(data))
     .then(resp => this.props.onSuccess(resp.user))

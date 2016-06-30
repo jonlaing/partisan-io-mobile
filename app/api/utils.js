@@ -1,7 +1,7 @@
 /*global fetch, XMLHttpRequest */
 import Config from '../Config';
 
-const _APP_TOKEN = 'c47675bb-3a76-49ae-977b-694ab87add88';
+const _APP_TOKEN = Config.env.prod() ? 'ddae5d96-6005-4983-b305-a688127c8208' : 'c47675bb-3a76-49ae-977b-694ab87add88';
 
 const _HTTP = 0;
 const _SOCKET = 1;

@@ -28,6 +28,7 @@ class Partisan extends Component {
   }
 
   componentWillMount() {
+    this._setupPushNotifs();
   }
 
   componentDidMount() {
@@ -35,8 +36,6 @@ class Partisan extends Component {
     this.loginListener = this.eventEmitter.addListener('user-login', this._getUserInfo.bind(this));
     this.userChangeListener = this.eventEmitter.addListener('user-change', this._reloadUser.bind(this));
     this.badgeChangeListener = this.eventEmitter.addListener('badge-change', number => number !== this.state.badgeCount ? this.setState({badgeCount: number}) : {});
-
-    this._setupPushNotifs();
 
     Linking.getInitialURL()
     .then((url) => {
@@ -68,7 +67,7 @@ class Partisan extends Component {
 
   _setupPushNotifs() {
     PushNotificationIOS.requestPermissions();
-    PushNotificationIOS.addEventListener('register', function(token){
+    PushNotificationIOS.addEventListener('register', (token) => {
       console.log("got device token:", token);
       this.setState({deviceToken: token});
     });

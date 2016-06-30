@@ -69,8 +69,9 @@ class SignUp extends Component {
       ['AUTH_TOKEN', token],
       ['user', JSON.stringify(user)]
     ])
-      .then(() => this.props.navigator.replace(Router.questionWelcome(token)))
-      .catch((err) => console.log('Error setting AUTH_TOKEN: ' + err));
+    .then(() => this.props.navigator.props.eventEmitter.emit('user-change'))
+    .then(() => this.props.navigator.replace(Router.questionWelcome(token)))
+    .catch((err) => console.log('Error setting AUTH_TOKEN: ' + err));
   }
 
   _handleFail(err) {

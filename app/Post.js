@@ -26,12 +26,25 @@ class Post extends Component {
     }
   }
 
+  _action(username, action) {
+    switch(action) {
+            case "comment":
+                    return `@${username} commented on...`;
+            case "like":
+                    return `@${username} liked...`;
+            case "usertag":
+                    return `@${username} was tagged in...`;
+            default:
+                    return "";
+    }
+  }
+
   render() {
     if(this.props.action === "comment") {
       return (
         <View style={styles.container}>
           <View style={styles.action}>
-            <Text>@{this.props.username} commented on...</Text>
+            <Text>{this._action(this.props.username, this.props.action)}</Text>
           </View>
           <PostHeader
             postID={this.props.parent.id}
@@ -73,11 +86,11 @@ class Post extends Component {
       );
     }
 
-    if(this.props.action === "like") {
+    if(this.props.action === "like" || this.props.action === "usertag") {
       return (
         <View style={styles.container}>
           <View style={styles.action}>
-            <Text>@{this.props.username} liked...</Text>
+            <Text>{this._action(this.props.username, this.props.action)}</Text>
           </View>
           <PostHeader
             postID={this.props.parent.id}
