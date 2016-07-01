@@ -33,7 +33,8 @@ class FriendButton extends Component {
   _handlePress() {
     if(this.state.friendship.confirmed === false && this.state.friendship.user_id === this.props.userID) {
       Api.friendships(this.props.token).confirm(this.props.userID)
-      .then(data => this.setState({friendship: data.friendship}))
+      .then(data => { this.setState({friendship: data.friendship}); return data.friendship; })
+      .then((friendship) => this.props.onAccept(friendship))
       .catch(err => console.log(err));
     } else {
       Api.friendships(this.props.token).request(this.props.userID)
@@ -96,7 +97,12 @@ class FriendButton extends Component {
 
 FriendButton.propTypes = {
   token: React.PropTypes.string.isRequired,
-  userID: React.PropTypes.string.isRequired
+  userID: React.PropTypes.string.isRequired,
+  onAccept: React.PropTypes.func
+};
+
+FriendButton.defaultProps = {
+  onAccept: () => {}
 };
 
 const styles = StyleSheet.create({

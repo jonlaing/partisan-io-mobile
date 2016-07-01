@@ -2,6 +2,7 @@
 
 import React, {
   Component,
+  AppState,
   StyleSheet,
   ListView,
   RefreshControl,
@@ -40,12 +41,18 @@ class FeedList extends Component {
 
   componentDidMount() {
     this.getFeed(true);
-    Api.friendships(this.props.token).count().then(count => this.setState({hasFriends: count > 0})).catch(err => console.log(err));
+
+
+    this.friendAcceptListener = this.parentNav.props.eventEmitter.addListener('friend-accept', () => this.getFeed(true));
     this.postSuccessListener = this.parentNav.props.eventEmitter.addListener('post-success', this._handlePostSuccess.bind(this));
     this.postDeleteListener = this.parentNav.props.eventEmitter.addListener('post-delete', this._handlePostDelete.bind(this));
+
+    AppState.addEventListener('change', this._handleAppStateChange.bind(this));
   }
 
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange.bind(this));
+
     try {
       this.postSuccessListener.remove();
       this.postDeleteListener.remove();
@@ -84,6 +91,10 @@ class FeedList extends Component {
   }
 
   getFeed(refresh = false) {
+    if(refresh === true) {
+      Api.friendships(this.props.token).count().then(count => this.setState({hasFriends: count > 0})).catch(err => console.log(err));
+    }
+
     var page = refresh ? 0 : this.state.page + 1;
     let api = () => Api.feed(this.props.token).get(page);
 
@@ -110,6 +121,11 @@ class FeedList extends Component {
     });
   }
 
+  _handleAppStateChange(appState) {
+    if(appState === 'active') {
+      this.getFeed(true);
+    }
+  }
 
   _handlePostSuccess() {
     this.getFeed(true);

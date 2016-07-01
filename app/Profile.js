@@ -56,7 +56,7 @@ class Profile extends Component {
       return <View />;
     }
 
-    return <FriendButton token={this.props.token} userID={this.props.userID} />;
+    return <FriendButton token={this.props.token} userID={this.props.userID} onAccept={() => this.props.navigator.props.eventEmitter.emit('friend-accept')} />;
   }
 
   render() {

@@ -2,6 +2,7 @@
 
 import React, {
   Component,
+  AppState,
   StyleSheet,
   TouchableHighlight,
   TextInput,
@@ -29,14 +30,31 @@ export default class NavBarMain extends Component {
   componentDidMount() {
     this._getNotifs();
     this._getMsgs();
+    AppState.addEventListener('change', this._handleAppStateChange.bind(this));
   }
 
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange.bind(this));
+
     try {
       this.notifCounter.close();
       this.msgCounter.close();
+      this.notifCounter = null;
+      this.msgCounter = null;
     } catch(e) {
       console.log(e);
+    }
+  }
+
+  _handleAppStateChange(appState) {
+    if(appState === "active") {
+      if(this.notifCounter == null) {
+        this._getNotifs();
+      }
+
+      if(this.msgCounter == null) {
+        this._getMsgs();
+      }
     }
   }
 

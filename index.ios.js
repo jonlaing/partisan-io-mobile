@@ -5,9 +5,11 @@
 'use strict';
 import React, {
   AppRegistry,
+  AppState,
   Component,
   Linking,
   PushNotificationIOS,
+  Alert,
   AsyncStorage
 } from 'react-native';
 
@@ -24,7 +26,7 @@ class Partisan extends Component {
     super(props);
 
     this.eventEmitter = new EventEmitter();
-    this.state = { token: null, tokenFetched: false, deviceToken: "", user: null, badgeCount: 0, initialRoute: null };
+    this.state = { token: null, tokenFetched: false, deviceToken: "", user: null, badgeCount: 0, initialRoute: null, routeToPush: null };
   }
 
   componentWillMount() {
@@ -45,6 +47,7 @@ class Partisan extends Component {
     })
     .catch(err => console.log("error getting initial url:", err));
 
+    AppState.addEventListener('change', this._handleAppStateChange.bind(this));
     Linking.addEventListener('url', this._processURL.bind(this));
   }
 
@@ -67,10 +70,41 @@ class Partisan extends Component {
 
   _setupPushNotifs() {
     PushNotificationIOS.requestPermissions();
+
     PushNotificationIOS.addEventListener('register', (token) => {
       console.log("got device token:", token);
       this.setState({deviceToken: token});
     });
+
+    PushNotificationIOS.addEventListener('notification', (notif) => {
+      if(AppState.currentState === "background") {
+        let data = notif.getData();
+
+        switch(data.action) {
+                case "like":
+                case "comment":
+                case "user_tag":
+                        this.setState({ routeToPush: Router.postScreen(data.meta.record_id, this.state.token) });
+                        break;
+                case "friendrequest":
+                case "friendaccept":
+                        this.setState({ routeToPush: Router.profile(this.state.token, data.meta.record_id) });
+                        break;
+                case "message":
+                        this.setState({ routeToPush: Router.messageList(this.state.token) });
+                        break;
+                default:
+                        break;
+        }
+      }
+    });
+  }
+
+  _handleAppStateChange(appState) {
+    if(appState === "active" && this.state.routeToPush != null) {
+      this.refs.nav.push(this.state.routeToPush);
+      this.setState({ routeToPush: null });
+    }
   }
 
   _processURL(e) {
