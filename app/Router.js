@@ -123,8 +123,8 @@ let Router = {
   friends(token) {
     return {
       renderScene(navigator) {
-        let FriendList = require('./FriendList');
-        return <FriendList token={token} navigator={navigator} />;
+        let FriendScreen = require('./FriendScreen');
+        return <FriendScreen token={token} navigator={navigator} />;
       }
     };
   },

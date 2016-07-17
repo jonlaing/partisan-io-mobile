@@ -49,6 +49,10 @@ module.exports = {
   },
 
   match(m) {
+    if(m < 0) {
+      return "No Match";
+    }
+
     return Math.round(m * 100) + '%';
   },
 

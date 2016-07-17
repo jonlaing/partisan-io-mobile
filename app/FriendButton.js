@@ -2,6 +2,7 @@
 
 import React, {
   Component,
+  Alert,
   StyleSheet,
   TouchableHighlight,
   View,
@@ -35,12 +36,23 @@ class FriendButton extends Component {
       Api.friendships(this.props.token).confirm(this.props.userID)
       .then(data => { this.setState({friendship: data.friendship}); return data.friendship; })
       .then((friendship) => this.props.onAccept(friendship))
-      .catch(err => console.log(err));
+      .catch(err => this._handleError(err));
     } else {
       Api.friendships(this.props.token).request(this.props.userID)
       .then((data) => { console.log(data); this.setState({friendship: data.friendship}); })
-      .catch(err => console.log(err));
+      .catch(err => this._handleError(err));
     }
+  }
+
+  _handleError(err) {
+    if(err.response && err.response.status === 403) {
+      Alert.alert(
+        'Cannot request friendship',
+        'This person is not looking for enemies, and your match percentage is too low to friend them.'
+      );
+    }
+
+    console.log(err);
   }
 
   render() {

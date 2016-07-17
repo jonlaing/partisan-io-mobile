@@ -82,7 +82,6 @@ export default class ProfileEdit extends Component {
 
   _handleLookingFor(resp) {
     this.setState({lookingFor: resp.user.looking_for, showLookingFor: false});
-    this._updateUser(resp.user);
   }
 
   _handleSummaryFocus() {
@@ -92,11 +91,6 @@ export default class ProfileEdit extends Component {
   _handleAvatarUpload(user) {
     this.setState({avatar: user.avatar_thumbnail_url, showAvatar: false});
     this._updateUser(user);
-  }
-
-  _updateUser(user) {
-    AsyncStorage.setItem('user', JSON.stringify(user)).catch(err => console.log(err));
-    this.props.navigator.props.eventEmitter.emit('user-change');
   }
 
   _saveUser() {
@@ -110,6 +104,11 @@ export default class ProfileEdit extends Component {
     .then(resp => this._updateUser(resp.user))
     .then(() => this.props.navigator.pop())
     .catch(err => console.log(err));
+  }
+
+  _updateUser(user) {
+    AsyncStorage.setItem('user', JSON.stringify(user)).catch(err => console.log(err));
+    this.props.navigator.props.eventEmitter.emit('user-change');
   }
 
   render() {

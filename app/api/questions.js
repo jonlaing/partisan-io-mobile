@@ -11,12 +11,13 @@ module.exports = function(token) {
       .then(resp => processJSON(resp));
     },
 
-    answer(question, agree) {
+    answer(question, mask, agree) {
       return fetch(`${root()}/answers/`, {
         headers: headers(token),
         method: "PATCH",
         body: JSON.stringify({
           "map": question.map,
+          "mask": mask,
           "agree": agree
         })
       })

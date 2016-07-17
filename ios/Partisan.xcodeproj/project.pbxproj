@@ -446,6 +446,11 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 473F7462WU;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -744,7 +749,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = io.partisan;
 				PRODUCT_NAME = Partisan;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "ad5582b5-7ac3-41c7-b85f-8e169dc4f2bf";
 			};
 			name = Debug;
 		};
@@ -768,7 +773,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = io.partisan;
 				PRODUCT_NAME = Partisan;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "ad5582b5-7ac3-41c7-b85f-8e169dc4f2bf";
 			};
 			name = Release;
 		};

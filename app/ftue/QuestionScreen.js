@@ -31,6 +31,7 @@ class QuestionScreen extends Component {
           prompt: "Swiple left to disagree."
         }
       ],
+      mask: [],
       index: 0
     };
   }
@@ -44,7 +45,12 @@ class QuestionScreen extends Component {
   _getQuestions(index = 0) {
     console.log("getting questions");
     Api.questions(this.props.token).get()
-    .then(data => this.setState({currQuestions: [data.questions[0]], questions: this.state.questions.concat(data.questions), index: index }))
+    .then(data => this.setState({
+      currQuestions: [data.questions[0]],
+      questions: this.state.questions.concat(data.questions),
+      mask: data.mask,
+      index: index
+    }))
     .catch(err => {
       if(err.response.status === 404 || err.response.status === 406) {
         // need a slicker way of dealing with this
@@ -58,23 +64,27 @@ class QuestionScreen extends Component {
     return (agree) => {
       let index = this.state.index + 1;
 
+      // intro questions, do not call the server
       if(index <= 2) {
         this.setState({currQuestions: [this.state.questions[index]], index: index});
         return;
       }
 
+      // if we've answered all of the questions, break out and finish
       if(index >= _MAX_QUESTIONS + 2) {
         this.props.onComplete();
         return;
       }
 
+      // answer the question
+      Api.questions(this.props.token).answer(q, this.state.mask, agree)
+      .then(() => this.setState({currQuestions: [this.state.questions[index]], index: index}))
+      .catch(err => console.log(err));
+
+      // if we've answered all of the current questions, get new ones
       if((index - 2) % 4 === 0) {
         this._getQuestions(index);
       }
-
-      Api.questions(this.props.token).answer(q, agree)
-      .then(() => this.setState({currQuestions: [this.state.questions[index]], index: index}))
-      .catch(err => console.log(err));
     };
   }
 

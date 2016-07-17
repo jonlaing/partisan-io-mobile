@@ -90,6 +90,7 @@ class PostScreen extends Component {
             onUserTagPress={username => this.props.navigator.push(Router.profile(this.props.token, username))}
             onHeaderPress={() => this.props.navigator.push(Router.profile(this.props.token, this.state.post.user_id))}
             showComments={false}
+            showFullText={true}
             isMine={this.state.post.user_id === this.props.navigator.props.user.id}
           />
           <CommentList token={this.props.token} navigator={this.props.navigator} postID={this.state.post.id} ref="commentList" />

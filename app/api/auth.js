@@ -7,7 +7,6 @@ var {root, headers, processJSON} = require('./utils'); // ES6 importing doesn't 
 module.exports = function() {
   return ({
     login(email, pw, deviceToken) {
-      console.log(deviceToken);
       return fetch(`${root()}/login`, {
         method: 'POST',
         headers: headers(),

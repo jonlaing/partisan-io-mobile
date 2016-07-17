@@ -2,6 +2,7 @@
 
 import React, {
   Component,
+  AsyncStorage,
   TouchableHighlight,
   StyleSheet,
   View,
@@ -34,7 +35,11 @@ class LookingFor extends Component {
 
   _handleSubmit() {
     Api.profile(this.props.token).updateLookingFor(this.state.lookingFor)
-    .then((resp) => this.props.onSubmit(resp))
+    .then((resp) => {
+      AsyncStorage.setItem('user', JSON.stringify(resp.user)).catch(err => console.log(err));
+      this.props.navigator.props.eventEmitter.emit('user-change');
+      this.props.onSubmit(resp);
+    })
     .catch((err) => console.log(err));
   }
 

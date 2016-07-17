@@ -59,6 +59,12 @@ class SideMenu extends Component {
               <Text style={{color: 'white'}}>Edit Profile</Text>
             </View>
           </TouchableHighlight>
+          <TouchableHighlight onPress={() => this.props.navigator.push(Router.friends(this.props.token))}>
+            <View style={styles.item}>
+              <Icon name="people" size={24} color="white" style={styles.itemIcon}/>
+              <Text style={styles.itemText}>My Friends</Text>
+            </View>
+          </TouchableHighlight>
           <TouchableHighlight onPress={() => this.props.navigator.push(Router.eventSubscriptions(this.props.token))}>
             <View style={styles.item}>
               <Icon name="today" size={24} color="white" style={styles.itemIcon}/>

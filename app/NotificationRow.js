@@ -17,20 +17,21 @@ class NotificationRow extends Component {
   _notifText() {
     let username = this.props.username;
     let action = this.props.action;
+    let rtype = this.props.recordType;
 
     switch(action) {
         case "user_tag":
-                return "@" + username + " tagged you in a thing";
+                return `@${username} tagged you in a ${rtype}`;
         case "like":
-                return "@" + username + " liked your thing";
+                return `@${username} liked your ${rtype}`;
         case "comment":
                 return `@${username} commented on your post`;
         case "friendaccept":
-                return "@" + username + " accepted your friendship";
+                return `@${username} accepted your friendship`;
         case "friendrequest":
                 return `@${username} requested to be your friend`;
         case "usertag":
-                return `@${username} tagged you in a thing`;
+                return `@${username} tagged you in a ${rtype}`;
         default:
                 console.log(action);
                 return "Rouge notification... ¯\\_(ツ)_/¯";
@@ -78,6 +79,7 @@ NotificationRow.propTypes = {
   username: React.PropTypes.string.isRequired,
   avatar: React.PropTypes.string,
   recordID: React.PropTypes.string.isRequired,
+  recordType: React.PropTypes.string.isRequired,
   action: React.PropTypes.string.isRequired,
   createdAt: React.PropTypes.string.isRequired
 };

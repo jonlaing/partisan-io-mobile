@@ -165,6 +165,7 @@ class Post extends Component {
         <PostImage
           attachments={this.props.attachments}
           text={this.props.body}
+          showFullText={this.props.showFullText}
           likeCount={this.props.likeCount}
           commentCount={this.props.commentCount}
           onLike={this.props.onLike}
@@ -197,6 +198,7 @@ Post.propTypes = {
   onUserTagPress: React.PropTypes.func,
   onLinkPress: React.PropTypes.func,
   showComments: React.PropTypes.bool,
+  showFullText: React.PropTypes.bool, // For image posts only, whether to truncate or not
   parent: React.PropTypes.object
 };
 
@@ -216,6 +218,7 @@ Post.defaultProps = {
   onUserTagPress: () => {},
   onLinkPress: () => {},
   showComments: true,
+  showFullText: false,
   parent: {
     user: {
       username: '',

@@ -47,6 +47,7 @@ class NotificationScreen extends Component {
       username={notif.user.username}
       avatar={notif.user.avatar_thumbnail_url}
       recordID={notif.record_id}
+      recordType={notif.record_type}
       action={notif.action}
       createdAt={notif.created_at}
       token={this.props.token}

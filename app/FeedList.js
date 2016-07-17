@@ -3,6 +3,7 @@
 import React, {
   Component,
   AppState,
+  AsyncStorage,
   StyleSheet,
   ListView,
   RefreshControl,
@@ -35,6 +36,7 @@ class FeedList extends Component {
       isRefreshing: false,
       menuOpen: false,
       hasFriends: true,
+      noFeedStatus: "Nothing to show!",
       notificationCount: 0
     };
   }
@@ -116,7 +118,12 @@ class FeedList extends Component {
       isRefreshing: false
     }))
     .catch((err) => {
-      console.log(err);
+      if(err.response.status === 401) {
+        Api.auth().logout();
+
+        AsyncStorage.multiRemove(['AUTH_TOKEN', 'user'])
+          .then(() => this.parentNav.replace(Router.welcomeScreen()));
+      }
       this.setState({isRefreshing: false});
     });
   }
