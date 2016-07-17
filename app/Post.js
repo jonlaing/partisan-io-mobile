@@ -8,6 +8,8 @@ import React, {
   Text
 } from 'react-native';
 
+import {KDSocialShare} from 'NativeModules';
+
 import Colors from './Colors';
 import Layout from './Layout';
 
@@ -24,6 +26,76 @@ class Post extends Component {
     } else {
       Linking.openURL(`http://${url}`).catch(err => console.error('An error occurred', err));
     }
+  }
+
+  _handleFacebookShare() {
+    let body = this.props.body;
+    let postID = this.props.postID;
+    let attachments = this.props.attachments;
+
+    if(this.props.parent.id !== "") {
+      body = this.props.parent.body;
+      postID = this.props.parent.id;
+      attachments = this.props.parent.attachments;
+    }
+
+    if(body.length > 0) {
+      body = `"${body}"\n\n`;
+    }
+
+    let opts = {
+        'text': `${body}Shared from Partisan.IO`,
+        'link': `https://www.partisan.io/posts/${postID}`
+    };
+
+    if(attachments != null && attachments.length > 0) {
+      opts.imagelink = attachments[0].url;
+    }
+
+    KDSocialShare.shareOnFacebook(opts,
+      (results) => {
+        console.log(results);
+      }
+    );
+  }
+
+  _handleTwitterShare() {
+    let body = this.props.body;
+    let postID = this.props.postID;
+    let attachments = this.props.attachments;
+
+    if(this.props.parent.id !== "") {
+      body = this.props.parent.body;
+      postID = this.props.parent.id;
+      attachments = this.props.parent.attachments;
+    }
+
+    let sharetext = 'Shared from @partisan_io';
+    let opts = {
+        'link': `https://www.partisan.io/posts/${postID}`
+    };
+
+    if(body.length > 136 - sharetext.length) {
+      body = body.substr(0, 136 - sharetext.length) + "…";
+    }
+
+    if(body.length > 0) {
+      body = body + " | " + sharetext;
+    } else {
+      body = sharetext;
+    }
+
+    opts.text = body;
+
+    if(attachments != null && attachments.length > 0) {
+      opts.imagelink = attachments[0].url;
+    }
+
+    KDSocialShare.tweet(opts,
+      (results) => {
+        console.log(results);
+      }
+    );
   }
 
   _action(username, action) {
@@ -52,6 +124,8 @@ class Post extends Component {
             avatar={this.props.parent.user.avatar_thumbnail_url}
             createdAt={this.props.parent.created_at}
             onPress={this.props.onHeaderPress}
+            onFacebookShare={this._handleFacebookShare.bind(this)}
+            onTwitterShare={this._handleTwitterShare.bind(this)}
             onFlag={this.props.onFlag}
             onDelete={this.props.onDelete}
             isMine={false}
@@ -98,6 +172,8 @@ class Post extends Component {
             avatar={this.props.parent.user.avatar_thumbnail_url}
             createdAt={this.props.parent.created_at}
             onPress={this.props.onHeaderPress}
+            onFacebookShare={this._handleFacebookShare.bind(this)}
+            onTwitterShare={this._handleTwitterShare.bind(this)}
             onFlag={this.props.onFlag}
             onDelete={this.props.onDelete}
             isMine={false}
@@ -128,6 +204,8 @@ class Post extends Component {
             avatar={this.props.avatar}
             createdAt={this.props.createdAt}
             onPress={this.props.onHeaderPress}
+            onFacebookShare={this._handleFacebookShare.bind(this)}
+            onTwitterShare={this._handleTwitterShare.bind(this)}
             onFlag={this.props.onFlag}
             onDelete={this.props.onDelete}
             isMine={this.props.isMine}
@@ -157,6 +235,8 @@ class Post extends Component {
           avatar={this.props.avatar}
           createdAt={this.props.createdAt}
           onPress={this.props.onHeaderPress}
+          onFacebookShare={this._handleFacebookShare.bind(this)}
+          onTwitterShare={this._handleTwitterShare.bind(this)}
           onFlag={this.props.onFlag}
           onDelete={this.props.onDelete}
           isMine={this.props.isMine}

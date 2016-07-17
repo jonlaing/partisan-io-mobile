@@ -18,17 +18,23 @@ import Colors from '../Colors';
 import Avatar from '../Avatar';
 
 const ACTION_SHEET_BUTTONS = [
+  'Share on Facebook',
+  'Share on Twitter',
   'Flag Post',
   'Cancel'
 ];
 
 const MY_ACTION_SHEET_BUTTONS = [
+  'Share on Facebook',
+  'Share on Twitter',
   'Delete Post',
   'Cancel'
 ];
 
-const DESTRUCTIVE_INDEX = 0;
-const CANCEL_INDEX = 1;
+const FB_INDEX = 0;
+const TW_INDEX = 1;
+const DESTRUCTIVE_INDEX = 2;
+const CANCEL_INDEX = 3;
 
 export default class PostHeader extends Component {
   handleMorePress() {
@@ -40,16 +46,22 @@ export default class PostHeader extends Component {
     },
     (buttonIndex) => {
       switch(buttonIndex) {
+        case FB_INDEX:
+                this.props.onFacebookShare();
+                break;
+        case TW_INDEX:
+                this.props.onTwitterShare();
+                break;
         case DESTRUCTIVE_INDEX:
-          if(this.props.isMine === false) {
-            this.props.onFlag("post", this.props.postID);
-          } else {
-            this.props.onDelete(this.props.postID);
-          }
-          break;
+                if(this.props.isMine === false) {
+                  this.props.onFlag("post", this.props.postID);
+                } else {
+                  this.props.onDelete(this.props.postID);
+                }
+                break;
         case CANCEL_INDEX:
         default:
-          return;
+                return;
       }
     });
   }
@@ -80,6 +92,8 @@ PostHeader.propTypes = {
   username: React.PropTypes.string.isRequired,
   createdAt: React.PropTypes.string.isRequired,
   onPress: React.PropTypes.func,
+  onFacebookShare: React.PropTypes.func,
+  onTwitterShare: React.PropTypes.func,
   onFlag: React.PropTypes.func,
   onDelete: React.PropTypes.func,
   isMine: React.PropTypes.bool
@@ -88,6 +102,8 @@ PostHeader.propTypes = {
 PostHeader.defaultProps = {
   onPress: () => {},
   onFlag: () => {},
+  onFacebookShare: () => {},
+  onTwitterShare: () => {},
   onDelete: () => {},
   isMine: false
 };

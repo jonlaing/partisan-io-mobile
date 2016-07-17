@@ -29,6 +29,8 @@
 		1A39C8101CBB644000CBB3B4 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1A39C8081CBB644000CBB3B4 /* Octicons.ttf */; };
 		1A39C8111CBB644000CBB3B4 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1A39C8091CBB644000CBB3B4 /* Zocial.ttf */; };
 		1A39C8221CBB6A5800CBB3B4 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A39C8211CBB683E00CBB3B4 /* libRCTCameraRoll.a */; };
+		1A68F2931D3C222000708041 /* KDSocialShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A68F2921D3C222000708041 /* KDSocialShare.m */; };
+		1A68F2951D3C224100708041 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A68F2941D3C224100708041 /* Social.framework */; };
 		1A6A17D31CBEBC280091AD06 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A6A17CD1CBEBBFB0091AD06 /* libRCTPushNotification.a */; };
 		1AACA1F51CE7AFC7001D5E1C /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AACA1F41CE7AF92001D5E1C /* libRNDeviceInfo.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -163,6 +165,9 @@
 		1A39C8081CBB644000CBB3B4 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		1A39C8091CBB644000CBB3B4 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
 		1A39C81C1CBB683E00CBB3B4 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
+		1A68F2911D3C222000708041 /* KDSocialShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KDSocialShare.h; path = "../node_modules/react-native-social-share/iOS/KDSocialShare.h"; sourceTree = "<group>"; };
+		1A68F2921D3C222000708041 /* KDSocialShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KDSocialShare.m; path = "../node_modules/react-native-social-share/iOS/KDSocialShare.m"; sourceTree = "<group>"; };
+		1A68F2941D3C224100708041 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		1A6A17C21CBEBBFB0091AD06 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		1AACA1E31CE7AF90001D5E1C /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -181,6 +186,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A68F2951D3C224100708041 /* Social.framework in Frameworks */,
 				1AACA1F51CE7AFC7001D5E1C /* libRNDeviceInfo.a in Frameworks */,
 				1A6A17D31CBEBC280091AD06 /* libRCTPushNotification.a in Frameworks */,
 				1A39C8221CBB6A5800CBB3B4 /* libRCTCameraRoll.a in Frameworks */,
@@ -345,6 +351,8 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				1A68F2911D3C222000708041 /* KDSocialShare.h */,
+				1A68F2921D3C222000708041 /* KDSocialShare.m */,
 				1AACA1E31CE7AF90001D5E1C /* RNDeviceInfo.xcodeproj */,
 				1A6A17C21CBEBBFB0091AD06 /* RCTPushNotification.xcodeproj */,
 				1A39C81C1CBB683E00CBB3B4 /* RCTCameraRoll.xcodeproj */,
@@ -373,6 +381,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				1A68F2941D3C224100708041 /* Social.framework */,
 				1A39C8011CBB644000CBB3B4 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* Partisan */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -678,6 +687,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				1A68F2931D3C222000708041 /* KDSocialShare.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
