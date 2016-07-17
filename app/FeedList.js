@@ -100,6 +100,10 @@ class FeedList extends Component {
     var page = refresh ? 0 : this.state.page + 1;
     let api = () => Api.feed(this.props.token).get(page);
 
+    if(this.props.search !== '') {
+      api = () => Api.feed(this.props.token).search(this.props.search, page);
+    }
+
     if(this._hasParent()) {
       switch(this.props.parentType) {
               case 'event':
@@ -314,12 +318,14 @@ FeedList.propTypes = {
   navigator: React.PropTypes.instanceOf(ExNavigator).isRequired,
   parentType: React.PropTypes.string,
   parentID: React.PropTypes.string,
+  search: React.PropTypes.string,
   onScroll: React.PropTypes.func
 };
 
 FeedList.defaultProps = {
   parentType: '',
   parentID: '',
+  search: '',
   onScroll: () => {}
 };
 

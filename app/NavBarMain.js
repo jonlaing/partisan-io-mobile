@@ -24,7 +24,7 @@ export default class NavBarMain extends Component {
 
     this.notifCounter = null;
     this.msgCounter = null;
-    this.state = { notificationCount: 0, messageCount: 0, hasMessages: false };
+    this.state = { search: '', notificationCount: 0, messageCount: 0, hasMessages: false };
   }
 
   componentDidMount() {
@@ -107,6 +107,14 @@ export default class NavBarMain extends Component {
     return this.props.currentTab === name;
   }
 
+  _handleSearchChange(text) {
+    if(text === '') {
+      this.props.onSearch('');
+    }
+
+    this.setState({search: text});
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -119,6 +127,11 @@ export default class NavBarMain extends Component {
           <TextInput
             editable={true}
             placeholder="Search"
+            onChangeText={this._handleSearchChange.bind(this)}
+            value={this.state.search}
+            onSubmitEditing={() => this.props.onSearch(this.state.search)}
+            returnKeyType="search"
+            clearButtonMode="always"
             style={styles.search} />
           <TouchableHighlight style={styles.iconContainer} onPress={this.props.onNotificationPress}>
             {this._notifs()}
@@ -156,6 +169,7 @@ NavBarMain.propTypes = {
   onMessagesPress: React.PropTypes.func,
   onTabPress: React.PropTypes.func,
   onBadge: React.PropTypes.func,
+  onSearch: React.PropTypes.func,
   currentTab: React.PropTypes.oneOf(['none', 'feed', 'matches', 'events'])
 };
 
@@ -165,7 +179,8 @@ NavBarMain.defaultProps = {
   onNotificationPress: () => {},
   onMesagePress: () => {},
   onBadge: () => {},
-  onTabPress: () => {}
+  onTabPress: () => {},
+  onSearch: () => {}
 };
 
 const styles = StyleSheet.create({

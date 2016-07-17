@@ -10,6 +10,12 @@ module.exports = function(token) {
       return fetch(`${root()}/posts/?page=${page}`, { headers: headers(token) })
         .then(res => processJSON(res))
         .then(data => { console.log(data); return data.posts; });
+    },
+
+    search(q, page = 0) {
+      return fetch(`${root()}/search?q=${q}&page=${page}`, { headers: headers(token) })
+      .then(res => processJSON(res))
+      .then(data => data.posts);
     }
   });
 };

@@ -93,11 +93,11 @@ let Router = {
     };
   },
 
-  feed(token) {
+  feed(token, search = '') {
     return {
       renderScene(navigator) {
         let FeedList = require('./FeedList');
-        return <FeedList token={token} navigator={navigator} />;
+        return <FeedList token={token} navigator={navigator} search={search} />;
       }
     };
   },

@@ -18,7 +18,7 @@ export default class MainScreen extends Component {
     super(props);
     this._menuOpen = false;
 
-    this.state = { currentTab: 'feed', showEditor: '' };
+    this.state = { currentTab: 'feed', search: '', showEditor: '' };
   }
 
   componentDidMount() {
@@ -66,6 +66,11 @@ export default class MainScreen extends Component {
     this.props.navigator.props.eventEmitter.emit('badge-change', notifCount + msgCount);
   }
 
+  _handleSearch(search) {
+    this.refs.nav.replace(Router.feed(this.props.token, search));
+    this.setState({currentTab: 'feed'});
+  }
+
   render() {
     return (
       <SideMenuNav ref="sidemenu" menu={
@@ -91,6 +96,7 @@ export default class MainScreen extends Component {
           onTabPress={this._handleTabPress.bind(this)}
           onBadge={this._handleBadge.bind(this)}
           currentTab={this.state.currentTab}
+          onSearch={this._handleSearch.bind(this)}
         />
       </SideMenuNav>
     );
