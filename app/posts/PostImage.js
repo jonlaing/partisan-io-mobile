@@ -36,30 +36,13 @@ export default class PostImage extends Component {
 
   render() {
     if(this.props.attachments.length === 1) {
-      if(this.props.showFullText === true) {
-        return (
-          <View style={styles.container}>
-            <TouchableHighlight onPress={this.handleImagePress.bind(this)}>
-              <Image source={{uri: this.props.attachments[0].url}} style={styles.image}>
-                <View style={styles.actions}>
-                  <PostAction action={this.props.action} commentCount={this.props.commentCount} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked} color='light' />
-                </View>
-              </Image>
-            </TouchableHighlight>
-            <Text style={{padding: Layout.lines(1)}}>{this.props.text}</Text>
-          </View>
-        );
-      }
-
       return (
         <View style={styles.container}>
+          <Text style={{padding: Layout.lines(1)}}>{this.props.text}</Text>
           <TouchableHighlight onPress={this.handleImagePress.bind(this)}>
-            <Image source={{uri: this.props.attachments[0].url}} style={styles.image}>
+            <Image source={{uri: this.props.attachments[0].url}} style={styles.image} resizeMode="contain">
               <View style={styles.actions}>
                 <PostAction action={this.props.action} commentCount={this.props.commentCount} likeCount={this.props.likeCount} onLike={this.props.onLike} liked={this.props.liked} color='light' />
-              </View>
-              <View style={styles.textContainer}>
-                <Text style={styles.text} lineBreakMode="tail" numberOfLines={1}>{this.props.text}</Text>
               </View>
             </Image>
           </TouchableHighlight>
