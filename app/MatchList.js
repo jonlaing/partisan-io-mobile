@@ -72,6 +72,7 @@ class MatchList extends Component {
     return (
       <View style={styles.container}>
         {this._searchFilters()}
+        {this._noMatches()}
         <ListView
           scrollToTop={true}
           dataSource={this.state.dataSource}
@@ -92,6 +93,12 @@ class MatchList extends Component {
         />
       </View>
     );
+  }
+
+  _noMatches() {
+    if(this.state.isRefreshing === false && this.state.matches.length < 1) {
+      return <Text style={{padding: Layout.lines(1), textAlign: 'center', color: Colors.darkGrey}}>Nothing to show!</Text>;
+    }
   }
 }
 

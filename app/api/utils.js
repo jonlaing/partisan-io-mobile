@@ -1,7 +1,15 @@
 /*global fetch, XMLHttpRequest */
 import Config from '../Config';
 
-const _APP_TOKEN = Config.env.prod() ? 'ddae5d96-6005-4983-b305-a688127c8208' : 'c47675bb-3a76-49ae-977b-694ab87add88';
+const _APP_TOKEN = '';
+
+if (Config.env.prod()) {
+  _APP_TOKEN = 'ddae5d96-6005-4983-b305-a688127c8208';
+} else if (Config.env.staging()) {
+  _APP_TOKEN = 'ce0ebc53-9fb6-4c72-b00e-a8280676126e';
+} else {
+  _APP_TOKEN = 'c47675bb-3a76-49ae-977b-694ab87add88';
+}
 
 const _HTTP = 0;
 const _SOCKET = 1;
@@ -36,6 +44,8 @@ export function root(prot = _HTTP) {
     return `${protocol(prot)}localhost:4000/api/v2`;
   } else if (Config.env.prod()) {
     return `${protocol(prot)}www.partisan.io/api/v2`;
+  } else if (Config.env.staging()) {
+    return `${protocol(prot)}enigmatic-cliffs-84517.herokuapp.com//api/v2`;
   } else {
     throw "UNKNOWN ENVIRONMENT: CANNOT PERFORM NETWORK REQUESTS";
   }
@@ -44,17 +54,17 @@ export function root(prot = _HTTP) {
 export function protocol(prot) {
   switch(prot) {
     case _HTTP:
-      if(Config.env.dev()) {
-        return "http://";
-      } else {
+      if(Config.env.prod()) {
         return "https://";
+      } else {
+        return "http://";
       }
       break;
     case _SOCKET:
-      if(Config.env.dev()) {
-        return "ws://";
-      } else {
+      if(Config.env.prod()) {
         return "wss://";
+      } else {
+        return "ws://";
       }
       break;
     default:
