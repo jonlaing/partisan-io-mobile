@@ -16,13 +16,25 @@ import Layout from './Layout';
 import Colors from './Colors';
 
 import MatchRow from './MatchRow';
+import ActionButton from './ActionButton';
+import MatchFilter from './MatchFilter';
+
+let empty = {
+  empty: true
+};
 
 class MatchList extends Component {
   constructor(props) {
     super(props);
 
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = { matches: [], dataSource: ds.cloneWithRows([]), page: 1, isRefreshing: false, showFilters: false };
+    this.state = {
+      matches: [],
+      dataSource: ds.cloneWithRows([]),
+      distance: 105,
+      page: 1,
+      isRefreshing: false,
+      showFilters: false };
   }
 
   componentDidMount() {
@@ -30,10 +42,21 @@ class MatchList extends Component {
   }
 
   getMatches(refresh = false) {
-    var page = refresh ? 1 : this.state.page + 1;
+    let page = refresh ? 1 : this.state.page + 1;
+    let distance = this.state.distance > 100 ? 0 : this.state.distance;
 
-    Api.matches(this.props.token).get(page)
-    .then(matches => refresh ? matches : this.state.matches.concat(matches).filter((m) => m !== null) ) // either refresh the items or append them
+    Api.matches(this.props.token).get(page, distance)
+    .then((matches) => {
+      if(matches == null && refresh) {
+        return [empty];
+      }
+
+      if(refresh) {
+        return matches;
+      } else {
+        return this.state.matches.concat(matches).filter((m) => m !== null);
+      }
+    }) // either refresh the items or append them
     .then(matches => this.setState({
       matches: matches,
       dataSource: this.state.dataSource.cloneWithRows(matches),
@@ -43,7 +66,24 @@ class MatchList extends Component {
     .catch(err => console.log("error:", err));
   }
 
+  _handleFilter(filters) {
+    this.setState({distance: filters.distance, showFilters: false});
+    this.getMatches(true);
+  }
+
+  _distance() {
+    if(this.state.distance > 100) {
+      return "from anywhere";
+    }
+
+    return `within ${this.state.distance} miles`;
+  }
+
   _renderRow(match) {
+    if(match.empty === true) {
+      return <Text style={{padding: Layout.lines(1), textAlign: 'center', color: Colors.darkGrey}}>Nothing to show!</Text>;
+    }
+
     return (
       <MatchRow
         key={match.user.username}
@@ -58,24 +98,14 @@ class MatchList extends Component {
     );
   }
 
-  _searchFilters() {
-    if(this.state.showFilters === true) {
-      return (
-        <View style={styles.filterContainer}>
-          <Text style={styles.filterHeader}>Search Parameters</Text>
-        </View>
-      );
-    }
-  }
-
   render() {
     return (
       <View style={styles.container}>
-        {this._searchFilters()}
-        {this._noMatches()}
         <ListView
+          contentContainerStyle={{paddingHorizontal: Layout.lines(0.75)}}
           scrollToTop={true}
           dataSource={this.state.dataSource}
+          renderHeader={() => <Text style={styles.showing}>Showing matches {this._distance()}…</Text>}
           renderRow={this._renderRow.bind(this)}
           enableEmptySections={true}
           onEndReached={() => this.getMatches()}
@@ -91,6 +121,8 @@ class MatchList extends Component {
             />
           }
         />
+        <ActionButton icon="tune" onPress={() => this.setState({showFilters: true})}/>
+        <MatchFilter show={this.state.showFilters} onFinish={this._handleFilter.bind(this)}/>
       </View>
     );
   }
@@ -112,8 +144,8 @@ let styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    backgroundColor: Colors.lightGrey,
-    paddingHorizontal: Layout.lines(0.75)
+    position: 'relative',
+    backgroundColor: Colors.lightGrey
   },
   filterContainer: {
     backgroundColor: Colors.baseDark,
@@ -122,6 +154,11 @@ let styles = StyleSheet.create({
   },
   filterHeader: {
     color: 'white'
+  },
+  showing: {
+    marginTop: Layout.lines(1),
+    textAlign: 'center',
+    color: Colors.darkGrey
   }
 });
 

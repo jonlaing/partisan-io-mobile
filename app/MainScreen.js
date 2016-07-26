@@ -1,7 +1,8 @@
 'use strict';
 
 import React, {
-  Component
+  Component,
+  View
 } from 'react-native';
 
 import SideMenuNav from 'react-native-side-menu';
@@ -73,31 +74,33 @@ export default class MainScreen extends Component {
 
   render() {
     return (
-      <SideMenuNav ref="sidemenu" menu={
+      <SideMenuNav ref="sidemenu" disableGestures={true} menu={
         <SideMenu
           navigator={this.props.navigator}
           token={this.props.token}
           onUserPress={() => this.props.navigator.push(Router.profileEdit(this.props.token, this.props.navigator.props.user))}
         />
       }>
-        <ExNavigator
-          initialRoute={Router.feed(this.props.token)}
-          style={{flex: 1, paddingTop: Layout.lines(7)}}
-          showNavigationBar={false}
-          parentNavigator={this.props.navigator}
-          eventEmitter={this.props.navigator.props.eventEmitter}
-          ref="nav"
-        />
-        <NavBarMain
-          token={this.props.token}
-          onLogoPress={this._handleHamburger.bind(this)}
-          onNotificationPress={this._handleNotifPress.bind(this)}
-          onMessagePress={this._handleMessagePress.bind(this)}
-          onTabPress={this._handleTabPress.bind(this)}
-          onBadge={this._handleBadge.bind(this)}
-          currentTab={this.state.currentTab}
-          onSearch={this._handleSearch.bind(this)}
-        />
+        <View style={{flex: 1, backgroundColor: 'white'}}>
+          <ExNavigator
+            initialRoute={Router.feed(this.props.token)}
+            style={{flex: 1, paddingTop: Layout.lines(7)}}
+            showNavigationBar={false}
+            parentNavigator={this.props.navigator}
+            eventEmitter={this.props.navigator.props.eventEmitter}
+            ref="nav"
+          />
+          <NavBarMain
+            token={this.props.token}
+            onLogoPress={this._handleHamburger.bind(this)}
+            onNotificationPress={this._handleNotifPress.bind(this)}
+            onMessagePress={this._handleMessagePress.bind(this)}
+            onTabPress={this._handleTabPress.bind(this)}
+            onBadge={this._handleBadge.bind(this)}
+            currentTab={this.state.currentTab}
+            onSearch={this._handleSearch.bind(this)}
+          />
+        </View>
       </SideMenuNav>
     );
   }
