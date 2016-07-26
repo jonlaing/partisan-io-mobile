@@ -27,7 +27,7 @@ let _cropData = (width, height) => {
   return {
     offset: { x: x, y: y },
     size: { width: width > height ? height : width, height: width > height ? height : width }, // make it a square
-    displaySize: { width: 1500, height: 1500 }, // max size on server. most images coming from camera roll are bigger than that
+    displaySize: { width: 1080, height: 1080 }, // max size on server. most images coming from camera roll are bigger than that
     resizeMode: 'cover'
   };
 };
@@ -51,7 +51,7 @@ class UploadAvatar extends Component {
 
     this.setState({uploading: true});
 
-    if(this.state.photo.width > 1500 || this.state.photo.height > 1500) {
+    if(this.state.photo.width > 1080 || this.state.photo.height > 1080) {
       ImageEditor.cropImage(
         this.state.photo.uri,
         _cropData(this.state.photo.width, this.state.photo.height),

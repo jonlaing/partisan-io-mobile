@@ -100,7 +100,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     position: 'relative',
     height: Layout.lines(22),
-    padding: Layout.lines(1)
+    padding: Layout.lines(1),
+    backgroundColor: 'black'
   },
   actions: {
     width: Layout.lines(4),

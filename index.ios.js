@@ -72,7 +72,6 @@ class Partisan extends Component {
     PushNotificationIOS.requestPermissions();
 
     PushNotificationIOS.addEventListener('register', (token) => {
-      console.log("got device token:", token);
       this.setState({deviceToken: token});
     });
 

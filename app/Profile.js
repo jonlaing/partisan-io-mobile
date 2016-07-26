@@ -40,7 +40,7 @@ class Profile extends Component {
   }
 
   _match() {
-    if(this.props.userID === this.props.navigator.props.user.id) {
+    if(this.state.user.id === this.props.navigator.props.user.id) {
       return <View />;
     }
 
@@ -52,11 +52,11 @@ class Profile extends Component {
   }
 
   _friendButton() {
-    if(this.props.userID === this.props.navigator.props.user.id) {
+    if(this.state.user.id === this.props.navigator.props.user.id) {
       return <View />;
     }
 
-    return <FriendButton token={this.props.token} userID={this.props.userID} onAccept={() => this.props.navigator.props.eventEmitter.emit('friend-accept')} />;
+    return <FriendButton token={this.props.token} userID={this.state.user.id} onAccept={() => this.props.navigator.props.eventEmitter.emit('friend-accept')} />;
   }
 
   render() {

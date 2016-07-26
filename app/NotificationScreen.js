@@ -32,6 +32,7 @@ class NotificationScreen extends Component {
 
   componentDidMount() {
     this._getNotifs();
+    this.props.navigator.props.eventEmitter.emit('badge-change', 0);
   }
 
   _getNotifs() {

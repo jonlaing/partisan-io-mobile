@@ -29,6 +29,18 @@ import CameraRollView from './CameraRollView';
 
 let {height} = Dimensions.get('window');
 
+let _cropData = (width, height) => {
+  let x = width > height ? (width - height) / 2 : 0;
+  let y = height > width ? (height - width) / 2 : 0;
+
+  return {
+    offset: { x: x, y: y },
+    size: { width: width, height: height},
+    displaySize: { width: 1080, height: 1080 }, // max size on server. most images coming from camera roll are bigger than that
+    resizeMode: 'contain'
+  };
+};
+
 export default class EventComposer extends Component {
   constructor(props) {
     super(props);
