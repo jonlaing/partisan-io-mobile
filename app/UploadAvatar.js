@@ -143,7 +143,7 @@ class UploadAvatar extends Component {
             <Text style={styles.skipButtonText}>{this.props.cancelText}</Text>
           </TouchableHighlight>
         </View>
-        <CameraRollView show={this.state.showCameraRoll} onFinish={this._handleSelectPhoto.bind(this)}/>
+        <CameraRollView show={this.state.showCameraRoll} onFinish={this._handleSelectPhoto.bind(this)} onCancel={() => this.setState({showCameraRoll: false})}/>
       </View>
     );
   }

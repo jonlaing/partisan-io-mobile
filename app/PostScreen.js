@@ -103,7 +103,10 @@ class PostScreen extends Component {
           onCameraPress={() => this.setState({showCameraRoll: true})}
           ref="commentComposer"/>
         <KeyboardSpacer />
-        <CameraRollView show={this.state.showCameraRoll} onFinish={(images) => {this.setState({showCameraRoll: false}); this.refs.commentComposer.addPhotos(images); }}/>
+        <CameraRollView
+          show={this.state.showCameraRoll}
+          onFinish={(images) => {this.setState({showCameraRoll: false}); this.refs.commentComposer.addPhotos(images); }}
+          onCancel={() => this.setState({showCameraRoll: false})}/>
       </View>
     );
   }

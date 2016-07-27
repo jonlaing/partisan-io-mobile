@@ -310,7 +310,7 @@ export default class EventComposer extends Component {
           onSelect={(data) => this.setState({location: data.description, showLocation: false}) }
           onCancel={() => this.setState({showLocation: false}) }
         />
-        <CameraRollView show={this.state.showCameraRoll} onFinish={this._handleSelectPhoto.bind(this)}/>
+        <CameraRollView show={this.state.showCameraRoll} onFinish={this._handleSelectPhoto.bind(this)} onCancel={() => this.setState({showCameraRoll: false})}/>
       </View>
     );
   }
