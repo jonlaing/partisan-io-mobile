@@ -10,6 +10,8 @@ import React, {
   ScrollView,
   TouchableHighlight,
   TextInput,
+  ImageEditor,
+  ImageStore,
   Image,
   View,
   Text
@@ -29,13 +31,13 @@ import CameraRollView from './CameraRollView';
 
 let {height} = Dimensions.get('window');
 
-let _cropData = (width, height) => {
-  let x = width > height ? (width - height) / 2 : 0;
-  let y = height > width ? (height - width) / 2 : 0;
+let _cropData = (w, h) => {
+  let x = w > h ? (w - h) / 2 : 0;
+  let y = h > w ? (h - w) / 2 : 0;
 
   return {
     offset: { x: x, y: y },
-    size: { width: width, height: height},
+    size: { width: w, height: h},
     displaySize: { width: 1080, height: 1080 }, // max size on server. most images coming from camera roll are bigger than that
     resizeMode: 'contain'
   };
@@ -52,6 +54,7 @@ export default class EventComposer extends Component {
       location: '',
       coverPhoto: null,
       summary: '',
+      changedPhoto: false,
 
       showStartDate: false,
       showEndDate: false,
@@ -103,14 +106,19 @@ export default class EventComposer extends Component {
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       location: this.state.location,
-      coverPhoto: this.state.coverPhoto,
       summary: this.state.summary
     };
 
-    Api.events(this.props.token).create(event)
-    .then(() => this.props.navigator.props.eventEmitter.emit('create-event'))
-    .then(() => this.props.navigator.pop())
-    .catch(err => console.log("err:", err));
+    this._getPhoto()
+    .then((photo) => {
+      event.coverPhoto = photo;
+
+      Api.events(this.props.token).create(event)
+      .then(() => this.props.navigator.props.eventEmitter.emit('create-event'))
+      .then(() => this.props.navigator.pop())
+      .then(() => ImageStore.removeImageForTag(photo))
+      .catch(err => console.log("err:", err));
+    }).catch(err => console.log("err:", err));
   }
 
   _handleUpdate() {
@@ -119,18 +127,40 @@ export default class EventComposer extends Component {
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       location: this.state.location,
-      coverPhoto: this.state.coverPhoto,
       summary: this.state.summary
     };
 
-    Api.events(this.props.token).update(this.props.eventID, event)
-    .then(() => this.props.navigator.props.eventEmitter.emit('update-event'))
-    .then(() => this.props.navigator.pop())
-    .catch(err => console.log("err:", err));
+    this._getPhoto()
+    .then((photo) => {
+      event.coverPhoto = photo;
+
+      Api.events(this.props.token).update(this.props.eventID, event)
+      .then(() => this.props.navigator.props.eventEmitter.emit('update-event'))
+      .then(() => this.props.navigator.pop())
+      .then(() => ImageStore.removeImageForTag(photo))
+      .catch(err => console.log("err:", err));
+    }).catch(err => console.log("err:", err));
+  }
+
+  _getPhoto() {
+    return new Promise((resolve, reject) => {
+      if(this.state.changedPhoto === true) {
+        if(this.state.coverPhoto.width > 1080 || this.state.coverPhoto.height > 1080) {
+          ImageEditor.cropImage(
+            this.state.coverPhoto.uri,
+            _cropData(this.state.coverPhoto.width, this.state.coverPhoto.height),
+            (uri) => resolve(uri),
+            (err) => reject(err)
+          );
+        }
+      }
+
+      return resolve(null);
+    });
   }
 
   _handleSelectPhoto(photos) {
-    this.setState({showCameraRoll: false, coverPhoto: photos[0]});
+    this.setState({showCameraRoll: false, coverPhoto: photos[0], changedPhoto: true});
   }
 
   _handleSummaryFocus() {

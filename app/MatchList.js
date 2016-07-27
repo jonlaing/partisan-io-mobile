@@ -73,7 +73,7 @@ class MatchList extends Component {
 
   _distance() {
     if(this.state.distance > 100) {
-      return "from anywhere";
+      return "from everywhere";
     }
 
     return `within ${this.state.distance} miles`;

@@ -102,9 +102,9 @@ module.exports = function(token) {
     create(event) {
       let request = new FormData();
 
-      if(event.coverPhoto.uri.length > 0) {
+      if(event.coverPhoto.length > 0) {
         request.append('cover_photo', {
-          uri: event.coverPhoto.uri,
+          uri: event.coverPhoto,
           type: 'image/jpeg',
           name: 'coverphoto.jpg'
         });
@@ -125,9 +125,9 @@ module.exports = function(token) {
     update(eventID, event) {
       let request = new FormData();
 
-      if(event.coverPhoto.uri.length > 0 && event.coverPhoto.uri.match(/^http/) == null) {
+      if(event.coverPhoto.length > 0 && event.coverPhoto.match(/^http/) == null) {
         request.append('cover_photo', {
-          uri: event.coverPhoto.uri,
+          uri: event.coverPhoto,
           type: 'image/jpeg',
           name: 'coverphoto.jpg'
         });
