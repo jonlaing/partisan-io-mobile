@@ -94,7 +94,7 @@ export default class Flag extends Component {
         </View>
         <NavBar
           title="Flag content"
-          leftButton={ <Icon name="chevron-left" color="rgb(255,255,255)" size={24} /> }
+          leftButton={ <Icon name="chevron-left" color="rgb(255,255,255)" size={32} /> }
           leftButtonPress={() => this.props.navigator.pop()}
           rightButton={<Text style={{ fontSize: Layout.lines(1), fontWeight: 'bold', color: 'white' }}>Done</Text>}
           rightButtonPress={this.handlePost.bind(this)}

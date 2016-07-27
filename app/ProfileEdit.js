@@ -180,7 +180,7 @@ export default class ProfileEdit extends Component {
           <KeyboardSpacer />
           <NavBar
             title="Edit Profile"
-            leftButton={<Icon name="chevron-left" color="rgb(255,255,255)" size={24} />}
+            leftButton={<Icon name="chevron-left" color="rgb(255,255,255)" size={32} />}
             leftButtonPress={() => this.props.navigator.pop()}
             rightButton={<Text style={styles.save}>Save</Text>}
             rightButtonPress={this._saveUser.bind(this)}
