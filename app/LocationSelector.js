@@ -18,6 +18,12 @@ import NavBar from './NavBar';
 let {height} = Dimensions.get('window');
 
 export default class LocationSelector extends Component {
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.show === true) {
+      this.autoComplete.triggerFocus();
+    }
+  }
+
   _style() {
     if(this.props.show === true) {
       return [styles.container, {top: 0}];
@@ -33,7 +39,6 @@ export default class LocationSelector extends Component {
           ref={(c) => this.autoComplete = c}
           placeholder='Search'
           minLength={2}
-          autoFocus={false}
           fetchDetails={true}
           onPress={this.props.onSelect}
           getDefaultValue={() => {
@@ -58,7 +63,7 @@ export default class LocationSelector extends Component {
           filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']}
         />
         <NavBar
-          title="Select a location"
+          title="Type the Location"
           rightButton={<Icon name="close" color="rgb(255,255,255)" size={24} />}
           rightButtonPress={() => {this.autoComplete.triggerBlur(); this.props.onCancel(); }}
         />
