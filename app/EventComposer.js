@@ -153,6 +153,8 @@ export default class EventComposer extends Component {
             (err) => reject(err)
           );
         }
+
+        resolve(this.state.coverPhoto.uri);
       }
 
       return resolve(null);
