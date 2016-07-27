@@ -6,7 +6,6 @@ import React, {
   Dimensions,
   LayoutAnimation,
   StyleSheet,
-  DatePickerIOS,
   TouchableHighlight,
   ScrollView,
   TextInput,
@@ -27,6 +26,7 @@ import Avatar from './Avatar';
 import LookingFor from './LookingFor';
 import LookingForWidget from './LookingForWidget';
 import UploadAvatar from './UploadAvatar';
+import DatePicker from './DatePicker';
 
 var {height} = Dimensions.get('window');
 
@@ -62,14 +62,6 @@ export default class ProfileEdit extends Component {
     }
 
     return styles.lookingForEdit;
-  }
-
-  _birthdateStyle() {
-    if(this.state.showBirthdate === true) {
-      return [styles.birthdateEdit, {top: height * 2 / 3}];
-    }
-
-    return styles.birthdateEdit;
   }
 
   _avatarStyle() {
@@ -202,15 +194,14 @@ export default class ProfileEdit extends Component {
             onSubmit={this._handleLookingFor.bind(this)}
           />
         </View>
-        <View style={this._birthdateStyle()}>
-          <DatePickerIOS
-            style={{flex: 1}}
-            onDateChange={(date) => this.setState({birthdate: date, showBirthdate: false})}
-            date={birthdate}
-            maximumDate={new Date()}
-            mode="date"
-          />
-        </View>
+        <DatePicker
+          title="Birthdate"
+          show={this.state.showBirthdate}
+          onFinish={(date) => this.setState({birthdate: date, showBirthdate: false})}
+          value={this.state.birthdate}
+          maximumDate={new Date()}
+          mode="date"
+        />
         <View style={this._avatarStyle()}>
           <UploadAvatar token={this.props.token} onSuccess={this._handleAvatarUpload.bind(this)} onCancel={() => this.setState({showAvatar: false})} />
         </View>
@@ -302,7 +293,8 @@ const styles = StyleSheet.create({
     marginLeft: Layout.lines(0.5),
     marginVertical: Layout.lines(0.5),
     backgroundColor: Colors.lightGrey,
-    borderRadius: Layout.lines(0.25)
+    borderRadius: Layout.lines(0.25),
+    fontSize: Layout.lines(1)
   },
   lookingForContainer: {
     flex: 1,
@@ -328,14 +320,6 @@ const styles = StyleSheet.create({
   summaryText: {
     fontSize: Layout.lines(0.85),
     lineHeight: Layout.lines(1.5)
-  },
-  birthdateEdit: {
-    position: 'absolute',
-    top: height,
-    left: 0,
-    right: 0,
-    height: height / 3,
-    backgroundColor: 'white'
   },
   avatarEdit: {
     position: 'absolute',

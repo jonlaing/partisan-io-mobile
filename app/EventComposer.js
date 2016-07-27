@@ -4,7 +4,6 @@ import React, {
   Component,
   Dimensions,
   ActivityIndicatorIOS,
-  DatePickerIOS,
   LayoutAnimation,
   StyleSheet,
   ScrollView,
@@ -28,6 +27,7 @@ import Colors from './Colors';
 import NavBar from './NavBar';
 import LocationSelector from './LocationSelector';
 import CameraRollView from './CameraRollView';
+import DatePicker from './DatePicker';
 
 let {height} = Dimensions.get('window');
 
@@ -291,28 +291,20 @@ export default class EventComposer extends Component {
           rightButton={this._rightButton()}
           rightButtonPress={this._handleSubmit.bind(this)}
         />
-        <View style={this._startDateStyle()}>
-          <Text style={styles.dateEditText}>Start Date</Text>
-          <Text style={styles.done} onPress={() => this.setState({showStartDate: false})}>Done</Text>
-          <DatePickerIOS
-            style={{flex: 1, alignSelf: 'center'}}
-            onDateChange={(d) => this.setState({startDate: d, endDate: moment(d).isAfter(this.state.endDate) ? d : this.state.endDate })}
-            date={this.state.startDate}
-            minimumDate={new Date()}
-            mode="datetime"
-          />
-        </View>
-        <View style={this._endDateStyle()}>
-          <Text style={styles.dateEditText}>End Date</Text>
-          <Text style={styles.done} onPress={() => this.setState({showEndDate: false})}>Done</Text>
-          <DatePickerIOS
-            style={{flex: 1, alignSelf: 'center'}}
-            onDateChange={(d) => this.setState({endDate: d, startDate: moment(d).isBefore(this.state.startDate) ? d : this.state.startDate })}
-            date={this.state.endDate}
-            minimumDate={new Date()}
-            mode="datetime"
-          />
-        </View>
+        <DatePicker
+          title="Start Date"
+          value={this.state.startDate}
+          onFinish={(d) => this.setState({showStartDate: false, startDate: d, endDate: moment(d).isAfter(this.state.endDate) ? d : this.state.endDate })}
+          show={this.state.showStartDate}
+          minimumDate={new Date()}
+        />
+        <DatePicker
+          title="End Date"
+          value={this.state.endDate}
+          onFinish={(d) => this.setState({showEndDate: false, endDate: d, startDate: moment(d).isBefore(this.state.startDate) ? d : this.state.startDate })}
+          show={this.state.showEndDate}
+          minimumDate={new Date()}
+        />
         <LocationSelector
           show={this.state.showLocation}
           onSelect={(data) => this.setState({location: data.description, showLocation: false}) }
@@ -389,23 +381,6 @@ const styles = StyleSheet.create({
   labelBig: {
     fontSize: Layout.lines(0.85),
     marginBottom: Layout.lines(1)
-  },
-  dateEdit: {
-    position: 'absolute',
-    top: height,
-    left: 0,
-    right: 0,
-    height: height / 3 + Layout.lines(1),
-    paddingTop: Layout.lines(1),
-    backgroundColor: 'white',
-    borderTopWidth: 2,
-    borderTopColor: Colors.lightGrey
-  },
-  dateEditText: {
-    fontSize: Layout.lines(1),
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: Colors.darkGrey
   },
   coverPhoto: {
     flex: 1,
