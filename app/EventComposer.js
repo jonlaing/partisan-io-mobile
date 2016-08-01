@@ -3,7 +3,6 @@
 import React, {
   Component,
   Dimensions,
-  ActivityIndicatorIOS,
   LayoutAnimation,
   StyleSheet,
   ScrollView,
@@ -28,6 +27,7 @@ import NavBar from './NavBar';
 import LocationSelector from './LocationSelector';
 import CameraRollView from './CameraRollView';
 import DatePicker from './DatePicker';
+import SubmitButton from './SubmitButton';
 
 let {height} = Dimensions.get('window');
 
@@ -92,7 +92,12 @@ export default class EventComposer extends Component {
   }
 
   _handleSubmit() {
-    console.log(this.props.eventID);
+    if(this.state.isSubmitting === true) {
+      return;
+    }
+
+    this.setState({isSubmitting: true});
+
     if(this.props.eventID === '') {
       this._handleCreate();
     } else {
@@ -183,17 +188,6 @@ export default class EventComposer extends Component {
     }
 
     return styles.dateEdit;
-  }
-
-  _rightButton() {
-    let style = this.state.isSubmitting ? [styles.navBarRightText, {color: Colors.baseLight}] : styles.navBarRightText;
-    let label = this.props.eventID === '' ? 'Create' : 'Update';
-    return (
-      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-        <ActivityIndicatorIOS animating={this.state.isSubmitting} color='white' size="small" />
-        <Text style={style}>{label}</Text>
-      </View>
-    );
   }
 
   _coverPhoto() {
@@ -288,7 +282,12 @@ export default class EventComposer extends Component {
           title="Create Event"
           leftButton={<Text style={styles.navBarLeftText}>Cancel</Text>}
           leftButtonPress={() => this.props.navigator.pop()}
-          rightButton={this._rightButton()}
+          rightButton={
+            <SubmitButton
+              label={this.props.eventID === '' ? "Create" : "Update"}
+              spinning={this.state.isSubmitting}
+            />
+          }
           rightButtonPress={this._handleSubmit.bind(this)}
         />
         <DatePicker

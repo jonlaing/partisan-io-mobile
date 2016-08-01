@@ -8,7 +8,6 @@ import React, {
   TextInput,
   StyleSheet,
   TouchableHighlight,
-  ActivityIndicatorIOS,
   Image,
   Text
 } from 'react-native';
@@ -23,6 +22,7 @@ import Layout from './Layout';
 
 import CameraRollView from './CameraRollView';
 import NavBar from './NavBar';
+import SubmitButton from './SubmitButton';
 
 class PostComposer extends Component {
   constructor(props) {
@@ -76,16 +76,6 @@ class PostComposer extends Component {
     this.props.navigator.pop();
   }
 
-  _rightButton() {
-    let style = this.state.value.length < 1 || this.state.isSubmitting ? [styles.navBarRightText, {color: Colors.baseLight}] : styles.navBarRightText;
-    return (
-      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-        <ActivityIndicatorIOS animating={this.state.isSubmitting} color='white' size="small" />
-        <Text style={style}>Post</Text>
-      </View>
-    );
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -108,7 +98,13 @@ class PostComposer extends Component {
           title="Write a Post"
           leftButton={<Text style={styles.navBarLeftText}>Cancel</Text>}
           leftButtonPress={this._handleCancel.bind(this)}
-          rightButton={this._rightButton()}
+          rightButton={
+            <SubmitButton
+              label="Post"
+              enabled={this.state.value.length > 1}
+              spinning={this.state.isSubmitting}
+            />
+          }
           rightButtonPress={this._handlePost.bind(this)}
         />
         <CameraRollView
